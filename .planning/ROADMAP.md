@@ -62,11 +62,11 @@ Plans:
   3. Waveform renders immediately from pre-generated peak data without any client-side audio decoding
   4. Visitor can see current playback time and total duration updating in real time
   5. Visitor can adjust volume with a control, and audio streaming supports seeking via HTTP range requests (including Safari)
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 03-01: wavesurfer.js component with server-side peaks, play/pause, scrub, time display, volume
-- [ ] 03-02: Audio streaming endpoint with HTTP range request support
+- [ ] 03-01-PLAN.md -- Peaks normalization endpoint and audio streaming endpoint with HTTP range request support
+- [ ] 03-02-PLAN.md -- WaveformPlayer Svelte component with wavesurfer.js, wired into main page
 
 ### Phase 4: Track Pages
 **Goal**: Visitors can browse and discover tracks through a visually immersive dark-themed interface
