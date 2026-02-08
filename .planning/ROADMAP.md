@@ -13,7 +13,7 @@ This roadmap delivers a self-hosted music platform at wallyblanchard.com/music i
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - SvelteKit project scaffold, SQLite database, Docker container, filesystem layout, Caddy routing (2026-02-08)
-- [ ] **Phase 2: Processing Pipeline** - Upload endpoint and async processing: transcode, peak generation, metadata extraction, cover art resize
+- [x] **Phase 2: Processing Pipeline** - Upload endpoint and async processing: transcode, peak generation, metadata extraction, cover art resize (2026-02-08)
 - [ ] **Phase 3: Waveform Player** - wavesurfer.js integration with server-side peaks, play/pause, scrub, volume, time display, audio streaming
 - [ ] **Phase 4: Track Pages** - Track listing, detail pages, cover art, permalinks, dark/moody aesthetic, responsive layout
 - [ ] **Phase 5: Admin Interface** - Drag-and-drop upload UI, metadata editor, processing status display, Authelia 2FA protection
@@ -49,8 +49,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- Docker infrastructure (ffmpeg, audiowaveform), npm packages, schema update, processing functions and validators
-- [ ] 02-02-PLAN.md -- Upload API endpoint, processing orchestrator, job queue, queue startup on boot
+- [x] 02-01-PLAN.md -- Docker infrastructure (ffmpeg, audiowaveform), npm packages, schema update, processing functions and validators
+- [x] 02-02-PLAN.md -- Upload API endpoint, processing orchestrator, job queue, queue startup on boot
 
 ### Phase 3: Waveform Player
 **Goal**: Visitors can play audio tracks with an interactive waveform visualization that loads instantly
@@ -136,7 +136,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete | 2026-02-08 |
-| 2. Processing Pipeline | 0/2 | Planning complete | - |
+| 2. Processing Pipeline | 2/2 | Complete | 2026-02-08 |
 | 3. Waveform Player | 0/2 | Not started | - |
 | 4. Track Pages | 0/2 | Not started | - |
 | 5. Admin Interface | 0/2 | Not started | - |

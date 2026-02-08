@@ -5,34 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Visitors can discover and listen to wallybrain's music through an immersive, visually engaging waveform player
-**Current focus:** Phase 2 processing pipeline in progress
+**Current focus:** Phase 2 complete, ready for Phase 3 (Waveform Player)
 
 ## Current Position
 
 Phase: 2 of 7 (Processing Pipeline)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-08 -- Completed 02-01-PLAN.md (audio processing infrastructure)
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-02-08 -- Completed 02-02-PLAN.md (upload endpoint and processing pipeline)
 
-Progress: [██░░░░░░░░] ~21%
+Progress: [████░░░░░░] ~29%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: ~11m
-- Total execution time: 0.6 hours
+- Total plans completed: 4
+- Average duration: ~10m
+- Total execution time: 0.7 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1 - Foundation | 2/2 | ~30m | ~15m |
-| 2 - Processing Pipeline | 1/2 | ~4m | ~4m |
+| 2 - Processing Pipeline | 2/2 | ~9m | ~4.5m |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (12m), 01-02 (~18m with debugging), 02-01 (4m)
-- Trend: Processing infra was straightforward, two minor Docker fixes
+- Last 5 plans: 01-01 (12m), 01-02 (~18m with debugging), 02-01 (4m), 02-02 (5m)
+- Trend: Processing pipeline plans fast due to clean module boundaries from 02-01
 
 *Updated after each plan completion*
 
@@ -55,6 +55,8 @@ Recent decisions affecting current work:
 - [01-02]: docker restart required over caddy reload for bind-mounted config changes
 - [02-01]: Use mwader/static-ffmpeg:7.1.1 (8.0.1 not yet published)
 - [02-01]: Add ca-certificates to Docker runtime for HTTPS downloads
+- [02-02]: In-process sequential queue using track status field as queue state (no separate job table)
+- [02-02]: Crash recovery: reset stuck 'processing' tracks to 'pending' on startup, plus 5s safety interval
 
 ### Pending Todos
 
@@ -68,5 +70,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-08
-Stopped at: Phase 2 Plan 1 complete, ready for Plan 02-02
-Resume file: .planning/phases/02-processing-pipeline/02-02-PLAN.md
+Stopped at: Phase 2 complete, ready for Phase 3 planning
+Resume file: .planning/ROADMAP.md (Phase 3: Waveform Player)
