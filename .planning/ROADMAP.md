@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - SvelteKit project scaffold, SQLite database, Docker container, filesystem layout, Caddy routing (2026-02-08)
 - [x] **Phase 2: Processing Pipeline** - Upload endpoint and async processing: transcode, peak generation, metadata extraction, cover art resize (2026-02-08)
-- [ ] **Phase 3: Waveform Player** - wavesurfer.js integration with server-side peaks, play/pause, scrub, volume, time display, audio streaming
+- [x] **Phase 3: Waveform Player** - wavesurfer.js integration with server-side peaks, play/pause, scrub, volume, time display, audio streaming (2026-02-08)
 - [ ] **Phase 4: Track Pages** - Track listing, detail pages, cover art, permalinks, dark/moody aesthetic, responsive layout
 - [ ] **Phase 5: Admin Interface** - Drag-and-drop upload UI, metadata editor, processing status display, Authelia 2FA protection
 - [ ] **Phase 6: Discovery and Engagement** - Content type and tag filtering, play count tracking, Open Graph meta tags
@@ -66,7 +66,7 @@ Plans:
 
 Plans:
 - [x] 03-01-PLAN.md -- Peaks normalization endpoint and audio streaming endpoint with HTTP range request support
-- [ ] 03-02-PLAN.md -- WaveformPlayer Svelte component with wavesurfer.js, wired into main page
+- [x] 03-02-PLAN.md -- WaveformPlayer Svelte component with wavesurfer.js, wired into main page
 
 ### Phase 4: Track Pages
 **Goal**: Visitors can browse and discover tracks through a visually immersive dark-themed interface
@@ -137,7 +137,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete | 2026-02-08 |
 | 2. Processing Pipeline | 2/2 | Complete | 2026-02-08 |
-| 3. Waveform Player | 1/2 | In progress | - |
+| 3. Waveform Player | 2/2 | Complete | 2026-02-08 |
 | 4. Track Pages | 0/2 | Not started | - |
 | 5. Admin Interface | 0/2 | Not started | - |
 | 6. Discovery and Engagement | 0/2 | Not started | - |

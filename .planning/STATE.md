@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Visitors can discover and listen to wallybrain's music through an immersive, visually engaging waveform player
-**Current focus:** Phase 3 in progress, Plan 01 complete (API endpoints), Plan 02 next (WaveformPlayer component)
+**Current focus:** Phase 3 complete (Waveform Player), ready for Phase 4 (Track Pages)
 
 ## Current Position
 
 Phase: 3 of 7 (Waveform Player)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-08 -- Completed 03-01-PLAN.md (peaks and audio streaming API endpoints)
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-02-08 -- Completed 03-02-PLAN.md (WaveformPlayer component and main page integration)
 
-Progress: [█████░░░░░] ~36%
+Progress: [██████░░░░] ~43%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: ~9m
-- Total execution time: 0.8 hours
+- Total plans completed: 6
+- Average duration: ~8m
+- Total execution time: 0.9 hours
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [█████░░░░░] ~36%
 |-------|-------|-------|----------|
 | 1 - Foundation | 2/2 | ~30m | ~15m |
 | 2 - Processing Pipeline | 2/2 | ~9m | ~4.5m |
-| 3 - Waveform Player | 1/2 | ~6m | ~6m |
+| 3 - Waveform Player | 2/2 | ~10m | ~5m |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (~18m with debugging), 02-01 (4m), 02-02 (5m), 03-01 (6m)
+- Last 5 plans: 02-01 (4m), 02-02 (5m), 03-01 (6m), 03-02 (4m)
 - Trend: Consistently fast execution with clean plan specifications
 
 *Updated after each plan completion*
@@ -60,6 +60,8 @@ Recent decisions affecting current work:
 - [02-02]: Crash recovery: reset stuck 'processing' tracks to 'pending' on startup, plus 5s safety interval
 - [03-01]: Use UUID track ID (not slug) for API data endpoints; slug for public pages in Phase 4
 - [03-01]: Server-side peak normalization (divide by 127) instead of client-side normalize:true
+- [03-02]: Dynamic import of wavesurfer.js inside onMount to avoid SSR errors
+- [03-02]: Added loadError state for graceful degradation when peaks fetch fails
 
 ### Pending Todos
 
@@ -73,5 +75,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-08
-Stopped at: Phase 3, Plan 01 complete, ready for Plan 02 (WaveformPlayer component)
-Resume file: .planning/phases/03-waveform-player/03-02-PLAN.md
+Stopped at: Phase 3 complete, ready for Phase 4 (Track Pages)
+Resume file: .planning/ROADMAP.md (Phase 4 planning next)
