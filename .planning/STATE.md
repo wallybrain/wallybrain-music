@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-07)
 ## Current Position
 
 Phase: 1 of 7 (Foundation)
-Plan: 0 of 2 in current phase
-Status: Ready to plan
-Last activity: 2026-02-08 -- Roadmap created with 7 phases covering 27 requirements
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-08 -- Completed 01-01-PLAN.md (SvelteKit + SQLite + Docker foundation)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] ~7%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 12m
+- Total execution time: 0.2 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 1 - Foundation | 1/2 | 12m | 12m |
 
 **Recent Trend:**
-- Last 5 plans: -
-- Trend: -
+- Last 5 plans: 01-01 (12m)
+- Trend: First plan completed
 
 *Updated after each plan completion*
 
@@ -45,6 +45,10 @@ Recent decisions affecting current work:
 - [Roadmap]: 7-phase structure derived from 27 requirements; persistent player deferred to Phase 7 due to SPA complexity
 - [Roadmap]: Processing pipeline (Phase 2) before playback (Phase 3) -- cannot play what hasn't been processed
 - [Research]: SvelteKit + SQLite + wavesurfer.js + ffmpeg + audiowaveform stack confirmed
+- [01-01]: Use Node.js fetch() for Docker health checks (wget unavailable in node:20-bookworm-slim)
+- [01-01]: Run Drizzle migrations in hooks.server.ts on app startup for automatic schema management
+- [01-01]: Manual SvelteKit scaffold (sv create CLI requires interactive input)
+- [01-01]: Bind mount volumes for simpler backup (not named Docker volumes)
 
 ### Pending Todos
 
@@ -58,5 +62,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-08
-Stopped at: Roadmap created, ready to plan Phase 1
-Resume file: None
+Stopped at: Completed 01-01-PLAN.md, ready for 01-02-PLAN.md (Caddy routing)
+Resume file: .planning/phases/01-foundation/01-02-PLAN.md
