@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Visitors can discover and listen to wallybrain's music through an immersive, visually engaging waveform player
-**Current focus:** Phase 4 in progress (Track Pages) -- Plan 1 complete, Plan 2 next
+**Current focus:** Phase 4 complete (Track Pages) -- Phase 5 (Admin Interface) next
 
 ## Current Position
 
 Phase: 4 of 7 (Track Pages)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-08 -- Completed 04-01-PLAN.md (Cover art endpoint, components, listing page rewrite)
+Plan: 2 of 2 in current phase
+Status: Phase complete
+Last activity: 2026-02-08 -- Completed 04-02-PLAN.md (Track detail page, dark theme, layout)
 
-Progress: [███████░░░] ~50%
+Progress: [█████████░] ~57%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: ~7m
-- Total execution time: 1.0 hours
+- Total execution time: 1.1 hours
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [███████░░░] ~50%
 | 1 - Foundation | 2/2 | ~30m | ~15m |
 | 2 - Processing Pipeline | 2/2 | ~9m | ~4.5m |
 | 3 - Waveform Player | 2/2 | ~10m | ~5m |
-| 4 - Track Pages | 1/2 | ~3m | ~3m |
+| 4 - Track Pages | 2/2 | ~9m | ~4.5m |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (5m), 03-01 (6m), 03-02 (4m), 04-01 (3m)
+- Last 5 plans: 03-01 (6m), 03-02 (4m), 04-01 (3m), 04-02 (6m)
 - Trend: Consistently fast execution with clean plan specifications
 
 *Updated after each plan completion*
@@ -65,6 +65,9 @@ Recent decisions affecting current work:
 - [03-02]: Added loadError state for graceful degradation when peaks fetch fails
 - [04-01]: Removed WaveformPlayer from listing page; card-based layout with TrackCard component instead
 - [04-01]: Cover art endpoint uses immutable cache headers (art tied to UUID; re-processing creates new UUID)
+- [04-02]: Global dark theme via CSS base layer on html element (no per-page bg-zinc-950)
+- [04-02]: Layout flex-column structure with nav header, ready for Phase 7 persistent player bar
+- [04-02]: Track detail page uses $derived rune for reactive track data
 
 ### Pending Todos
 
@@ -73,10 +76,10 @@ None yet.
 ### Blockers/Concerns
 
 - [Research]: audiowaveform installation in Docker needs evaluation during Phase 2 planning (build from source vs pre-built binary) -- RESOLVED: .deb package from GitHub releases works on bookworm
-- [Research]: Persistent player (Phase 7) may need architectural prep in Phase 1 SvelteKit config -- evaluate during Phase 1 planning
+- [Research]: Persistent player (Phase 7) may need architectural prep in Phase 1 SvelteKit config -- RESOLVED: Phase 4 layout provides flex-column structure ready for Phase 7
 
 ## Session Continuity
 
 Last session: 2026-02-08
-Stopped at: Phase 4 Plan 1 complete, Plan 2 (track detail page with slug permalinks) next
-Resume file: .planning/phases/04-track-pages/04-02-PLAN.md
+Stopped at: Phase 4 complete, Phase 5 (Admin Interface) next
+Resume file: .planning/phases/05-admin-interface/ (research needed)

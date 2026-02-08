@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - SvelteKit project scaffold, SQLite database, Docker container, filesystem layout, Caddy routing (2026-02-08)
 - [x] **Phase 2: Processing Pipeline** - Upload endpoint and async processing: transcode, peak generation, metadata extraction, cover art resize (2026-02-08)
 - [x] **Phase 3: Waveform Player** - wavesurfer.js integration with server-side peaks, play/pause, scrub, volume, time display, audio streaming (2026-02-08)
-- [ ] **Phase 4: Track Pages** - Track listing, detail pages, cover art, permalinks, dark/moody aesthetic, responsive layout
+- [x] **Phase 4: Track Pages** - Track listing, detail pages, cover art, permalinks, dark/moody aesthetic, responsive layout (2026-02-08)
 - [ ] **Phase 5: Admin Interface** - Drag-and-drop upload UI, metadata editor, processing status display, Authelia 2FA protection
 - [ ] **Phase 6: Discovery and Engagement** - Content type and tag filtering, play count tracking, Open Graph meta tags
 - [ ] **Phase 7: Persistent Player and Queue** - Bottom-bar player that persists across navigation, continuous auto-play queue
@@ -82,7 +82,7 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md -- Cover art endpoint, CoverArt/TrackCard components, listing page rewrite, error page
-- [ ] 04-02-PLAN.md -- Track detail page with slug permalinks, dark theme global styles, responsive layout
+- [x] 04-02-PLAN.md -- Track detail page with slug permalinks, dark theme global styles, responsive layout
 
 ### Phase 5: Admin Interface
 **Goal**: The artist can upload and manage tracks through a protected web interface
@@ -138,7 +138,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 1. Foundation | 2/2 | Complete | 2026-02-08 |
 | 2. Processing Pipeline | 2/2 | Complete | 2026-02-08 |
 | 3. Waveform Player | 2/2 | Complete | 2026-02-08 |
-| 4. Track Pages | 1/2 | In progress | - |
+| 4. Track Pages | 2/2 | Complete | 2026-02-08 |
 | 5. Admin Interface | 0/2 | Not started | - |
 | 6. Discovery and Engagement | 0/2 | Not started | - |
 | 7. Persistent Player and Queue | 0/2 | Not started | - |
