@@ -1,14 +1,20 @@
 import { db } from '$lib/server/db/client';
 import { tracks } from '$lib/server/db/schema';
-import { eq, count } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
-  const result = db
-    .select({ value: count() })
+  const readyTracks = db
+    .select({
+      id: tracks.id,
+      title: tracks.title,
+      slug: tracks.slug,
+      duration: tracks.duration,
+      status: tracks.status,
+    })
     .from(tracks)
     .where(eq(tracks.status, 'ready'))
-    .get();
+    .all();
 
-  return { trackCount: result?.value ?? 0 };
+  return { tracks: readyTracks };
 };
