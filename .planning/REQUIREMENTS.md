@@ -94,39 +94,39 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PLAY-01 | — | Pending |
-| PLAY-02 | — | Pending |
-| PLAY-03 | — | Pending |
-| PLAY-04 | — | Pending |
-| PLAY-05 | — | Pending |
-| PLAY-06 | — | Pending |
-| PLAY-07 | — | Pending |
-| DISP-01 | — | Pending |
-| DISP-02 | — | Pending |
-| DISP-03 | — | Pending |
-| DISP-04 | — | Pending |
-| DISP-05 | — | Pending |
-| DISP-06 | — | Pending |
-| UI-01 | — | Pending |
-| UI-02 | — | Pending |
-| UI-03 | — | Pending |
-| SHARE-01 | — | Pending |
-| SHARE-02 | — | Pending |
-| ADMIN-01 | — | Pending |
-| ADMIN-02 | — | Pending |
-| ADMIN-03 | — | Pending |
-| ADMIN-04 | — | Pending |
-| INFRA-01 | — | Pending |
-| INFRA-02 | — | Pending |
-| INFRA-03 | — | Pending |
-| INFRA-04 | — | Pending |
-| INFRA-05 | — | Pending |
+| PLAY-01 | Phase 3: Waveform Player | Pending |
+| PLAY-02 | Phase 3: Waveform Player | Pending |
+| PLAY-03 | Phase 3: Waveform Player | Pending |
+| PLAY-04 | Phase 7: Persistent Player and Queue | Pending |
+| PLAY-05 | Phase 7: Persistent Player and Queue | Pending |
+| PLAY-06 | Phase 3: Waveform Player | Pending |
+| PLAY-07 | Phase 3: Waveform Player | Pending |
+| DISP-01 | Phase 4: Track Pages | Pending |
+| DISP-02 | Phase 4: Track Pages | Pending |
+| DISP-03 | Phase 4: Track Pages | Pending |
+| DISP-04 | Phase 6: Discovery and Engagement | Pending |
+| DISP-05 | Phase 6: Discovery and Engagement | Pending |
+| DISP-06 | Phase 6: Discovery and Engagement | Pending |
+| UI-01 | Phase 4: Track Pages | Pending |
+| UI-02 | Phase 4: Track Pages | Pending |
+| UI-03 | Phase 3: Waveform Player | Pending |
+| SHARE-01 | Phase 4: Track Pages | Pending |
+| SHARE-02 | Phase 6: Discovery and Engagement | Pending |
+| ADMIN-01 | Phase 5: Admin Interface | Pending |
+| ADMIN-02 | Phase 5: Admin Interface | Pending |
+| ADMIN-03 | Phase 5: Admin Interface | Pending |
+| ADMIN-04 | Phase 5: Admin Interface | Pending |
+| INFRA-01 | Phase 1: Foundation | Pending |
+| INFRA-02 | Phase 1: Foundation | Pending |
+| INFRA-03 | Phase 2: Processing Pipeline | Pending |
+| INFRA-04 | Phase 3: Waveform Player | Pending |
+| INFRA-05 | Phase 1: Foundation | Pending |
 
 **Coverage:**
 - v1 requirements: 27 total
-- Mapped to phases: 0
-- Unmapped: 27
+- Mapped to phases: 27
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-07*
-*Last updated: 2026-02-07 after initial definition*
+*Last updated: 2026-02-08 after roadmap creation*
