@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+@layer base {
+  html {
+    background-color: var(--color-zinc-950);
+    color: var(--color-zinc-200);
+    scroll-behavior: smooth;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-zinc-900);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-zinc-700);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-zinc-600);
+}
