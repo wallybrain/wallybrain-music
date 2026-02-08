@@ -31,11 +31,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. The SQLite database exists with the tracks/tags schema and can be queried by the application
   3. The filesystem storage directories (audio, peaks, art) exist and are writable by the application
   4. The application runs in a Docker container that restarts automatically and reports healthy via health check
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 01-01: SvelteKit project scaffold with Tailwind CSS, Drizzle ORM, SQLite schema, Docker container
-- [ ] 01-02: Caddy configuration and filesystem layout integration
+- [ ] 01-01-PLAN.md -- SvelteKit scaffold with Tailwind CSS, Drizzle ORM, SQLite schema, Docker container
+- [ ] 01-02-PLAN.md -- Caddy routing, shared Docker network, end-to-end verification at wallyblanchard.com/music
 
 ### Phase 2: Processing Pipeline
 **Goal**: Uploaded audio files are automatically transcoded, analyzed, and prepared for playback
@@ -135,7 +135,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/2 | Not started | - |
+| 1. Foundation | 0/2 | Planned | - |
 | 2. Processing Pipeline | 0/2 | Not started | - |
 | 3. Waveform Player | 0/2 | Not started | - |
 | 4. Track Pages | 0/2 | Not started | - |
