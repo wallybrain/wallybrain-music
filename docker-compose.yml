@@ -1,0 +1,19 @@
+services:
+  wallybrain-music:
+    build: .
+    container_name: wallybrain-music
+    restart: unless-stopped
+    ports:
+      - "8800:8800"
+    volumes:
+      - /home/lwb3/wallybrain-music/data:/data
+    environment:
+      - PORT=8800
+      - ORIGIN=https://wallyblanchard.com
+      - BODY_SIZE_LIMIT=512M
+      - DATABASE_URL=/data/db/music.db
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8800/music/health').then(r=>{if(!r.ok)throw r;process.exit(0)}).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
