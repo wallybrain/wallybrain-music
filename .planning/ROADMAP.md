@@ -46,11 +46,11 @@ Plans:
   2. Processing runs asynchronously -- the upload returns immediately and the track status progresses through pending/processing/ready/failed
   3. Invalid or corrupt files are rejected with clear error messages (magic byte validation, ffprobe check)
   4. Processing results are stored in the correct filesystem directories and recorded in the database
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 02-01: Upload endpoint with file validation and async processing orchestration
-- [ ] 02-02: Transcoding, peak generation, metadata extraction, and cover art processing steps
+- [ ] 02-01-PLAN.md -- Docker infrastructure (ffmpeg, audiowaveform), npm packages, schema update, processing functions and validators
+- [ ] 02-02-PLAN.md -- Upload API endpoint, processing orchestrator, job queue, queue startup on boot
 
 ### Phase 3: Waveform Player
 **Goal**: Visitors can play audio tracks with an interactive waveform visualization that loads instantly
@@ -135,8 +135,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 2/2 | ✓ Complete | 2026-02-08 |
-| 2. Processing Pipeline | 0/2 | Not started | - |
+| 1. Foundation | 2/2 | Complete | 2026-02-08 |
+| 2. Processing Pipeline | 0/2 | Planning complete | - |
 | 3. Waveform Player | 0/2 | Not started | - |
 | 4. Track Pages | 0/2 | Not started | - |
 | 5. Admin Interface | 0/2 | Not started | - |
