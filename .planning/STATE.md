@@ -5,33 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Visitors can discover and listen to wallybrain's music through an immersive, visually engaging waveform player
-**Current focus:** Phase 1 - Foundation
+**Current focus:** Phase 1 complete, ready for Phase 2
 
 ## Current Position
 
-Phase: 1 of 7 (Foundation)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-02-08 -- Completed 01-01-PLAN.md (SvelteKit + SQLite + Docker foundation)
+Phase: 1 of 7 (Foundation) — COMPLETE
+Plan: 2 of 2 in current phase
+Status: Phase complete, pending verification
+Last activity: 2026-02-08 -- Phase 1 Foundation complete (both plans executed, human verified)
 
-Progress: [█░░░░░░░░░] ~7%
+Progress: [█░░░░░░░░░] ~14%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 12m
-- Total execution time: 0.2 hours
+- Total plans completed: 2
+- Average duration: ~15m
+- Total execution time: 0.5 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 - Foundation | 1/2 | 12m | 12m |
+| 1 - Foundation | 2/2 | ~30m | ~15m |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (12m)
-- Trend: First plan completed
+- Last 5 plans: 01-01 (12m), 01-02 (~18m with debugging)
+- Trend: Caddy routing required 3 iterations to fix
 
 *Updated after each plan completion*
 
@@ -49,6 +49,9 @@ Recent decisions affecting current work:
 - [01-01]: Run Drizzle migrations in hooks.server.ts on app startup for automatic schema management
 - [01-01]: Manual SvelteKit scaffold (sv create CLI requires interactive input)
 - [01-01]: Bind mount volumes for simpler backup (not named Docker volumes)
+- [01-02]: Named matcher `@music path /music /music/*` for Caddy routing (handle_path strips prefix SvelteKit needs; forward_auth overrides handle blocks unless isolated)
+- [01-02]: Let SvelteKit handle trailing-slash redirect (Caddy redir syntax ambiguous inside handle blocks)
+- [01-02]: docker restart required over caddy reload for bind-mounted config changes
 
 ### Pending Todos
 
@@ -62,5 +65,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-08
-Stopped at: Completed 01-01-PLAN.md, ready for 01-02-PLAN.md (Caddy routing)
-Resume file: .planning/phases/01-foundation/01-02-PLAN.md
+Stopped at: Phase 1 complete, awaiting verification and Phase 2 planning
+Resume file: None

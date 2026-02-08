@@ -12,7 +12,7 @@ This roadmap delivers a self-hosted music platform at wallyblanchard.com/music i
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - SvelteKit project scaffold, SQLite database, Docker container, filesystem layout, Caddy routing
+- [x] **Phase 1: Foundation** - SvelteKit project scaffold, SQLite database, Docker container, filesystem layout, Caddy routing (2026-02-08)
 - [ ] **Phase 2: Processing Pipeline** - Upload endpoint and async processing: transcode, peak generation, metadata extraction, cover art resize
 - [ ] **Phase 3: Waveform Player** - wavesurfer.js integration with server-side peaks, play/pause, scrub, volume, time display, audio streaming
 - [ ] **Phase 4: Track Pages** - Track listing, detail pages, cover art, permalinks, dark/moody aesthetic, responsive layout
@@ -34,8 +34,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- SvelteKit scaffold with Tailwind CSS, Drizzle ORM, SQLite schema, Docker container
-- [ ] 01-02-PLAN.md -- Caddy routing, shared Docker network, end-to-end verification at wallyblanchard.com/music
+- [x] 01-01-PLAN.md -- SvelteKit scaffold with Tailwind CSS, Drizzle ORM, SQLite schema, Docker container
+- [x] 01-02-PLAN.md -- Caddy routing, shared Docker network, end-to-end verification at wallyblanchard.com/music
 
 ### Phase 2: Processing Pipeline
 **Goal**: Uploaded audio files are automatically transcoded, analyzed, and prepared for playback
@@ -135,7 +135,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/2 | Planned | - |
+| 1. Foundation | 2/2 | ✓ Complete | 2026-02-08 |
 | 2. Processing Pipeline | 0/2 | Not started | - |
 | 3. Waveform Player | 0/2 | Not started | - |
 | 4. Track Pages | 0/2 | Not started | - |
