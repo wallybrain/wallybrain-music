@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Visitors can discover and listen to wallybrain's music through an immersive, visually engaging waveform player
-**Current focus:** Phase 3 complete (Waveform Player), ready for Phase 4 (Track Pages)
+**Current focus:** Phase 4 in progress (Track Pages) -- Plan 1 complete, Plan 2 next
 
 ## Current Position
 
-Phase: 3 of 7 (Waveform Player)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-02-08 -- Completed 03-02-PLAN.md (WaveformPlayer component and main page integration)
+Phase: 4 of 7 (Track Pages)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-08 -- Completed 04-01-PLAN.md (Cover art endpoint, components, listing page rewrite)
 
-Progress: [██████░░░░] ~43%
+Progress: [███████░░░] ~50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
-- Average duration: ~8m
-- Total execution time: 0.9 hours
+- Total plans completed: 7
+- Average duration: ~7m
+- Total execution time: 1.0 hours
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: [██████░░░░] ~43%
 | 1 - Foundation | 2/2 | ~30m | ~15m |
 | 2 - Processing Pipeline | 2/2 | ~9m | ~4.5m |
 | 3 - Waveform Player | 2/2 | ~10m | ~5m |
+| 4 - Track Pages | 1/2 | ~3m | ~3m |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (4m), 02-02 (5m), 03-01 (6m), 03-02 (4m)
+- Last 5 plans: 02-02 (5m), 03-01 (6m), 03-02 (4m), 04-01 (3m)
 - Trend: Consistently fast execution with clean plan specifications
 
 *Updated after each plan completion*
@@ -62,6 +63,8 @@ Recent decisions affecting current work:
 - [03-01]: Server-side peak normalization (divide by 127) instead of client-side normalize:true
 - [03-02]: Dynamic import of wavesurfer.js inside onMount to avoid SSR errors
 - [03-02]: Added loadError state for graceful degradation when peaks fetch fails
+- [04-01]: Removed WaveformPlayer from listing page; card-based layout with TrackCard component instead
+- [04-01]: Cover art endpoint uses immutable cache headers (art tied to UUID; re-processing creates new UUID)
 
 ### Pending Todos
 
@@ -75,5 +78,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-08
-Stopped at: Phase 3 complete, ready for Phase 4 (Track Pages)
-Resume file: .planning/ROADMAP.md (Phase 4 planning next)
+Stopped at: Phase 4 Plan 1 complete, Plan 2 (track detail page with slug permalinks) next
+Resume file: .planning/phases/04-track-pages/04-02-PLAN.md

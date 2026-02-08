@@ -81,7 +81,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md -- Cover art endpoint, CoverArt/TrackCard components, listing page rewrite, error page
+- [x] 04-01-PLAN.md -- Cover art endpoint, CoverArt/TrackCard components, listing page rewrite, error page
 - [ ] 04-02-PLAN.md -- Track detail page with slug permalinks, dark theme global styles, responsive layout
 
 ### Phase 5: Admin Interface
@@ -138,7 +138,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 1. Foundation | 2/2 | Complete | 2026-02-08 |
 | 2. Processing Pipeline | 2/2 | Complete | 2026-02-08 |
 | 3. Waveform Player | 2/2 | Complete | 2026-02-08 |
-| 4. Track Pages | 0/2 | Not started | - |
+| 4. Track Pages | 1/2 | In progress | - |
 | 5. Admin Interface | 0/2 | Not started | - |
 | 6. Discovery and Engagement | 0/2 | Not started | - |
 | 7. Persistent Player and Queue | 0/2 | Not started | - |
