@@ -65,7 +65,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- Peaks normalization endpoint and audio streaming endpoint with HTTP range request support
+- [x] 03-01-PLAN.md -- Peaks normalization endpoint and audio streaming endpoint with HTTP range request support
 - [ ] 03-02-PLAN.md -- WaveformPlayer Svelte component with wavesurfer.js, wired into main page
 
 ### Phase 4: Track Pages
@@ -137,7 +137,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete | 2026-02-08 |
 | 2. Processing Pipeline | 2/2 | Complete | 2026-02-08 |
-| 3. Waveform Player | 0/2 | Not started | - |
+| 3. Waveform Player | 1/2 | In progress | - |
 | 4. Track Pages | 0/2 | Not started | - |
 | 5. Admin Interface | 0/2 | Not started | - |
 | 6. Discovery and Engagement | 0/2 | Not started | - |

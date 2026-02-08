@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Visitors can discover and listen to wallybrain's music through an immersive, visually engaging waveform player
-**Current focus:** Phase 2 complete, ready for Phase 3 (Waveform Player)
+**Current focus:** Phase 3 in progress, Plan 01 complete (API endpoints), Plan 02 next (WaveformPlayer component)
 
 ## Current Position
 
-Phase: 2 of 7 (Processing Pipeline)
-Plan: 2 of 2 in current phase
-Status: Phase complete
-Last activity: 2026-02-08 -- Completed 02-02-PLAN.md (upload endpoint and processing pipeline)
+Phase: 3 of 7 (Waveform Player)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-02-08 -- Completed 03-01-PLAN.md (peaks and audio streaming API endpoints)
 
-Progress: [████░░░░░░] ~29%
+Progress: [█████░░░░░] ~36%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: ~10m
-- Total execution time: 0.7 hours
+- Total plans completed: 5
+- Average duration: ~9m
+- Total execution time: 0.8 hours
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: [████░░░░░░] ~29%
 |-------|-------|-------|----------|
 | 1 - Foundation | 2/2 | ~30m | ~15m |
 | 2 - Processing Pipeline | 2/2 | ~9m | ~4.5m |
+| 3 - Waveform Player | 1/2 | ~6m | ~6m |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (12m), 01-02 (~18m with debugging), 02-01 (4m), 02-02 (5m)
-- Trend: Processing pipeline plans fast due to clean module boundaries from 02-01
+- Last 5 plans: 01-02 (~18m with debugging), 02-01 (4m), 02-02 (5m), 03-01 (6m)
+- Trend: Consistently fast execution with clean plan specifications
 
 *Updated after each plan completion*
 
@@ -57,6 +58,8 @@ Recent decisions affecting current work:
 - [02-01]: Add ca-certificates to Docker runtime for HTTPS downloads
 - [02-02]: In-process sequential queue using track status field as queue state (no separate job table)
 - [02-02]: Crash recovery: reset stuck 'processing' tracks to 'pending' on startup, plus 5s safety interval
+- [03-01]: Use UUID track ID (not slug) for API data endpoints; slug for public pages in Phase 4
+- [03-01]: Server-side peak normalization (divide by 127) instead of client-side normalize:true
 
 ### Pending Todos
 
@@ -70,5 +73,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-08
-Stopped at: Phase 2 complete, ready for Phase 3 planning
-Resume file: .planning/ROADMAP.md (Phase 3: Waveform Player)
+Stopped at: Phase 3, Plan 01 complete, ready for Plan 02 (WaveformPlayer component)
+Resume file: .planning/phases/03-waveform-player/03-02-PLAN.md
