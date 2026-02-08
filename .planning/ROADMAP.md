@@ -93,11 +93,11 @@ Plans:
   2. Admin can set and edit track metadata (title, description, cover art, tags, category) before and after upload
   3. Admin can see real-time processing status for each track (pending, processing, ready, failed)
   4. The admin interface is only accessible after authenticating through Authelia 2FA -- unauthenticated visitors cannot reach it
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 05-01: Upload UI with drag-and-drop, metadata form, and processing status display
-- [ ] 05-02: Authelia forward_auth integration for admin route protection
+- [ ] 05-01-PLAN.md -- Admin layout, track list page, drag-and-drop upload with status polling, status API endpoint
+- [ ] 05-02-PLAN.md -- Track metadata edit page (title, slug, description, category, tags, cover art) and Caddy forward_auth protection
 
 ### Phase 6: Discovery and Engagement
 **Goal**: Visitors can filter tracks by type and tags, tracks show social proof via play counts, and shared links render rich previews
