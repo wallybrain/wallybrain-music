@@ -9,10 +9,12 @@ export const tracks = sqliteTable('tracks', {
   duration: integer('duration', { mode: 'number' }),
   bitrate: integer('bitrate'),
   fileSize: integer('file_size'),
+  originalFilename: text('original_filename'),
   audioPath: text('audio_path').notNull(),
   peaksPath: text('peaks_path'),
   artPath: text('art_path'),
   artThumb: text('art_thumb'),
+  errorMessage: text('error_message'),
   category: text('category', {
     enum: ['track', 'set', 'experiment', 'export']
   }).default('track').notNull(),
