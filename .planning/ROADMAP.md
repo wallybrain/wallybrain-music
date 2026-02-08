@@ -78,11 +78,11 @@ Plans:
   3. Each track has a unique permalink URL (/music/track/slug) that can be bookmarked and shared
   4. The entire interface uses a dark/moody aesthetic appropriate for electronic music
   5. All pages render correctly and are usable on mobile, tablet, and desktop screen sizes
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 04-01: Track listing page and track detail page with SvelteKit routing
-- [ ] 04-02: Dark/moody visual design system with Tailwind CSS, responsive layouts
+- [ ] 04-01-PLAN.md -- Cover art endpoint, CoverArt/TrackCard components, listing page rewrite, error page
+- [ ] 04-02-PLAN.md -- Track detail page with slug permalinks, dark theme global styles, responsive layout
 
 ### Phase 5: Admin Interface
 **Goal**: The artist can upload and manage tracks through a protected web interface
