@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db/client';
 import { tracks } from '$lib/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -10,10 +10,14 @@ export const load: PageServerLoad = async () => {
       title: tracks.title,
       slug: tracks.slug,
       duration: tracks.duration,
-      status: tracks.status,
+      artPath: tracks.artPath,
+      playCount: tracks.playCount,
+      category: tracks.category,
+      createdAt: tracks.createdAt,
     })
     .from(tracks)
     .where(eq(tracks.status, 'ready'))
+    .orderBy(desc(tracks.createdAt))
     .all();
 
   return { tracks: readyTracks };
