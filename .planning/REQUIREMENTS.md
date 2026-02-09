@@ -1,0 +1,102 @@
+# Requirements: wallybrain-music
+
+**Defined:** 2026-02-09
+**Core Value:** Visitors can discover and listen to wallybrain's music through an immersive, visually engaging waveform player
+
+## v1.1 Requirements
+
+Requirements for visual polish milestone. Each maps to roadmap phases.
+
+### Design Foundation
+
+- [ ] **DSGN-01**: Site uses custom typography -- Space Grotesk for headings, Space Mono for timestamps, system fonts for body
+- [ ] **DSGN-02**: Color palette uses OKLCH design tokens defined via Tailwind v4 @theme with semantic names (surface, accent, text-primary)
+- [ ] **DSGN-03**: All text meets WCAG AA contrast ratio (4.5:1 minimum against background)
+- [ ] **DSGN-04**: Typography hierarchy is visually distinct -- headings, body, captions, and metadata have clear size/weight/tracking differentiation
+
+### Visual Richness
+
+- [ ] **ATMO-01**: Waveform uses gradient colors (purple-to-violet progression) instead of flat single colors
+- [ ] **ATMO-02**: Cover art has depth -- shadow, subtle border, or glow effect that lifts it off the background
+- [ ] **ATMO-03**: Track cards have hover micro-interactions (scale, shadow lift, or background shift)
+- [ ] **ATMO-04**: Persistent player bar uses glassmorphism effect (translucent background with blur)
+- [ ] **ATMO-05**: Page background has subtle gradient or texture, not flat zinc-950
+- [ ] **ATMO-06**: Loading states use skeleton placeholders instead of blank space
+
+### Signature Identity
+
+- [ ] **SIGN-01**: Track detail page extracts dominant color from cover art and uses it as an ambient accent (tinted background, glow)
+- [ ] **SIGN-02**: Currently-playing track shows an equalizer bar animation indicator
+- [ ] **SIGN-03**: Track listing uses staggered entrance animations when tracks load
+- [ ] **SIGN-04**: Cover art on track detail page has an ambient glow matching the dominant color
+
+### Refinement
+
+- [ ] **REFI-01**: Track listing supports grid/list layout toggle
+- [ ] **REFI-02**: Page navigation uses smooth transitions (View Transitions API or Svelte transitions)
+- [ ] **REFI-03**: Cover art has hover zoom effect on track cards
+
+## Future Requirements
+
+Deferred to future release. Tracked but not in current roadmap.
+
+### Social Interaction (from v2 backlog)
+
+- **SOCL-01**: Visitor can create an account to interact with tracks
+- **SOCL-02**: Registered user can leave comments on tracks
+- **SOCL-03**: Registered user can like/favorite tracks
+- **SOCL-04**: Timed comments on waveform (SoundCloud-style)
+
+### Content Delivery
+
+- **CDN-01**: Audio files served via CDN for global performance
+- **DL-01**: Visitor can download tracks (gated behind email or account)
+
+### Curation
+
+- **CUR-01**: Admin can create curated playlists/collections
+- **CUR-02**: Invite-only interaction mode for selected users
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Light mode / theme switcher | Dark theme is core to electronic music identity |
+| Real-time audio visualizer (canvas-based) | High complexity, performance cost, not core to polish |
+| Particle backgrounds | Performance cost, gimmicky, distracting from music |
+| Custom cursor | Accessibility concerns, platform inconsistency |
+| User accounts / authentication | v1 is display-only; deferred to v2 |
+| New features beyond visual polish | v1.1 is visual only + minor UX fixes |
+
+## Traceability
+
+Which phases cover which requirements. Updated during roadmap creation.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| DSGN-01 | Phase 8 | Pending |
+| DSGN-02 | Phase 8 | Pending |
+| DSGN-03 | Phase 8 | Pending |
+| DSGN-04 | Phase 8 | Pending |
+| ATMO-01 | Phase 9 | Pending |
+| ATMO-02 | Phase 9 | Pending |
+| ATMO-03 | Phase 9 | Pending |
+| ATMO-04 | Phase 9 | Pending |
+| ATMO-05 | Phase 9 | Pending |
+| ATMO-06 | Phase 9 | Pending |
+| SIGN-01 | Phase 10 | Pending |
+| SIGN-02 | Phase 10 | Pending |
+| SIGN-03 | Phase 10 | Pending |
+| SIGN-04 | Phase 10 | Pending |
+| REFI-01 | Phase 11 | Pending |
+| REFI-02 | Phase 11 | Pending |
+| REFI-03 | Phase 11 | Pending |
+
+**Coverage:**
+- v1.1 requirements: 17 total
+- Mapped to phases: 17
+- Unmapped: 0
+
+---
+*Requirements defined: 2026-02-09*
+*Last updated: 2026-02-09 after roadmap creation*
