@@ -2,32 +2,40 @@
 
 ## What This Is
 
-A self-hosted music platform at wallyblanchard.com/music where wallybrain (the artist identity) can upload, organize, and present music to the public in a SoundCloud-like format. Features waveform playback, cover art, track metadata, and a dark/moody aesthetic designed for electronic music. Supports finished tracks, live sets, experiments, and raw Ableton exports.
+A self-hosted music platform at wallyblanchard.com/music where wallybrain publishes and presents music. Features waveform playback via wavesurfer.js, cover art, track metadata, persistent bottom-bar player with queue management, admin upload/edit interface behind Authelia 2FA, content filtering, play counts, and Open Graph sharing. Supports finished tracks, live sets, experiments, and raw Ableton exports.
 
 ## Core Value
 
 Visitors can discover and listen to wallybrain's music through an immersive, visually engaging player — the waveform experience is what makes this feel like a real music platform, not just a file listing.
 
+## Current State
+
+**Shipped:** v1.0 MVP (2026-02-09)
+**Codebase:** ~2,080 LOC (Svelte/TypeScript), SvelteKit 2 + Svelte 5 + SQLite + Docker
+**Live at:** wallyblanchard.com/music
+
 ## Requirements
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Waveform audio player with scrubbing — v1.0
+- ✓ Track listing / profile page showing all tracks — v1.0
+- ✓ Cover art display per track — v1.0
+- ✓ Genre and tag system for categorization — v1.0
+- ✓ Track descriptions / notes (process, inspiration, gear) — v1.0
+- ✓ Play count tracking (display-only social) — v1.0
+- ✓ Admin upload UI with drag-and-drop — v1.0
+- ✓ Admin metadata editor (title, art, tags, description) — v1.0
+- ✓ Dark/moody visual design — v1.0
+- ✓ Serve at wallyblanchard.com/music via Caddy reverse proxy — v1.0
+- ✓ Audio file storage on server — v1.0
+- ✓ Support for multiple content types (finished, experiments, sets, exports) — v1.0
+- ✓ Persistent bottom-bar player across page navigation — v1.0
+- ✓ Continuous auto-play queue — v1.0
 
 ### Active
 
-- [ ] Waveform audio player with scrubbing
-- [ ] Track listing / profile page showing all tracks
-- [ ] Cover art display per track
-- [ ] Genre and tag system for categorization
-- [ ] Track descriptions / notes (process, inspiration, gear)
-- [ ] Play count tracking (display-only social)
-- [ ] Admin upload UI with drag-and-drop
-- [ ] Admin metadata editor (title, art, tags, description)
-- [ ] Dark/moody visual design
-- [ ] Serve at wallyblanchard.com/music via Caddy reverse proxy
-- [ ] Audio file storage on server
-- [ ] Support for multiple content types (finished, experiments, sets, exports)
+(None — next milestone requirements TBD via `/gsd:new-milestone`)
 
 ### Out of Scope
 
@@ -40,27 +48,33 @@ Visitors can discover and listen to wallybrain's music through an immersive, vis
 
 ## Context
 
-- **Existing infrastructure**: wallyblanchard.com runs on Caddy with Authelia 2FA, hosting V1be Code Server. The music page will be added as a path (`/music`) on the same domain via Caddy routing.
-- **Artist identity**: "wallybrain" is the music persona; wallyblanchard.com is the personal domain that hosts it. The music page should be branded as wallybrain, not wallyblanchard.
-- **Content variety**: Tracks range from polished productions to rough Ableton exports and experiments. The platform needs to handle this range gracefully — perhaps via categories or tags.
-- **Growth model**: Starting with a small collection, adding tracks regularly over time. Architecture should handle growing library without redesign.
-- **Related project**: ableton-mcp (~/ableton-mcp/) is an MCP server for Claude-to-Ableton Live control — separate but thematically related.
+- **Existing infrastructure**: wallyblanchard.com runs on Caddy with Authelia 2FA, hosting V1be Code Server. Music serves at `/music` path.
+- **Artist identity**: "wallybrain" is the music persona; wallyblanchard.com is the personal domain.
+- **User feedback**: Site works functionally but looks "bland" — visual polish is the clear next priority.
+- **Content variety**: Tracks range from polished productions to rough Ableton exports. Category system handles this via type field.
+- **Related project**: ableton-mcp (~/ableton-mcp/) is an MCP server for Claude-to-Ableton Live control.
 
 ## Constraints
 
-- **Hosting**: Must integrate with existing Caddy + Authelia setup on wallyblanchard.com
-- **Storage**: Audio files stored on the VPS directly (no cloud storage / S3 for v1)
-- **Admin access**: Upload UI must be behind authentication (Authelia or equivalent)
-- **Performance**: Waveform generation and audio streaming must work smoothly for tracks up to ~60min (live sets)
+- **Hosting**: Integrates with existing Caddy + Authelia setup on wallyblanchard.com
+- **Storage**: Audio files stored on the VPS directly (no cloud storage / S3)
+- **Admin access**: Upload UI behind Authelia 2FA
+- **Performance**: Waveform generation and audio streaming work for tracks up to ~60min (live sets)
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Path-based routing (/music) over subdomain | Simpler Caddy config, single domain, unified identity | — Pending |
-| Server-side audio storage over S3/R2 | Simpler for v1, avoids cloud costs, sufficient for personal catalog | — Pending |
-| Display-only social over real accounts | Reduces v1 complexity dramatically; can add accounts later | — Pending |
-| Dark/moody aesthetic | Fits electronic music genre and wallybrain brand identity | — Pending |
+| Path-based routing (/music) over subdomain | Simpler Caddy config, single domain | ✓ Good |
+| Server-side audio storage over S3/R2 | Simpler for v1, avoids cloud costs | ✓ Good |
+| Display-only social over real accounts | Reduces v1 complexity | ✓ Good |
+| Dark/moody aesthetic | Fits electronic music genre | ⚠️ Revisit — "bland" feedback |
+| SvelteKit + Svelte 5 with $state runes | Modern reactive patterns, SSR support | ✓ Good |
+| SQLite via Drizzle ORM | Simple, no external DB process | ✓ Good |
+| In-process job queue (no Redis/Bull) | Sequential processing sufficient for personal use | ✓ Good |
+| wavesurfer.js with server-side peaks | Instant waveform render, no client decode | ✓ Good |
+| Persistent player outside {@render children()} | Survives SvelteKit page navigation | ✓ Good |
+| Queue from visible (filtered) tracks | Natural UX — play what you're browsing | ✓ Good |
 
 ---
-*Last updated: 2026-02-07 after initialization*
+*Last updated: 2026-02-09 after v1.0 milestone*
