@@ -122,11 +122,11 @@ Plans:
   1. Visitor starts playing a track, navigates to a different page, and the audio continues playing in a persistent bottom bar without interruption
   2. When the current track ends, the next track in the queue automatically begins playing
   3. The persistent player shows the current track info (title, cover art, waveform progress) and provides play/pause, skip, and volume controls
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 07-01: Persistent bottom-bar player with SvelteKit client-side navigation
-- [ ] 07-02: Continuous queue with auto-play next track
+- [ ] 07-01-PLAN.md -- Global player state module, PersistentPlayer component with wavesurfer.js mini waveform, layout integration
+- [ ] 07-02-PLAN.md -- TrackCard play button with queue data, track detail page coexistence with WaveformPlayer, auto-play next
 
 ## Progress
 
