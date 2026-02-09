@@ -12,6 +12,14 @@
 	let currentTime: number = $state(0);
 	let volume: number = $state(1);
 	let loadError: boolean = $state(false);
+	let hasCountedPlay: boolean = $state(false);
+
+	function onPlay() {
+		if (!hasCountedPlay) {
+			hasCountedPlay = true;
+			fetch(`/music/api/tracks/${trackId}/play`, { method: 'POST' });
+		}
+	}
 
 	onMount(() => {
 		let ws: WaveSurfer;
@@ -49,7 +57,10 @@
 				duration: duration,
 			});
 
-			ws.on('play', () => (isPlaying = true));
+				ws.on('play', () => {
+				isPlaying = true;
+				onPlay();
+			});
 			ws.on('pause', () => (isPlaying = false));
 			ws.on('finish', () => (isPlaying = false));
 			ws.on('timeupdate', (time: number) => (currentTime = time));
