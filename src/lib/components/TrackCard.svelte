@@ -2,6 +2,7 @@
   import CoverArt from './CoverArt.svelte';
   import { formatTime } from '$lib/utils/formatTime';
   import { base } from '$app/paths';
+  import { playerState, type QueueTrack } from '$lib/stores/playerState.svelte';
 
   const categoryLabels: Record<string, string> = {
     track: 'Finished',
@@ -10,7 +11,7 @@
     export: 'Export',
   };
 
-  let { track }: {
+  let { track, allTracks, index }: {
     track: {
       id: string;
       slug: string;
@@ -21,7 +22,31 @@
       category: string;
       tags: string[];
     };
+    allTracks?: QueueTrack[];
+    index?: number;
   } = $props();
+
+  let isCurrentTrack = $derived(playerState.currentTrack?.id === track.id);
+  let isPlaying = $derived(isCurrentTrack && playerState.isPlaying);
+
+  function handlePlay(e: MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    const queueTrack: QueueTrack = {
+      id: track.id,
+      slug: track.slug,
+      title: track.title,
+      duration: track.duration ?? 0,
+      artPath: track.artPath,
+    };
+    playerState.play(queueTrack, allTracks ?? [queueTrack], index ?? 0);
+  }
+
+  function handleToggle(e: MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    playerState.togglePlayPause();
+  }
 </script>
 
 <a
@@ -48,4 +73,23 @@
       </div>
     {/if}
   </div>
+  {#if isPlaying}
+    <button
+      onclick={handleToggle}
+      class="shrink-0 w-8 h-8 rounded-full bg-violet-600 hover:bg-violet-500 text-white flex items-center justify-center text-xs transition-opacity md:opacity-0 md:group-hover:opacity-100"
+      aria-label="Pause"
+    >&#9646;&#9646;</button>
+  {:else if isCurrentTrack}
+    <button
+      onclick={handleToggle}
+      class="shrink-0 w-8 h-8 rounded-full bg-zinc-700 ring-2 ring-violet-500 hover:bg-zinc-600 text-white flex items-center justify-center text-xs transition-opacity md:opacity-0 md:group-hover:opacity-100"
+      aria-label="Resume"
+    >&#9654;</button>
+  {:else}
+    <button
+      onclick={handlePlay}
+      class="shrink-0 w-8 h-8 rounded-full bg-violet-600 hover:bg-violet-500 text-white flex items-center justify-center text-xs transition-opacity md:opacity-0 md:group-hover:opacity-100"
+      aria-label="Play"
+    >&#9654;</button>
+  {/if}
 </a>

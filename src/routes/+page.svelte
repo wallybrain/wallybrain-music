@@ -1,11 +1,19 @@
-<script>
+<script lang="ts">
   import TrackCard from '$lib/components/TrackCard.svelte';
   import FilterBar from '$lib/components/FilterBar.svelte';
   import { base } from '$app/paths';
+  import type { QueueTrack } from '$lib/stores/playerState.svelte';
 
   let { data } = $props();
 
   let hasActiveFilters = $derived(data.activeCategory !== null || data.activeTags.length > 0);
+  let queueTracks = $derived<QueueTrack[]>(data.tracks.map(t => ({
+    id: t.id,
+    slug: t.slug,
+    title: t.title,
+    duration: t.duration ?? 0,
+    artPath: t.artPath,
+  })));
 </script>
 
 <svelte:head>
@@ -31,8 +39,8 @@
     {/if}
   {:else}
     <div class="space-y-3">
-      {#each data.tracks as track (track.id)}
-        <TrackCard {track} />
+      {#each data.tracks as track, i (track.id)}
+        <TrackCard {track} allTracks={queueTracks} index={i} />
       {/each}
     </div>
   {/if}
