@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db/client';
 import { tracks, tags, trackTags } from '$lib/server/db/schema';
 import { eq, and, ne } from 'drizzle-orm';
-import { fail, error } from '@sveltejs/kit';
+import { fail, error, redirect } from '@sveltejs/kit';
 import { extractAndResizeArt } from '$lib/server/processors/artwork';
 import { mkdirSync } from 'node:fs';
 import type { Actions, PageServerLoad } from './$types';
@@ -126,6 +126,6 @@ export const actions = {
 				.run();
 		}
 
-		return { success: true };
+		redirect(303, '/music/admin');
 	},
 } satisfies Actions;

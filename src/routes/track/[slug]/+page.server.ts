@@ -1,10 +1,10 @@
 import { db } from '$lib/server/db/client';
-import { tracks } from '$lib/server/db/schema';
+import { tracks, tags, trackTags } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, cookies }) => {
 	const track = db
 		.select()
 		.from(tracks)
@@ -15,5 +15,14 @@ export const load: PageServerLoad = async ({ params }) => {
 		throw error(404, 'Track not found');
 	}
 
-	return { track };
+	const trackTagRows = db
+		.select({ name: tags.name })
+		.from(trackTags)
+		.innerJoin(tags, eq(trackTags.tagId, tags.id))
+		.where(eq(trackTags.trackId, track.id))
+		.all();
+
+	const isAdmin = !!cookies.get('authelia_session');
+
+	return { track, tags: trackTagRows.map((t) => t.name), isAdmin };
 };

@@ -6,6 +6,8 @@
 
 	let { data } = $props();
 	let track = $derived(data.track);
+	let trackTags = $derived(data.tags);
+	let isAdmin = $derived(data.isAdmin);
 </script>
 
 <svelte:head>
@@ -21,7 +23,12 @@
 	<div class="flex flex-col md:flex-row gap-6 mb-8">
 		<CoverArt trackId={track.id} artPath={track.artPath} title={track.title} size="lg" />
 		<div class="flex-1">
-			<h1 class="text-2xl md:text-3xl font-bold text-white mb-2">{track.title}</h1>
+			<div class="flex items-start justify-between gap-3 mb-2">
+				<h1 class="text-2xl md:text-3xl font-bold text-white">{track.title}</h1>
+				{#if isAdmin}
+					<a href="{base}/admin/tracks/{track.id}" class="shrink-0 text-xs text-zinc-600 hover:text-zinc-400 transition-colors">edit</a>
+				{/if}
+			</div>
 			<span class="text-xs uppercase tracking-wider bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded">
 				{track.category}
 			</span>
@@ -29,6 +36,13 @@
 				<p class="text-zinc-400 text-sm mt-2">{formatTime(track.duration)}</p>
 			{/if}
 			<p class="text-zinc-500 text-xs mt-1">{track.playCount} plays</p>
+			{#if trackTags.length > 0}
+				<div class="flex flex-wrap gap-1.5 mt-3">
+					{#each trackTags as tag}
+						<span class="text-xs bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded">{tag}</span>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	</div>
 

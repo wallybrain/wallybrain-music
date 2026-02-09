@@ -4,6 +4,7 @@
   import CoverArt from '$lib/components/CoverArt.svelte';
 
   let { data, form } = $props();
+  // form is only populated on validation errors (success redirects to admin list)
 
   let track = $derived(data.track);
   let tagString = $derived(data.tags.join(', '));
@@ -34,9 +35,6 @@
 </div>
 
 <form method="POST" action="?/update" use:enhance enctype="multipart/form-data">
-  {#if form?.success}
-    <p class="text-emerald-400 text-sm mb-4">Changes saved</p>
-  {/if}
   {#if form?.error}
     <p class="text-red-400 text-sm mb-4">{form.error}</p>
   {/if}
