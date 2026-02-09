@@ -3,6 +3,13 @@
   import { formatTime } from '$lib/utils/formatTime';
   import { base } from '$app/paths';
 
+  const categoryLabels: Record<string, string> = {
+    track: 'Finished',
+    set: 'Set',
+    experiment: 'Experiment',
+    export: 'Export',
+  };
+
   let { track }: {
     track: {
       id: string;
@@ -11,6 +18,8 @@
       duration: number | null;
       playCount: number;
       artPath: string | null;
+      category: string;
+      tags: string[];
     };
   } = $props();
 </script>
@@ -29,6 +38,14 @@
         <span>{formatTime(track.duration)}</span>
       {/if}
       <span>{track.playCount} plays</span>
+      <span class="uppercase tracking-wider">{categoryLabels[track.category] ?? track.category}</span>
     </div>
+    {#if track.tags.length > 0}
+      <div class="flex flex-wrap gap-1.5 mt-1.5">
+        {#each track.tags as tag}
+          <span class="text-xs bg-zinc-800/50 text-zinc-500 px-1.5 py-0.5 rounded">{tag}</span>
+        {/each}
+      </div>
+    {/if}
   </div>
 </a>
