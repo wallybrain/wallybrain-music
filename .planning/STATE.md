@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Visitors can discover and listen to wallybrain's music through an immersive, visually engaging waveform player
-**Current focus:** Phase 6 COMPLETE -- Phase 7 (Persistent Player) ready to plan
+**Current focus:** Phase 7 in progress -- persistent player infrastructure built, wiring play triggers next
 
 ## Current Position
 
-Phase: 6 of 7 (Discovery and Engagement)
-Plan: 2 of 2 in current phase (COMPLETE)
-Status: Phase 6 complete
-Last activity: 2026-02-09 -- Phase 6 Plan 2 executed (play counts + social sharing)
+Phase: 7 of 7 (Persistent Player and Queue)
+Plan: 1 of 2 in current phase (COMPLETE)
+Status: Plan 07-01 complete, Plan 07-02 next
+Last activity: 2026-02-09 -- Phase 7 Plan 1 executed (player state + persistent player component)
 
-Progress: [███████████░░] ~86%
+Progress: [████████████░] ~93%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: ~7m
 - Total execution time: ~1.5 hours
 
@@ -33,10 +33,11 @@ Progress: [███████████░░] ~86%
 | 4 - Track Pages | 2/2 | ~9m | ~4.5m |
 | 5 - Admin Interface | 2/2 | ~20m | ~10m |
 | 6 - Discovery & Engagement | 2/2 | ~6m | ~3m |
+| 7 - Persistent Player | 1/2 | ~2m | ~2m |
 
 **Recent Trend:**
-- Last 5 plans: 04-02 (6m), 05-01 (5m), 05-02 (15m incl checkpoint), 06-01 (~3m), 06-02 (3m)
-- Trend: Consistently fast execution; Phase 6 plans were lightweight feature additions
+- Last 5 plans: 05-01 (5m), 05-02 (15m incl checkpoint), 06-01 (~3m), 06-02 (3m), 07-01 (2m)
+- Trend: Consistently fast execution; well-researched plans execute quickly
 
 *Updated after each plan completion*
 
@@ -79,6 +80,9 @@ Recent decisions affecting current work:
 - [06-02]: Fire-and-forget fetch for play count (no await, no blocking playback)
 - [06-02]: hasCountedPlay flag resets on component unmount (each page visit can count once)
 - [06-02]: Absolute URLs hardcoded with wallyblanchard.com domain for OG tags (not relative {base})
+- [07-01]: Inline cover art img in player bar instead of modifying CoverArt component (avoids xs size on shared component)
+- [07-01]: Fire-and-forget play count on track load in persistent player (matching Phase 6 pattern)
+- [07-01]: loadedTrackId guard plus stale response check for wavesurfer.load() race conditions
 
 ### Pending Todos
 
@@ -92,5 +96,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Completed 06-01-PLAN.md (re-executed) -- Phase 6 fully complete
-Resume: `/gsd:plan-phase 7` or `/gsd:discuss-phase 7` for persistent player
+Stopped at: Completed 07-01-PLAN.md -- persistent player infrastructure built
+Resume: `/gsd:execute-phase 7` for Plan 07-02 (wire play triggers from track pages/cards)
