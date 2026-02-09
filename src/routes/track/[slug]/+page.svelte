@@ -3,11 +3,25 @@
 	import CoverArt from '$lib/components/CoverArt.svelte';
 	import { formatTime } from '$lib/utils/formatTime';
 	import { base } from '$app/paths';
+	import { playerState, type QueueTrack } from '$lib/stores/playerState.svelte';
 
 	let { data } = $props();
 	let track = $derived(data.track);
 	let trackTags = $derived(data.tags);
 	let isAdmin = $derived(data.isAdmin);
+
+	let isPlayingThisTrack = $derived(playerState.currentTrack?.id === track.id);
+
+	function playInPersistentPlayer() {
+		const queueTrack: QueueTrack = {
+			id: track.id,
+			slug: track.slug,
+			title: track.title,
+			duration: track.duration ?? 0,
+			artPath: track.artPath,
+		};
+		playerState.play(queueTrack);
+	}
 </script>
 
 <svelte:head>
@@ -65,7 +79,21 @@
 	</div>
 
 	<div class="mb-8">
-		<WaveformPlayer trackId={track.id} duration={track.duration ?? 0} />
+		{#if isPlayingThisTrack}
+			<div class="flex items-center gap-3 py-4">
+				<button onclick={() => playerState.togglePlayPause()}
+					class="px-4 py-1.5 rounded bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium">
+					{playerState.isPlaying ? 'Pause' : 'Resume'}
+				</button>
+				<span class="text-sm text-violet-400">Now playing in bottom player</span>
+			</div>
+		{:else}
+			<WaveformPlayer trackId={track.id} duration={track.duration ?? 0} />
+			<button onclick={playInPersistentPlayer}
+				class="mt-2 text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+				Play with continuous queue
+			</button>
+		{/if}
 	</div>
 
 	{#if track.description}
