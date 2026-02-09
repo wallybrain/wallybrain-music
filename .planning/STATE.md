@@ -73,6 +73,9 @@ Recent decisions affecting current work:
 - [05-02]: Save action uses PRG pattern (redirect 303 to admin list) instead of inline success message
 - [05-02]: Public track page checks authelia_session cookie for conditional admin edit link (UX hint, not security)
 - [05-02]: Tags displayed as badges on public track detail page
+- [06-01]: AND semantics for tag filters (multiple tags require tracks to have ALL selected tags)
+- [06-01]: Category filter uses schema enum values with display labels (track->Finished, set->Sets, etc.)
+- [06-01]: Filter state in URL query params for shareability and progressive enhancement
 - [06-02]: Fire-and-forget fetch for play count (no await, no blocking playback)
 - [06-02]: hasCountedPlay flag resets on component unmount (each page visit can count once)
 - [06-02]: Absolute URLs hardcoded with wallyblanchard.com domain for OG tags (not relative {base})
@@ -89,5 +92,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Completed 06-02-PLAN.md -- Phase 6 complete
+Stopped at: Completed 06-01-PLAN.md (re-executed) -- Phase 6 fully complete
 Resume: `/gsd:plan-phase 7` or `/gsd:discuss-phase 7` for persistent player
