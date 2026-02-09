@@ -108,11 +108,11 @@ Plans:
   2. Visitor can filter the track listing by genre tags (ambient, techno, modular, etc.) and combine with type filters
   3. Track play counts increment when a track is played (debounced, anonymous) and display on both listing and detail pages
   4. Sharing a track URL on social platforms (Discord, Twitter, etc.) shows a rich preview with title, description, and cover art via Open Graph tags
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 06-01: Content type and tag filtering UI with query parameter state
-- [ ] 06-02: Play count tracking API and Open Graph meta tags
+- [ ] 06-01-PLAN.md -- Content type and tag filtering UI with query parameter state
+- [ ] 06-02-PLAN.md -- Play count tracking API and Open Graph meta tags
 
 ### Phase 7: Persistent Player and Queue
 **Goal**: Audio playback continues uninterrupted as visitors navigate between pages, with automatic progression through tracks
@@ -139,6 +139,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 2. Processing Pipeline | 2/2 | Complete | 2026-02-08 |
 | 3. Waveform Player | 2/2 | Complete | 2026-02-08 |
 | 4. Track Pages | 2/2 | Complete | 2026-02-08 |
-| 5. Admin Interface | 0/2 | Not started | - |
+| 5. Admin Interface | 2/2 | Complete | 2026-02-09 |
 | 6. Discovery and Engagement | 0/2 | Not started | - |
 | 7. Persistent Player and Queue | 0/2 | Not started | - |
