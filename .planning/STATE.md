@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-07)
 
 **Core value:** Visitors can discover and listen to wallybrain's music through an immersive, visually engaging waveform player
-**Current focus:** Phase 5 COMPLETE -- Phase 6 (Discovery and Engagement) ready to plan
+**Current focus:** Phase 6 COMPLETE -- Phase 7 (Persistent Player) ready to plan
 
 ## Current Position
 
 Phase: 6 of 7 (Discovery and Engagement)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-02-09 -- Phase 5 approved after human-verify checkpoint, UX fixes committed
+Plan: 2 of 2 in current phase (COMPLETE)
+Status: Phase 6 complete
+Last activity: 2026-02-09 -- Phase 6 Plan 2 executed (play counts + social sharing)
 
-Progress: [██████████░░░] ~71%
+Progress: [███████████░░] ~86%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 12
 - Average duration: ~7m
-- Total execution time: ~1.4 hours
+- Total execution time: ~1.5 hours
 
 **By Phase:**
 
@@ -32,10 +32,11 @@ Progress: [██████████░░░] ~71%
 | 3 - Waveform Player | 2/2 | ~10m | ~5m |
 | 4 - Track Pages | 2/2 | ~9m | ~4.5m |
 | 5 - Admin Interface | 2/2 | ~20m | ~10m |
+| 6 - Discovery & Engagement | 2/2 | ~6m | ~3m |
 
 **Recent Trend:**
-- Last 5 plans: 04-01 (3m), 04-02 (6m), 05-01 (5m), 05-02 (15m incl checkpoint)
-- Trend: Consistently fast execution; human-verify checkpoints add valuable iteration time
+- Last 5 plans: 04-02 (6m), 05-01 (5m), 05-02 (15m incl checkpoint), 06-01 (~3m), 06-02 (3m)
+- Trend: Consistently fast execution; Phase 6 plans were lightweight feature additions
 
 *Updated after each plan completion*
 
@@ -72,6 +73,9 @@ Recent decisions affecting current work:
 - [05-02]: Save action uses PRG pattern (redirect 303 to admin list) instead of inline success message
 - [05-02]: Public track page checks authelia_session cookie for conditional admin edit link (UX hint, not security)
 - [05-02]: Tags displayed as badges on public track detail page
+- [06-02]: Fire-and-forget fetch for play count (no await, no blocking playback)
+- [06-02]: hasCountedPlay flag resets on component unmount (each page visit can count once)
+- [06-02]: Absolute URLs hardcoded with wallyblanchard.com domain for OG tags (not relative {base})
 
 ### Pending Todos
 
@@ -85,5 +89,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-09
-Stopped at: Phase 5 complete, Phase 6 ready to plan
-Resume: `/gsd:plan-phase 6` or `/gsd:discuss-phase 6` to gather context first
+Stopped at: Completed 06-02-PLAN.md -- Phase 6 complete
+Resume: `/gsd:plan-phase 7` or `/gsd:discuss-phase 7` for persistent player
