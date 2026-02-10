@@ -21,3 +21,25 @@
 
 ---
 
+
+## v1.1 Visual Polish (Shipped: 2026-02-10)
+
+**Phases completed:** 4 phases (8-11), 7 plans
+**Timeline:** 1 day (2026-02-09 → 2026-02-10)
+**Execution time:** ~23 minutes total
+**Codebase:** ~2,472 LOC (Svelte/TypeScript), +3,240 lines added
+
+**Delivered:** Transformed the generic Tailwind template look into a visually distinctive music platform with custom typography, OKLCH design tokens, per-track color theming, animations, and layout flexibility.
+
+**Key accomplishments:**
+- OKLCH design token system with semantic naming and WCAG AA contrast (4.5:1+) replacing all hardcoded colors
+- Custom typography — Space Grotesk for headings, Space Mono for timestamps/durations across all pages
+- Visual atmosphere — waveform gradients, glassmorphism player bar, radial backgrounds, skeleton loading states
+- Per-track dominant color extraction with ambient tint overlays, cover art glow, and equalizer animation indicator
+- Smooth View Transitions API page navigation (150ms crossfade) with persistent player bar isolation
+- Grid/list layout toggle with persistent preference, polished grid cards, and cover art hover zoom
+
+**Stack additions:** @fontsource-variable/space-grotesk, @fontsource/space-mono, sharp (color extraction)
+
+---
+
