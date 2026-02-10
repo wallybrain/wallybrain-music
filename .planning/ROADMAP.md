@@ -93,10 +93,11 @@ Plans:
   1. Track listing offers a grid/list layout toggle that persists across page loads, with both views looking polished and responsive
   2. Navigating between pages uses smooth transitions (fade, slide, or cross-fade) instead of hard page swaps
   3. Hovering over cover art on track cards triggers a subtle zoom effect within the card boundary (no overflow)
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 11-01: TBD
+- [ ] 11-01-PLAN.md -- View transitions and cover art hover zoom
+- [ ] 11-02-PLAN.md -- Grid/list layout toggle with persistent preference
 
 ## Progress
 
@@ -116,4 +117,4 @@ Phases execute in numeric order: 8 -> 9 -> 10 -> 11
 | 8. Design Foundation | v1.1 | 2/2 | Complete | 2026-02-10 |
 | 9. Visual Richness | v1.1 | 1/1 | Complete | 2026-02-10 |
 | 10. Signature Identity | v1.1 | 2/2 | Complete | 2026-02-10 |
-| 11. Refinement | v1.1 | 0/TBD | Not started | - |
+| 11. Refinement | v1.1 | 0/2 | Not started | - |
