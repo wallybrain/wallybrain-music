@@ -33,7 +33,7 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 - [x] **Phase 8: Design Foundation** - Custom typography, OKLCH design tokens, contrast fixes, typographic hierarchy ✅ 2026-02-10
 - [x] **Phase 9: Visual Richness** - Waveform gradients, cover art depth, hover interactions, glassmorphism, background atmosphere, skeleton loading ✅ 2026-02-10
 - [x] **Phase 10: Signature Identity** - Dominant color extraction, ambient glow, equalizer animation, staggered entrance ✅ 2026-02-10
-- [ ] **Phase 11: Refinement** - Grid/list toggle, page transitions, cover art hover zoom
+- [x] **Phase 11: Refinement** - Grid/list toggle, page transitions, cover art hover zoom ✅ 2026-02-10
 
 ## Phase Details
 
@@ -96,8 +96,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 11-01-PLAN.md -- View transitions and cover art hover zoom
-- [ ] 11-02-PLAN.md -- Grid/list layout toggle with persistent preference
+- [x] 11-01-PLAN.md -- View transitions and cover art hover zoom ✅
+- [x] 11-02-PLAN.md -- Grid/list layout toggle with persistent preference ✅
 
 ## Progress
 
@@ -117,4 +117,4 @@ Phases execute in numeric order: 8 -> 9 -> 10 -> 11
 | 8. Design Foundation | v1.1 | 2/2 | Complete | 2026-02-10 |
 | 9. Visual Richness | v1.1 | 1/1 | Complete | 2026-02-10 |
 | 10. Signature Identity | v1.1 | 2/2 | Complete | 2026-02-10 |
-| 11. Refinement | v1.1 | 0/2 | Not started | - |
+| 11. Refinement | v1.1 | 2/2 | Complete | 2026-02-10 |
