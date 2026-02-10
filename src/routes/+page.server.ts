@@ -33,6 +33,7 @@ export const load: PageServerLoad = async ({ url }) => {
       artPath: tracks.artPath,
       playCount: tracks.playCount,
       category: tracks.category,
+      dominantColor: tracks.dominantColor,
       createdAt: tracks.createdAt,
     })
     .from(tracks)
