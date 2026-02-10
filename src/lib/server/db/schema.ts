@@ -13,6 +13,7 @@ export const tracks = sqliteTable('tracks', {
   audioPath: text('audio_path').notNull(),
   peaksPath: text('peaks_path'),
   artPath: text('art_path'),
+  dominantColor: text('dominant_color'),
   artThumb: text('art_thumb'),
   errorMessage: text('error_message'),
   category: text('category', {

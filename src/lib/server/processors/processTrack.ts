@@ -5,7 +5,7 @@ import { validateWithFFprobe } from '$lib/server/validators/ffprobe';
 import { transcodeAudio } from '$lib/server/processors/transcode';
 import { generatePeaks } from '$lib/server/processors/peaks';
 import { extractMetadata } from '$lib/server/processors/metadata';
-import { extractAndResizeArt } from '$lib/server/processors/artwork';
+import { extractAndResizeArt, extractDominantColor } from '$lib/server/processors/artwork';
 import { mkdirSync, existsSync } from 'node:fs';
 
 export async function processTrack(trackId: string): Promise<void> {
@@ -41,10 +41,12 @@ export async function processTrack(trackId: string): Promise<void> {
 		const metadata = await extractMetadata(track.audioPath);
 
 		let artSucceeded = false;
+		let dominantColor: string | null = null;
 		if (metadata.coverArt) {
 			try {
 				await extractAndResizeArt(metadata.coverArt, artPath);
 				artSucceeded = true;
+				dominantColor = await extractDominantColor(artPath);
 			} catch (err) {
 				console.error(`Cover art extraction failed for track ${trackId}:`, err);
 			}
@@ -59,6 +61,7 @@ export async function processTrack(trackId: string): Promise<void> {
 				bitrate: 320000,
 				title: metadata.title || track.title,
 				...(artSucceeded ? { artPath } : {}),
+				...(dominantColor ? { dominantColor } : {}),
 				updatedAt: new Date().toISOString()
 			})
 			.where(eq(tracks.id, trackId))

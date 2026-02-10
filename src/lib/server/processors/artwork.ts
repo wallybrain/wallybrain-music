@@ -14,3 +14,10 @@ export async function extractAndResizeArt(
 		throw new Error(`Cover art processing failed: ${message}`);
 	}
 }
+
+export async function extractDominantColor(imagePath: string): Promise<string> {
+	const { dominant } = await sharp(imagePath).stats();
+	const { r, g, b } = dominant;
+	const hex = (n: number) => n.toString(16).padStart(2, '0');
+	return `#${hex(r)}${hex(g)}${hex(b)}`;
+}
