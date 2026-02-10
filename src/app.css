@@ -1,10 +1,79 @@
 @import "tailwindcss";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource/space-mono";
+
+@theme {
+  /* === Typography === */
+  --font-heading: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* === Surface Colors (backgrounds) === */
+  --color-surface-base: oklch(0.145 0.005 286);
+  --color-surface-raised: oklch(0.21 0.006 286);
+  --color-surface-overlay: oklch(0.274 0.006 286);
+  --color-surface-hover: oklch(0.335 0.008 286);
+
+  /* === Text Colors === */
+  --color-text-primary: oklch(0.985 0 0);
+  --color-text-secondary: oklch(0.871 0.006 286);
+  --color-text-tertiary: oklch(0.705 0.015 286);
+  --color-text-muted: oklch(0.60 0.012 286);
+
+  /* === Accent Colors (interactive) === */
+  --color-accent: oklch(0.585 0.233 293);
+  --color-accent-hover: oklch(0.65 0.22 293);
+  --color-accent-muted: oklch(0.716 0.175 293);
+  --color-accent-muted-hover: oklch(0.78 0.15 293);
+
+  /* === Border Colors === */
+  --color-border-default: oklch(0.335 0.008 286);
+  --color-border-subtle: oklch(0.274 0.006 286);
+
+  /* === Status Colors (admin) === */
+  --color-status-success: oklch(0.765 0.177 163);
+  --color-status-warning: oklch(0.774 0.154 85);
+  --color-status-error: oklch(0.704 0.191 22);
+
+  /* === Waveform Colors (for JS config) === */
+  --color-waveform-idle: oklch(0.40 0.01 286);
+  --color-waveform-progress-start: oklch(0.585 0.233 293);
+  --color-waveform-progress-end: oklch(0.65 0.22 293);
+  --color-waveform-cursor: oklch(0.585 0.233 293);
+
+  /* === Equalizer Animation === */
+  --animate-eq1: eq1 1.2s ease-in-out infinite;
+  --animate-eq2: eq2 1.4s ease-in-out infinite;
+  --animate-eq3: eq3 1.0s ease-in-out infinite;
+}
+
+@keyframes eq1 {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+@keyframes eq2 {
+  0%, 100% { transform: scaleY(0.5); }
+  30% { transform: scaleY(0.2); }
+  70% { transform: scaleY(1); }
+}
+@keyframes eq3 {
+  0%, 100% { transform: scaleY(0.6); }
+  40% { transform: scaleY(0.3); }
+  80% { transform: scaleY(0.8); }
+}
 
 @layer base {
   html {
-    background-color: var(--color-zinc-950);
-    color: var(--color-zinc-200);
+    background: radial-gradient(ellipse at top, oklch(0.18 0.008 286) 0%, var(--color-surface-base) 60%);
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
     scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--color-text-primary);
   }
 }
 
@@ -13,14 +82,14 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-zinc-900);
+  background: var(--color-surface-raised);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-zinc-700);
+  background: var(--color-border-default);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-zinc-600);
+  background: var(--color-text-muted);
 }
