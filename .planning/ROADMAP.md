@@ -30,8 +30,8 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 - Integer phases (8, 9, 10, 11): Planned milestone work
 - Decimal phases (8.1, 9.1): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 8: Design Foundation** - Custom typography, OKLCH design tokens, contrast fixes, typographic hierarchy
-- [ ] **Phase 9: Visual Richness** - Waveform gradients, cover art depth, hover interactions, glassmorphism, background atmosphere, skeleton loading
+- [x] **Phase 8: Design Foundation** - Custom typography, OKLCH design tokens, contrast fixes, typographic hierarchy ✅ 2026-02-10
+- [x] **Phase 9: Visual Richness** - Waveform gradients, cover art depth, hover interactions, glassmorphism, background atmosphere, skeleton loading ✅ 2026-02-10
 - [ ] **Phase 10: Signature Identity** - Dominant color extraction, ambient glow, equalizer animation, staggered entrance
 - [ ] **Phase 11: Refinement** - Grid/list toggle, page transitions, cover art hover zoom
 
@@ -49,8 +49,8 @@ Full details: `.planning/milestones/v1.0-ROADMAP.md`
 **Plans:** 2 plans
 
 Plans:
-- [ ] 08-01-PLAN.md -- Design token system, font installation, and public page migration
-- [ ] 08-02-PLAN.md -- Waveform player, track detail, and admin page migration + visual verification
+- [x] 08-01-PLAN.md -- Design token system, font installation, and public page migration ✅
+- [x] 08-02-PLAN.md -- Waveform player, track detail, and admin page migration + visual verification ✅
 
 ### Phase 9: Visual Richness
 **Goal**: The site feels immersive and designed -- depth, motion, and texture replace flat, static elements
@@ -79,11 +79,11 @@ Plans:
   2. The currently-playing track shows an animated equalizer bar indicator that distinguishes it from other tracks at a glance
   3. When the track listing loads, tracks appear with a staggered entrance animation (not all at once), creating a polished reveal effect
   4. On the track detail page, cover art has an ambient glow effect matching the extracted dominant color, creating visual depth around the artwork
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 10-01: TBD
-- [ ] 10-02: TBD
+- [ ] 10-01-PLAN.md -- Schema, color extraction pipeline, backfill, color utilities, EqIndicator component
+- [ ] 10-02-PLAN.md -- Ambient tint, cover art glow, equalizer indicator, staggered entrance animations
 
 ### Phase 11: Refinement
 **Goal**: Layout flexibility and navigation polish complete the visual experience
@@ -113,7 +113,7 @@ Phases execute in numeric order: 8 -> 9 -> 10 -> 11
 | 5. Admin Interface | v1.0 | 2/2 | Complete | 2026-02-09 |
 | 6. Discovery & Engagement | v1.0 | 2/2 | Complete | 2026-02-09 |
 | 7. Persistent Player & Queue | v1.0 | 2/2 | Complete | 2026-02-09 |
-| 8. Design Foundation | v1.1 | 0/2 | Planning | - |
-| 9. Visual Richness | v1.1 | 0/TBD | Not started | - |
-| 10. Signature Identity | v1.1 | 0/TBD | Not started | - |
+| 8. Design Foundation | v1.1 | 2/2 | Complete | 2026-02-10 |
+| 9. Visual Richness | v1.1 | 1/1 | Complete | 2026-02-10 |
+| 10. Signature Identity | v1.1 | 0/2 | Not started | - |
 | 11. Refinement | v1.1 | 0/TBD | Not started | - |
