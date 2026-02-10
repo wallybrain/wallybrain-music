@@ -26,18 +26,24 @@
     md: 'text-2xl',
     lg: 'text-4xl',
   };
+
+  let enableZoom = $derived(size === 'sm');
 </script>
 
 {#if artPath}
-  <img
-    src="{base}/api/tracks/{trackId}/art"
-    alt="Cover art for {title}"
-    class="{sizeClasses[size]} rounded-lg object-cover shadow-lg shadow-black/40"
+  <div
+    class="{sizeClasses[size]} rounded-lg overflow-hidden shrink-0 {size === 'lg' ? '' : 'shadow-lg shadow-black/40'}"
     style={glowStyle}
-    loading="lazy"
-  />
+  >
+    <img
+      src="{base}/api/tracks/{trackId}/art"
+      alt="Cover art for {title}"
+      class="w-full h-full object-cover {enableZoom ? 'transition-transform duration-300 group-hover:scale-110' : ''}"
+      loading="lazy"
+    />
+  </div>
 {:else}
-  <div class="{sizeClasses[size]} rounded-lg bg-surface-overlay shadow-lg shadow-black/40 flex items-center justify-center">
+  <div class="{sizeClasses[size]} rounded-lg bg-surface-overlay shadow-lg shadow-black/40 shrink-0 flex items-center justify-center">
     <span class="text-text-muted {placeholderTextSize[size]}">&#9835;</span>
   </div>
 {/if}
