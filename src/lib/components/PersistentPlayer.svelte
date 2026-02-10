@@ -15,11 +15,16 @@
 		const init = async () => {
 			const { default: WaveSurfer } = await import('wavesurfer.js');
 
+			const styles = getComputedStyle(document.documentElement);
+			const waveColor = styles.getPropertyValue('--color-waveform-idle').trim();
+			const progressStart = styles.getPropertyValue('--color-waveform-progress-start').trim();
+			const progressEnd = styles.getPropertyValue('--color-waveform-progress-end').trim();
+
 			ws = WaveSurfer.create({
 				container,
 				height: 40,
-				waveColor: '#4a4a5a',
-				progressColor: '#8b5cf6',
+				waveColor: waveColor || '#4a4a5a',
+				progressColor: progressStart ? [progressStart, progressEnd || progressStart] : '#8b5cf6',
 				cursorColor: 'transparent',
 				barWidth: 2,
 				barGap: 1,
@@ -85,7 +90,7 @@
 	});
 </script>
 
-<div class="fixed bottom-0 left-0 right-0 bg-zinc-900/95 backdrop-blur border-t border-zinc-800 z-50">
+<div class="fixed bottom-0 left-0 right-0 bg-surface-raised/90 backdrop-blur-lg border-t border-accent/15 shadow-[0_-4px_16px_rgba(0,0,0,0.4)] z-50" style="view-transition-name: player-bar;">
 	<div class="max-w-3xl mx-auto px-4 py-2 flex items-center gap-3">
 		{#if playerState.currentTrack}
 			<a href="{base}/track/{playerState.currentTrack.slug}" class="shrink-0">
@@ -96,15 +101,15 @@
 						class="w-10 h-10 rounded object-cover"
 					/>
 				{:else}
-					<div class="w-10 h-10 rounded bg-zinc-800 flex items-center justify-center">
-						<span class="text-zinc-600 text-sm">&#9835;</span>
+					<div class="w-10 h-10 rounded bg-surface-overlay flex items-center justify-center">
+						<span class="text-text-muted text-sm">&#9835;</span>
 					</div>
 				{/if}
 			</a>
 
 			<div class="min-w-0 shrink-0 w-28">
-				<p class="text-sm text-zinc-200 truncate">{playerState.currentTrack.title}</p>
-				<p class="text-xs text-zinc-500 font-mono tabular-nums">
+				<p class="text-sm text-text-secondary truncate">{playerState.currentTrack.title}</p>
+				<p class="text-xs text-text-muted font-mono tabular-nums">
 					{formatTime(playerState.currentTime)} / {formatTime(playerState.currentTrack.duration)}
 				</p>
 			</div>
@@ -114,20 +119,20 @@
 			<button
 				onclick={() => playerState.prev()}
 				disabled={!playerState.hasPrev}
-				class="px-2 py-1 rounded text-xs text-zinc-400 hover:text-white bg-zinc-700 hover:bg-zinc-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+				class="px-2 py-1 rounded text-xs text-text-tertiary hover:text-text-primary bg-surface-hover hover:bg-surface-hover disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
 			>
 				&laquo;
 			</button>
 			<button
 				onclick={() => playerState.togglePlayPause()}
-				class="px-3 py-1 rounded text-xs text-white bg-violet-600 hover:bg-violet-500 transition-colors"
+				class="px-3 py-1 rounded text-xs text-text-primary bg-accent hover:bg-accent-hover transition-colors"
 			>
 				{playerState.isPlaying ? 'Pause' : 'Play'}
 			</button>
 			<button
 				onclick={() => playerState.next()}
 				disabled={!playerState.hasNext}
-				class="px-2 py-1 rounded text-xs text-zinc-400 hover:text-white bg-zinc-700 hover:bg-zinc-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+				class="px-2 py-1 rounded text-xs text-text-tertiary hover:text-text-primary bg-surface-hover hover:bg-surface-hover disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
 			>
 				&raquo;
 			</button>
@@ -136,7 +141,7 @@
 		<div bind:this={container} class="flex-1 min-w-0 hidden md:block"></div>
 
 		<div class="hidden md:flex items-center gap-1 shrink-0">
-			<span class="text-xs text-zinc-500">Vol</span>
+			<span class="text-xs text-text-muted">Vol</span>
 			<input
 				type="range"
 				min="0"
@@ -146,7 +151,7 @@
 				oninput={(e: Event) => {
 					playerState.setVolume(parseFloat((e.currentTarget as HTMLInputElement).value));
 				}}
-				class="w-16 accent-violet-500"
+				class="w-16 accent-accent"
 			/>
 		</div>
 	</div>
