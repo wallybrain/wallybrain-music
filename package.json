@@ -10,6 +10,8 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
+    "@fontsource-variable/space-grotesk": "^5.2.10",
+    "@fontsource/space-mono": "^5.2.9",
     "@sveltejs/adapter-node": "^5.5.2",
     "@sveltejs/kit": "^2.50.2",
     "better-sqlite3": "^12.6.2",

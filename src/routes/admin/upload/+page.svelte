@@ -13,8 +13,8 @@
   let fileInput: HTMLInputElement;
 
   const statusColors: Record<string, string> = {
-    uploading: 'bg-violet-500/20 text-violet-400',
-    pending: 'bg-zinc-700/50 text-zinc-400',
+    uploading: 'bg-accent/20 text-accent-muted',
+    pending: 'bg-surface-hover/50 text-text-tertiary',
     processing: 'bg-amber-500/20 text-amber-400',
     ready: 'bg-emerald-500/20 text-emerald-400',
     failed: 'bg-red-500/20 text-red-400',
@@ -111,8 +111,8 @@
   <title>Upload - wallybrain admin</title>
 </svelte:head>
 
-<h1 class="text-2xl font-bold text-white mb-1">Upload Tracks</h1>
-<p class="text-zinc-500 text-sm mb-6">Supports MP3, WAV, FLAC, OGG, and AIFF files</p>
+<h1 class="text-2xl font-bold text-text-primary mb-1">Upload Tracks</h1>
+<p class="text-text-muted text-sm mb-6">Supports MP3, WAV, FLAC, OGG, and AIFF files</p>
 
 <div
   role="button"
@@ -121,13 +121,13 @@
   ondragover={handleDragOver}
   ondragleave={handleDragLeave}
   class="border-2 border-dashed rounded-lg p-12 text-center transition-colors {isDragging
-    ? 'border-violet-500 bg-violet-500/10'
-    : 'border-zinc-700 hover:border-zinc-500'}"
+    ? 'border-accent bg-accent/10'
+    : 'border-border-default hover:border-text-muted'}"
 >
-  <p class="text-zinc-400 mb-3">Drag audio files here or</p>
+  <p class="text-text-tertiary mb-3">Drag audio files here or</p>
   <button
     onclick={() => fileInput.click()}
-    class="bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+    class="bg-surface-hover hover:bg-surface-hover text-text-secondary px-4 py-2 rounded-lg text-sm font-medium transition-colors"
   >
     Browse files
   </button>
@@ -144,16 +144,16 @@
 {#if uploads.length > 0}
   <div class="mt-8 space-y-3">
     {#each uploads as upload, i (i)}
-      <div class="flex items-center gap-3 p-3 rounded-lg bg-zinc-900/50">
+      <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-raised">
         <div class="flex-1 min-w-0">
-          <p class="text-zinc-200 text-sm font-medium truncate">{upload.file.name}</p>
+          <p class="text-text-secondary text-sm font-medium truncate">{upload.file.name}</p>
           {#if upload.status === 'failed' && upload.error}
             <p class="text-xs text-red-400/70 mt-0.5">{upload.error}</p>
           {/if}
           {#if upload.status === 'ready' && upload.trackId}
             <a
               href="{base}/admin/tracks/{upload.trackId}"
-              class="text-xs text-violet-400 hover:text-violet-300 transition-colors mt-0.5 inline-block"
+              class="text-xs text-accent-muted hover:text-accent-muted-hover transition-colors mt-0.5 inline-block"
             >
               Edit metadata
             </a>

@@ -12,24 +12,24 @@
   const statusColors: Record<string, string> = {
     ready: 'bg-emerald-500/20 text-emerald-400',
     processing: 'bg-amber-500/20 text-amber-400',
-    pending: 'bg-zinc-700/50 text-zinc-400',
+    pending: 'bg-surface-hover/50 text-text-tertiary',
     failed: 'bg-red-500/20 text-red-400',
   };
 
-  const inputClasses = 'w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 focus:border-violet-500 focus:outline-none';
+  const inputClasses = 'w-full bg-surface-overlay border border-border-default rounded-lg px-3 py-2 text-text-secondary focus:border-accent focus:outline-none';
 </script>
 
 <svelte:head>
   <title>Edit: {track.title} - wallybrain admin</title>
 </svelte:head>
 
-<a href="{base}/admin" class="text-zinc-500 hover:text-zinc-300 text-sm mb-6 inline-block transition-colors">
+<a href="{base}/admin" class="text-text-muted hover:text-text-secondary text-sm mb-6 inline-block transition-colors">
   &larr; Back to tracks
 </a>
 
 <div class="flex items-center gap-3 mb-6">
-  <h1 class="text-xl font-bold text-white">{track.title}</h1>
-  <span class="px-2 py-0.5 rounded text-xs font-medium {statusColors[track.status] || 'text-zinc-400'}">
+  <h1 class="text-xl font-bold text-text-primary">{track.title}</h1>
+  <span class="px-2 py-0.5 rounded text-xs font-medium {statusColors[track.status] || 'text-text-tertiary'}">
     {track.status}
   </span>
 </div>
@@ -41,7 +41,7 @@
 
   <div class="space-y-5">
     <div class="space-y-1">
-      <label for="title" class="text-sm text-zinc-400">Title</label>
+      <label for="title" class="text-sm text-text-tertiary">Title</label>
       <input
         type="text"
         id="title"
@@ -53,7 +53,7 @@
     </div>
 
     <div class="space-y-1">
-      <label for="slug" class="text-sm text-zinc-400">Slug</label>
+      <label for="slug" class="text-sm text-text-tertiary">Slug</label>
       <input
         type="text"
         id="slug"
@@ -62,11 +62,11 @@
         required
         class={inputClasses}
       />
-      <p class="text-xs text-zinc-600">URL: /music/track/{track.slug}</p>
+      <p class="text-xs text-text-muted">URL: /music/track/{track.slug}</p>
     </div>
 
     <div class="space-y-1">
-      <label for="description" class="text-sm text-zinc-400">Description</label>
+      <label for="description" class="text-sm text-text-tertiary">Description</label>
       <textarea
         id="description"
         name="description"
@@ -76,7 +76,7 @@
     </div>
 
     <div class="space-y-1">
-      <label for="category" class="text-sm text-zinc-400">Category</label>
+      <label for="category" class="text-sm text-text-tertiary">Category</label>
       <select id="category" name="category" class={inputClasses}>
         <option value="track" selected={track.category === 'track'}>track</option>
         <option value="set" selected={track.category === 'set'}>set</option>
@@ -86,7 +86,7 @@
     </div>
 
     <div class="space-y-1">
-      <label for="tags" class="text-sm text-zinc-400">Tags</label>
+      <label for="tags" class="text-sm text-text-tertiary">Tags</label>
       <input
         type="text"
         id="tags"
@@ -94,25 +94,25 @@
         value={tagString}
         class={inputClasses}
       />
-      <p class="text-xs text-zinc-600">Comma-separated, e.g.: ambient, techno, modular</p>
+      <p class="text-xs text-text-muted">Comma-separated, e.g.: ambient, techno, modular</p>
     </div>
 
     <div class="space-y-2">
-      <label for="coverArt" class="text-sm text-zinc-400">Cover Art</label>
+      <label for="coverArt" class="text-sm text-text-tertiary">Cover Art</label>
       <CoverArt trackId={track.id} artPath={track.artPath} title={track.title} size="md" />
       <input
         type="file"
         id="coverArt"
         name="coverArt"
         accept="image/*"
-        class="text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-zinc-800 file:text-zinc-300 hover:file:bg-zinc-700"
+        class="text-sm text-text-tertiary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-surface-overlay file:text-text-secondary hover:file:bg-surface-hover"
       />
     </div>
 
     <div class="mt-6 flex justify-end">
       <button
         type="submit"
-        class="bg-violet-600 hover:bg-violet-500 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+        class="bg-accent hover:bg-accent-hover text-text-primary px-6 py-2 rounded-lg font-medium transition-colors"
       >
         Save Changes
       </button>
@@ -122,7 +122,7 @@
 
 {#if track.slug && track.status === 'ready'}
   <div class="mt-6">
-    <a href="{base}/track/{track.slug}" class="text-violet-400 hover:text-violet-300 text-sm transition-colors">
+    <a href="{base}/track/{track.slug}" class="text-accent-muted hover:text-accent-muted-hover text-sm transition-colors">
       View public page &rarr;
     </a>
   </div>

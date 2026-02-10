@@ -39,11 +39,17 @@
 				return;
 			}
 
+			const styles = getComputedStyle(document.documentElement);
+			const waveColor = styles.getPropertyValue('--color-waveform-idle').trim();
+			const progressStart = styles.getPropertyValue('--color-waveform-progress-start').trim();
+			const progressEnd = styles.getPropertyValue('--color-waveform-progress-end').trim();
+			const cursorColor = styles.getPropertyValue('--color-waveform-cursor').trim();
+
 			ws = WaveSurfer.create({
 				container,
-				waveColor: '#4a4a5a',
-				progressColor: '#8b5cf6',
-				cursorColor: '#8b5cf6',
+				waveColor: waveColor || '#4a4a5a',
+				progressColor: progressStart ? [progressStart, progressEnd || progressStart] : '#8b5cf6',
+				cursorColor: cursorColor || '#8b5cf6',
 				cursorWidth: 2,
 				height: 80,
 				barWidth: 2,
@@ -83,8 +89,13 @@
 
 <div class="waveform-player">
 	{#if isLoading && !loadError}
-		<div class="flex items-center justify-center h-20 text-zinc-500">
-			<span>Loading waveform...</span>
+		<div class="h-20 rounded overflow-hidden flex items-end justify-around gap-px px-1">
+			{#each { length: 48 } as _, i}
+				<div
+					class="w-0.5 bg-surface-overlay rounded-full animate-pulse"
+					style="height: {20 + Math.sin(i * 0.5) * 30 + Math.sin(i * 0.3) * 20}%"
+				></div>
+			{/each}
 		</div>
 	{/if}
 
@@ -100,19 +111,19 @@
 		<button
 			onclick={() => wavesurfer?.playPause()}
 			disabled={isLoading || loadError}
-			class="px-4 py-1.5 rounded bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors"
+			class="px-4 py-1.5 rounded bg-accent hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed text-text-primary text-sm font-medium transition-colors"
 		>
 			{isPlaying ? 'Pause' : 'Play'}
 		</button>
 
-		<span class="text-sm text-zinc-400 font-mono tabular-nums">
+		<span class="text-sm text-text-tertiary font-mono tabular-nums">
 			{formatTime(currentTime)} / {formatTime(duration)}
 		</span>
 
 		<div class="flex-1"></div>
 
 		<div class="flex items-center gap-2">
-			<span class="text-xs text-zinc-500">Vol</span>
+			<span class="text-xs text-text-muted">Vol</span>
 			<input
 				type="range"
 				min="0"
@@ -123,7 +134,7 @@
 					volume = parseFloat((e.currentTarget as HTMLInputElement).value);
 					wavesurfer?.setVolume(volume);
 				}}
-				class="w-20 accent-violet-500"
+				class="w-20 accent-accent"
 			/>
 		</div>
 	</div>

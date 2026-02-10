@@ -54,8 +54,8 @@
         value={cat.value ?? ''}
         onclick={(e) => { e.preventDefault(); selectCategory(cat.value); }}
         class="px-3 py-1.5 text-sm rounded-full transition-colors {activeCategory === cat.value
-          ? 'bg-violet-600 text-white'
-          : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-300'}"
+          ? 'bg-accent text-text-primary'
+          : 'bg-surface-overlay text-text-tertiary hover:bg-surface-hover hover:text-text-secondary'}"
       >
         {cat.label}
       </button>
@@ -71,8 +71,8 @@
           value={tag}
           onclick={(e) => { e.preventDefault(); toggleTag(tag); }}
           class="px-2.5 py-1 text-xs rounded-full transition-colors {activeTags.includes(tag)
-            ? 'bg-violet-600 text-white'
-            : 'bg-zinc-800/70 text-zinc-500 hover:bg-zinc-700 hover:text-zinc-400'}"
+            ? 'bg-accent text-text-primary'
+            : 'bg-surface-overlay/70 text-text-muted hover:bg-surface-hover hover:text-text-tertiary'}"
         >
           {tag}
         </button>
@@ -85,12 +85,12 @@
       <button
         type="button"
         onclick={() => clearAll()}
-        class="text-xs text-zinc-500 hover:text-zinc-300 transition-colors underline underline-offset-2"
+        class="text-xs text-text-muted hover:text-text-secondary transition-colors underline underline-offset-2"
       >
         Clear all filters
       </button>
     </div>
   {/if}
 
-  <noscript><button type="submit" class="px-3 py-1.5 text-sm bg-violet-600 text-white rounded">Filter</button></noscript>
+  <noscript><button type="submit" class="px-3 py-1.5 text-sm bg-accent text-text-primary rounded">Filter</button></noscript>
 </form>
