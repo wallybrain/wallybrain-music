@@ -57,7 +57,7 @@
   <div class="relative aspect-square overflow-hidden">
     {#if track.artPath}
       <img
-        src="{base}{track.artPath}"
+        src="{base}/api/tracks/{track.id}/art"
         alt={track.title}
         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
         loading="lazy"
