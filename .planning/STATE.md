@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 
 ## Current Position
 
-Phase: 11 of 11 (Refinement) -- IN PROGRESS
-Plan: 2 of 2 in current phase (done)
-Status: Phase 11 plan 02 complete (grid/list layout toggle)
-Last activity: 2026-02-10 -- Completed 11-02 (grid/list layout toggle with persistent preference)
+Phase: 11 of 11 (Refinement) -- COMPLETE
+Plan: 2 of 2 in current phase (all done)
+Status: Phase 11 complete -- v1.1 Visual Polish milestone finished
+Last activity: 2026-02-10 -- Completed 11-01 (view transitions + cover art hover zoom)
 
-Progress: [##########] 95%
+Progress: [##########] 100%
 
 ## Performance Metrics
 
@@ -56,6 +56,9 @@ Recent decisions affecting current work:
 - [10-02]: Hex+alpha suffix for box-shadow glow (avoids OKLCH browser edge cases)
 - [10-02]: Stagger animation capped at 600ms max delay
 - [10-02]: Ambient tint div as sibling with -z-10 (safe for waveform drag-to-seek)
+- [11-01]: Player bar isolated via view-transition-name CSS (not JS exclusion)
+- [11-01]: Cover art hover zoom restricted to sm size only -- lg excluded for waveform safety
+- [11-01]: No TS type assertion needed for startViewTransition (TS 5.9.3 native types)
 - [11-02]: Grid card uses aspect-square for cover art (consistent thumbnails regardless of source ratio)
 - [11-02]: No staggered entrance on grid view (grid layout provides visual structure; stagger for list only)
 - [11-02]: Inline SVG icons for toggle (zero dependencies, tiny payload)
@@ -73,5 +76,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 11-02-PLAN.md (grid/list layout toggle)
+Stopped at: Completed 11-01-PLAN.md (view transitions + cover art hover zoom) -- Phase 11 and v1.1 milestone complete
 Resume file: None
