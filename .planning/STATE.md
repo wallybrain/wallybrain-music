@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-09)
 
 ## Current Position
 
-Phase: 10 of 11 (Signature Identity)
-Plan: 1 of 2 in current phase
-Status: Plan 10-01 complete, ready for 10-02
-Last activity: 2026-02-10 -- Completed 10-01 (color extraction, utilities, EqIndicator)
+Phase: 10 of 11 (Signature Identity) -- COMPLETE
+Plan: 2 of 2 in current phase (done)
+Status: Phase 10 complete, ready for Phase 11
+Last activity: 2026-02-10 -- Completed 10-02 (ambient tint, glow, EqIndicator wiring, staggered animations)
 
-Progress: [########░░] 80%
+Progress: [#########░] 90%
 
 ## Performance Metrics
 
@@ -25,9 +25,9 @@ Progress: [########░░] 80%
 - Total execution time: ~1.5 hours
 
 **v1.1 Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: ~4m
-- Total execution time: ~16 minutes
+- Total execution time: ~19 minutes
 
 **By Phase:**
 
@@ -35,7 +35,7 @@ Progress: [########░░] 80%
 |-------|-------|-------|----------|
 | 8 - Design Foundation | 2 | ~8m | ~4m |
 | 9 - Visual Richness | 1 | ~4m | ~4m |
-| 10 - Signature Identity | 1 | ~4m | ~4m |
+| 10 - Signature Identity | 2 | ~7m | ~3.5m |
 
 *Updated after each plan completion*
 
@@ -52,6 +52,9 @@ Recent decisions affecting current work:
 - [10-01]: dominantColor placed after artPath in schema (logical grouping with art fields)
 - [10-01]: Used sharp stats() for color extraction (zero new deps)
 - [10-01]: EqIndicator is pure CSS via Tailwind @theme tokens (no script block)
+- [10-02]: Hex+alpha suffix for box-shadow glow (avoids OKLCH browser edge cases)
+- [10-02]: Stagger animation capped at 600ms max delay
+- [10-02]: Ambient tint div as sibling with -z-10 (safe for waveform drag-to-seek)
 
 ### Pending Todos
 
@@ -66,5 +69,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 10-01-PLAN.md (signature identity foundation)
+Stopped at: Completed 10-02-PLAN.md (signature identity frontend wiring) -- Phase 10 done
 Resume file: None
