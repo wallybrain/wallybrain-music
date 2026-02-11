@@ -1,566 +1,483 @@
-# Architecture: Design System Integration for wallybrain-music
+# Architecture: Revenue-Generating Music Platform
 
-**Domain:** Visual polish layer for an existing SvelteKit music platform
-**Researched:** 2026-02-09
-**Overall confidence:** HIGH
+**Domain:** Music marketplace / direct-to-fan sales platform
+**Researched:** 2026-02-10
+**Overall confidence:** MEDIUM-HIGH
 
-## Current Architecture Snapshot
-
-The existing codebase is a SvelteKit 2 app (Svelte 5 with runes) using Tailwind CSS v4 via the `@tailwindcss/vite` plugin. All styling is currently inline Tailwind utility classes with zero design tokens, zero CSS custom properties, and a minimal `app.css` that imports Tailwind and sets a dark base + scrollbar styles.
-
-### Existing File Map
+## Current wallybrain-music Architecture (for reference)
 
 ```
-src/
-  app.css                              # Tailwind import + dark base + scrollbar
-  routes/
-    +layout.svelte                     # Shell: header, main, PersistentPlayer
-    +page.svelte                       # Track listing with FilterBar + TrackCards
-    +error.svelte                      # Error page
-    track/[slug]/+page.svelte          # Track detail with WaveformPlayer + CoverArt
-    admin/+layout.svelte               # Admin shell
-    admin/+page.svelte                 # Admin dashboard
-    admin/upload/+page.svelte          # Upload page
-    admin/tracks/[id]/+page.svelte     # Track edit page
-  lib/
-    components/
-      TrackCard.svelte                 # Track list item (cover, title, play button)
-      WaveformPlayer.svelte            # Wavesurfer.js inline player
-      PersistentPlayer.svelte          # Fixed bottom bar player
-      CoverArt.svelte                  # Album art with size variants
-      FilterBar.svelte                 # Category + tag filter pills
-    stores/
-      playerState.svelte.ts            # Reactive player state (Svelte 5 class)
-    utils/
-      formatTime.ts                    # Duration formatting
+Single-artist, single-tenant, local everything:
+
+  Browser <--> SvelteKit (Node.js)
+                  |
+                  +-- SQLite (better-sqlite3, single file)
+                  |
+                  +-- Local filesystem (/data/audio/, /data/art/, /data/peaks/)
+                  |
+                  +-- No auth (admin routes are open)
 ```
 
-### Current Styling Patterns
-
-| Pattern | Where Used | Count |
-|---------|-----------|-------|
-| Inline Tailwind utilities | Every component | 100% of styling |
-| Hardcoded color values | WaveformPlayer (wavesurfer config) | `#4a4a5a`, `#8b5cf6` |
-| Tailwind CSS variables | app.css base layer | `var(--color-zinc-*)` |
-| Component `<style>` blocks | Nowhere | 0 uses |
-| Design tokens | Nowhere | 0 defined |
-| CSS custom properties | Nowhere (beyond Tailwind defaults) | 0 defined |
-| Svelte transitions | Nowhere | 0 uses |
-| Svelte animate directives | Nowhere | 0 uses |
-
-### Hardcoded Colors Audit
-
-These values are scattered across components and need consolidation:
-
-| Color | Hex/Class | Semantic Meaning | Used In |
-|-------|-----------|-----------------|---------|
-| `violet-600` | `#7c3aed` | Primary/accent (active state) | TrackCard, FilterBar, WaveformPlayer, PersistentPlayer |
-| `violet-500` | `#8b5cf6` | Primary hover / waveform progress | TrackCard, WaveformPlayer, PersistentPlayer, track detail |
-| `violet-400` | -- | Primary text links | Listing page, track detail |
-| `zinc-950` | -- | App background | app.css base |
-| `zinc-900` | -- | Card/surface background | TrackCard, PersistentPlayer, scrollbar |
-| `zinc-800` | -- | Borders, tag backgrounds | Multiple |
-| `zinc-200`/`zinc-300` | -- | Primary text | Base text, headings |
-| `zinc-400`/`zinc-500` | -- | Secondary/muted text | Timestamps, meta info |
-| `#4a4a5a` | Hardcoded hex | Waveform base color | WaveformPlayer, PersistentPlayer |
-| `#8b5cf6` | Hardcoded hex | Waveform progress/cursor | WaveformPlayer, PersistentPlayer |
-
----
+This cannot scale to multi-artist. Every layer needs to change.
 
 ## Recommended Architecture
 
-### Design Principle: Progressive Enhancement via Tokens
-
-The architecture adds a design token layer in `app.css` using Tailwind v4's `@theme` directive, then components are updated incrementally to reference these tokens. No component rewrites. No new dependencies. No `<style>` blocks in components.
-
-### Architecture Layers
-
 ```
-                    +---------------------------+
-                    |     Tailwind Utilities     |  Markup classes (existing)
-                    +---------------------------+
-                              |
-                    +---------------------------+
-                    |   Semantic Token Layer     |  @theme in app.css (NEW)
-                    +---------------------------+
-                              |
-                    +---------------------------+
-                    |  Custom Animations Layer   |  @theme @keyframes (NEW)
-                    +---------------------------+
-                              |
-                    +---------------------------+
-                    |   Svelte Transitions       |  transition:/in:/out: (NEW)
-                    +---------------------------+
+Multi-tenant marketplace:
+
+  Browser <--> Caddy (HTTPS, reverse proxy)
+                  |
+                  +-- SvelteKit (Node.js, Docker)
+                  |     |
+                  |     +-- Better Auth (sessions, user management)
+                  |     |
+                  |     +-- Drizzle ORM (query builder)
+                  |     |     |
+                  |     |     +-- PostgreSQL (Docker, shared DB, tenant isolation via artist_id FK)
+                  |     |
+                  |     +-- Stripe SDK (payments, Connect)
+                  |     |
+                  |     +-- R2 Client (@aws-sdk/client-s3)
+                  |     |     |
+                  |     |     +-- Cloudflare R2 (audio, art, peaks)
+                  |     |
+                  |     +-- Resend (transactional email)
+                  |
+                  +-- Stripe Webhooks (purchase confirmations, Connect events)
 ```
 
 ### Component Boundaries
 
-| Component | Receives Tokens Via | Animations Added | Transitions Added | Modifications |
-|-----------|-------------------|------------------|-------------------|---------------|
-| `app.css` | N/A (defines them) | Custom @keyframes | N/A | **Modified** (token definitions) |
-| `+layout.svelte` | Utility classes | None | Wrap PersistentPlayer in transition | **Modified** (transition wrapper) |
-| `TrackCard.svelte` | Utility classes | Hover micro-interactions | None (always rendered) | **Modified** (CSS hover effects) |
-| `WaveformPlayer.svelte` | CSS vars for wavesurfer config | Loading skeleton pulse | `out:fade` / `in:fade` for loading states | **Modified** (token colors, transitions) |
-| `PersistentPlayer.svelte` | CSS vars for wavesurfer config | None | `transition:fly` for mount/unmount | **Modified** (token colors, transition on root) |
-| `CoverArt.svelte` | Utility classes | Hover scale | None (always rendered) | **Modified** (CSS hover effects) |
-| `FilterBar.svelte` | Utility classes | Active pill styling | `transition:slide` for clear-all area | **Modified** (minor transition) |
-| `+page.svelte` | Utility classes | None | `animate:flip` on track list reorder | **Modified** (add flip to each block) |
-| `track/[slug]/+page.svelte` | Utility classes | None | `in:fade` for page content | **Minimal modification** |
+| Component | Responsibility | Communicates With |
+|-----------|---------------|-------------------|
+| SvelteKit App | SSR, routing, API endpoints, business logic | All other components |
+| PostgreSQL | Data persistence, full-text search, relational integrity | SvelteKit via Drizzle |
+| Cloudflare R2 | Audio file storage, cover art, waveform peaks, download delivery | SvelteKit via S3 SDK; Browser directly for playback (public R2 URLs) |
+| Stripe | Payment processing, artist payouts, tax reporting | SvelteKit via Stripe SDK + webhooks |
+| Better Auth | Session management, user creation, password hashing | SvelteKit (middleware) + PostgreSQL |
+| Resend | Email delivery (receipts, notifications) | SvelteKit API calls |
+| Caddy | TLS termination, reverse proxy, static asset caching | Browser + SvelteKit |
 
 ---
 
-## Design Token Architecture (app.css)
+## Database Schema (PostgreSQL)
 
-### Token Strategy: Extend, Don't Replace
+### Core Tables
 
-All design tokens are defined in `src/app.css` using Tailwind v4's `@theme` directive. This approach:
+```
+users
+  id              UUID PRIMARY KEY
+  email           TEXT UNIQUE NOT NULL
+  password_hash   TEXT
+  display_name    TEXT
+  avatar_url      TEXT
+  role            ENUM('fan', 'artist', 'admin')
+  stripe_account_id  TEXT              -- Stripe Connect account (artists only)
+  stripe_onboarded   BOOLEAN DEFAULT FALSE
+  created_at      TIMESTAMPTZ DEFAULT NOW()
+  updated_at      TIMESTAMPTZ DEFAULT NOW()
 
-1. Generates real Tailwind utility classes (e.g., `bg-surface`, `text-accent`)
-2. Exposes CSS custom properties at `:root` (e.g., `var(--color-surface)`)
-3. Requires zero new files or dependencies
-4. Is tree-shaken by Tailwind -- only tokens referenced in markup are included
+artist_profiles
+  id              UUID PRIMARY KEY REFERENCES users(id)
+  slug            TEXT UNIQUE NOT NULL  -- URL slug: /artist-slug
+  bio             TEXT
+  location        TEXT
+  website_url     TEXT
+  social_links    JSONB               -- { bandcamp, soundcloud, instagram, etc. }
+  header_image_url TEXT
+  is_published    BOOLEAN DEFAULT FALSE
 
-**Critical decision:** Use `@theme` to extend the default palette -- do NOT use `--color-*: initial` to replace it. The existing components reference `zinc-*` and `violet-*` extensively. Replacing defaults would break every component. Semantic tokens coexist with Tailwind defaults.
+releases
+  id              UUID PRIMARY KEY
+  artist_id       UUID NOT NULL REFERENCES users(id)
+  slug            TEXT NOT NULL        -- URL: /artist-slug/release-slug
+  title           TEXT NOT NULL
+  description     TEXT
+  release_type    ENUM('album', 'ep', 'single', 'set', 'experiment')
+  cover_art_url   TEXT
+  dominant_color  TEXT                 -- Extracted from cover art
+  price_cents     INTEGER NOT NULL     -- Minimum price in cents (0 = free)
+  name_your_price BOOLEAN DEFAULT FALSE
+  currency        TEXT DEFAULT 'usd'
+  status          ENUM('draft', 'published', 'archived')
+  published_at    TIMESTAMPTZ
+  created_at      TIMESTAMPTZ DEFAULT NOW()
+  updated_at      TIMESTAMPTZ DEFAULT NOW()
+  UNIQUE(artist_id, slug)
 
-### Token Namespace Definitions
+tracks
+  id              UUID PRIMARY KEY
+  release_id      UUID NOT NULL REFERENCES releases(id)
+  title           TEXT NOT NULL
+  track_number    INTEGER NOT NULL
+  duration        INTEGER              -- seconds
+  bitrate         INTEGER
+  file_size       INTEGER
+  audio_url       TEXT NOT NULL         -- R2 key for original audio
+  peaks_url       TEXT                  -- R2 key for waveform peaks JSON
+  original_filename TEXT
+  status          ENUM('pending', 'processing', 'ready', 'failed')
+  error_message   TEXT
+  play_count      INTEGER DEFAULT 0
+  created_at      TIMESTAMPTZ DEFAULT NOW()
 
-```css
-@import "tailwindcss";
+tags
+  id              SERIAL PRIMARY KEY
+  name            TEXT UNIQUE NOT NULL
+  slug            TEXT UNIQUE NOT NULL
 
-@theme {
-  /* -- Semantic Surface Colors -- */
-  --color-surface: oklch(0.145 0.005 285.82);         /* base background, ~ zinc-950 */
-  --color-surface-raised: oklch(0.21 0.006 285.75);   /* card/panel bg, ~ zinc-900 */
-  --color-surface-overlay: oklch(0.274 0.006 286);     /* elevated surfaces, ~ zinc-800 */
+release_tags
+  release_id      UUID REFERENCES releases(id) ON DELETE CASCADE
+  tag_id          INTEGER REFERENCES tags(id) ON DELETE CASCADE
+  PRIMARY KEY (release_id, tag_id)
 
-  /* -- Semantic Accent Colors -- */
-  --color-accent: oklch(0.585 0.233 277.12);           /* primary action, ~ violet-500 */
-  --color-accent-hover: oklch(0.536 0.245 276.94);     /* hover state, ~ violet-600 */
-  --color-accent-muted: oklch(0.653 0.195 277.12);     /* subtle accent, ~ violet-400 */
+purchases
+  id              UUID PRIMARY KEY
+  fan_id          UUID REFERENCES users(id)  -- NULL if guest purchase
+  release_id      UUID NOT NULL REFERENCES releases(id)
+  artist_id       UUID NOT NULL REFERENCES users(id)
+  amount_cents    INTEGER NOT NULL     -- What the fan paid
+  platform_fee_cents INTEGER NOT NULL  -- Platform's 10% cut
+  stripe_fee_cents   INTEGER NOT NULL  -- Stripe's processing fee
+  artist_payout_cents INTEGER NOT NULL -- What the artist receives
+  stripe_payment_id  TEXT UNIQUE NOT NULL
+  email           TEXT NOT NULL         -- For download link delivery
+  download_count  INTEGER DEFAULT 0
+  created_at      TIMESTAMPTZ DEFAULT NOW()
 
-  /* -- Semantic Text Colors -- */
-  --color-text-primary: oklch(0.871 0.006 286.29);     /* headings/body, ~ zinc-200 */
-  --color-text-secondary: oklch(0.552 0.016 285.94);   /* meta/labels, ~ zinc-500 */
-  --color-text-muted: oklch(0.442 0.017 285.79);       /* faint text, ~ zinc-600 */
-
-  /* -- WaveSurfer-Specific Tokens -- */
-  --color-waveform-base: oklch(0.35 0.02 280);         /* replaces hardcoded #4a4a5a */
-  --color-waveform-progress: oklch(0.585 0.233 277);   /* replaces hardcoded #8b5cf6 */
-
-  /* -- Custom Easings -- */
-  --ease-smooth: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-  /* -- Custom Animations -- */
-  --animate-fade-in: fade-in 0.3s var(--ease-smooth) both;
-  --animate-slide-up: slide-up 0.35s var(--ease-smooth) both;
-  --animate-scale-in: scale-in 0.2s var(--ease-spring) both;
-  --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
-
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes slide-up {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes scale-in {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 0 0 oklch(0.585 0.233 277 / 0); }
-    50% { box-shadow: 0 0 16px 2px oklch(0.585 0.233 277 / 0.3); }
-  }
-}
-
-@layer base {
-  html {
-    background-color: var(--color-surface);
-    color: var(--color-text-primary);
-    scroll-behavior: smooth;
-  }
-}
-
-/* Scrollbar styling (unchanged) */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--color-surface-raised); }
-::-webkit-scrollbar-thumb { background: var(--color-surface-overlay); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-zinc-600); }
+sessions
+  id              TEXT PRIMARY KEY
+  user_id         UUID NOT NULL REFERENCES users(id)
+  expires_at      TIMESTAMPTZ NOT NULL
 ```
 
-### Why This Structure
+### Key Design Decisions
 
-| Decision | Rationale |
-|----------|-----------|
-| Extend defaults, don't replace | Existing components reference `zinc-*` / `violet-*` heavily. Replacing would break everything. Semantic tokens coexist. |
-| OKLCH color format | Tailwind v4 uses OKLCH internally. Perceptually uniform. All target browsers support it (Safari 16.4+, Chrome 111+, Firefox 128+). |
-| Semantic naming (`surface`, `accent`, `text-primary`) | Components express intent, not specific colors. Enables future theming if desired. |
-| Separate `waveform-*` tokens | WaveSurfer.js accepts color strings via JS config, not CSS classes. These tokens bridge the CSS-to-JS gap. |
-| `@theme` not `:root` | `@theme` generates corresponding utility classes (`bg-surface`, `text-accent`). `:root` would only create CSS variables without utilities. |
-| Custom easings as theme values | Generates `ease-smooth`, `ease-bounce`, `ease-spring` utility classes for `transition-timing-function`. |
-| `@keyframes` inside `@theme` | Binds keyframes to `--animate-*` variables so they are tree-shaken if unused. Generates `animate-fade-in`, `animate-slide-up`, etc. |
+1. **Shared database, tenant isolation via foreign keys**: All artists share one PostgreSQL database. Data is isolated by `artist_id` foreign keys. This is simpler than database-per-tenant and appropriate for a marketplace where cross-tenant queries (browse, search) are core features.
 
-**Confidence: HIGH** -- Based on official Tailwind CSS v4 `@theme` documentation.
+2. **UUIDs for primary keys**: Prevents enumeration attacks (cannot guess artist IDs or purchase IDs). Standard for multi-tenant SaaS.
+
+3. **Releases as the purchasable unit**: Fans buy releases (albums, EPs, singles), not individual tracks. This matches Bandcamp's model and simplifies pricing/checkout. Individual track downloads are delivered as part of the release purchase.
+
+4. **JSONB for social links**: Artists have variable social media profiles. JSONB avoids a separate table for what is essentially a key-value map.
+
+5. **Separate artist_profiles table**: Not every user is an artist. The profile table holds artist-specific data and is created when a fan upgrades to an artist account. The `slug` lives here, not on the users table.
 
 ---
 
-## Data Flow: Token Resolution
+## Data Flow
 
-### How Tokens Reach Components
+### Upload Flow (Artist uploads a release)
 
 ```
-app.css @theme block
-    |
-    +---> Tailwind compiler generates utility classes
-    |       e.g., bg-surface, text-accent, ease-smooth, animate-fade-in
-    |       Used in: component class="" attributes (inline Tailwind)
-    |
-    +---> CSS custom properties emitted at :root
-            e.g., var(--color-waveform-base), var(--color-waveform-progress)
-            Used in: WaveSurfer.create({ waveColor: ... }) via getComputedStyle
+1. Artist authenticates --> SvelteKit checks session
+2. Artist fills out release form (title, description, price, cover art, audio files)
+3. SvelteKit API receives multipart upload
+4. For each audio file:
+   a. Validate file type (magic bytes + ffprobe)
+   b. Extract metadata (music-metadata)
+   c. Upload original to R2 (audio/[artist_id]/[release_id]/[track_id].flac)
+   d. Transcode to MP3 for streaming (ffmpeg)
+   e. Upload MP3 to R2 (audio/[artist_id]/[release_id]/[track_id].mp3)
+   f. Generate waveform peaks (existing peaks.ts processor)
+   g. Upload peaks JSON to R2
+5. For cover art:
+   a. Validate image
+   b. Resize to standard sizes (sharp)
+   c. Extract dominant color (sharp.stats())
+   d. Upload to R2 (art/[artist_id]/[release_id]/cover.webp)
+6. Create release + track records in PostgreSQL
+7. Status: draft (artist previews and publishes manually)
 ```
 
-### WaveSurfer Token Integration
+### Purchase Flow (Fan buys a release)
 
-WaveSurfer.js v7 accepts color strings at initialization time. It does NOT read CSS custom properties directly. The integration pattern reads computed CSS variable values at mount time:
-
-```typescript
-// In WaveformPlayer.svelte and PersistentPlayer.svelte
-onMount(() => {
-  const styles = getComputedStyle(document.documentElement);
-  const waveColor = styles.getPropertyValue('--color-waveform-base').trim();
-  const progressColor = styles.getPropertyValue('--color-waveform-progress').trim();
-
-  ws = WaveSurfer.create({
-    container,
-    waveColor: waveColor || '#4a4a5a',       // fallback preserves current behavior
-    progressColor: progressColor || '#8b5cf6', // fallback preserves current behavior
-    // ... rest of existing config unchanged
-  });
-});
+```
+1. Fan clicks "Buy" on release page
+2. SvelteKit creates a Stripe Checkout Session:
+   - amount: release price (or fan's NYOP amount)
+   - application_fee_amount: 10% of sale
+   - transfer_data.destination: artist's Stripe Connect account ID
+3. Fan is redirected to Stripe Checkout (hosted page)
+4. Fan pays with card
+5. Stripe sends webhook (checkout.session.completed) to SvelteKit
+6. SvelteKit webhook handler:
+   a. Verifies webhook signature
+   b. Creates purchase record in PostgreSQL
+   c. Generates time-limited signed R2 download URLs
+   d. Sends email receipt with download links (Resend)
+7. Fan downloads files (MP3, FLAC, WAV -- whatever the artist uploaded)
 ```
 
-This replaces the current hardcoded hex values with token-driven colors while keeping a fallback for safety.
+### Playback Flow (Anyone listens to a track)
 
-**Confidence: HIGH** -- `getComputedStyle` is standard DOM API. WaveSurfer accepts any valid CSS color string including OKLCH.
+```
+1. Browser loads release page (SSR)
+2. Track list renders with WaveformPlayer components
+3. WaveformPlayer fetches peaks JSON from R2 (public URL)
+4. Fan clicks play
+5. wavesurfer.js streams audio from R2 (public URL for preview)
+6. Play count incremented via API call
+```
+
+**Important:** Audio files for preview are publicly accessible R2 URLs. This is intentional -- Bandcamp also serves full tracks publicly for preview. The purchase gives the fan high-quality downloads (FLAC/WAV) and supports the artist. Copy protection is not the goal; convenience and supporting artists is.
 
 ---
 
-## Svelte Transitions Architecture
+## Multi-Tenancy Pattern
 
-### Where to Add Transitions
+### URL Structure
 
-Svelte transitions (`transition:`, `in:`, `out:`) trigger when elements enter/leave the DOM due to `{#if}`, `{#each}`, or `{#await}` blocks. The existing codebase already has conditional rendering in the right places.
-
-**Important constraint:** The `transition:` directive must be on a DOM element, not a Svelte component. If the transition target is a component, either wrap it in a `<div>` or move the transition inside the component's root element.
-
-### Transition Map
-
-| Component | Element | Trigger | Directive | Parameters |
-|-----------|---------|---------|-----------|------------|
-| PersistentPlayer (in layout) | Wrapper div or root element | `{#if playerState.currentTrack}` | `transition:fly` | `{{ y: 72, duration: 300, easing: quintOut }}` |
-| WaveformPlayer | Loading text div | `{#if isLoading && !loadError}` | `out:fade` | `{{ duration: 200 }}` |
-| WaveformPlayer | Error text div | `{#if loadError}` | `in:fade` | `{{ duration: 200 }}` |
-| FilterBar | Clear-all section | `{#if hasActiveFilters}` | `transition:slide` | `{{ duration: 200 }}` |
-| +page.svelte | Track list items | `{#each data.tracks as track (track.id)}` | `animate:flip` | `{{ duration: 250 }}` |
-| track/[slug] | Content wrapper | Always rendered | CSS `animate-fade-in` | N/A (not conditional) |
-
-### Transition Integration Patterns
-
-**Pattern A: Wrapping a component in a transition div (PersistentPlayer)**
-
-```svelte
-<!-- In +layout.svelte -->
-<script>
-  import { fly } from 'svelte/transition';
-  import { quintOut } from 'svelte/easing';
-</script>
-
-<!-- BEFORE -->
-{#if playerState.currentTrack}
-  <PersistentPlayer />
-{/if}
-
-<!-- AFTER -->
-{#if playerState.currentTrack}
-  <div transition:fly={{ y: 72, duration: 300, easing: quintOut }}>
-    <PersistentPlayer />
-  </div>
-{/if}
+```
+/                           -- Homepage, browse latest releases
+/browse                     -- Browse by tag, genre, type
+/[artist-slug]              -- Artist profile page
+/[artist-slug]/[release-slug]  -- Release page with track list + player
+/dashboard                  -- Artist dashboard (auth required)
+/dashboard/releases         -- Manage releases
+/dashboard/releases/new     -- Create new release
+/dashboard/analytics        -- Sales analytics
+/collection                 -- Fan's purchased music (auth required)
+/auth/login                 -- Login
+/auth/register              -- Register (choose fan or artist)
 ```
 
-**Pattern B: Transition on existing conditional element (WaveformPlayer)**
+### SvelteKit Routing
 
-```svelte
-<!-- In WaveformPlayer.svelte -->
-<script>
-  import { fade } from 'svelte/transition';
-</script>
+Use SvelteKit's dynamic routing with a catch-all pattern for artist slugs:
 
-<!-- The {#if} block already exists, just add the directive -->
-{#if isLoading && !loadError}
-  <div out:fade={{ duration: 200 }} class="flex items-center justify-center h-20 text-zinc-500">
-    <span>Loading waveform...</span>
-  </div>
-{/if}
+```
+src/routes/
+  +page.svelte              -- Homepage
+  browse/+page.svelte       -- Browse page
+  [artistSlug]/
+    +page.svelte            -- Artist profile
+    +page.server.ts         -- Load artist + releases
+    [releaseSlug]/
+      +page.svelte          -- Release page
+      +page.server.ts       -- Load release + tracks
+  dashboard/
+    +layout.svelte          -- Artist dashboard layout (auth guard)
+    +page.svelte            -- Dashboard home
+    releases/
+      +page.svelte          -- Release list
+      new/+page.svelte      -- Create release
+      [id]/+page.svelte     -- Edit release
+    analytics/+page.svelte  -- Sales data
+  collection/
+    +page.svelte            -- Fan purchases
+  auth/
+    login/+page.svelte
+    register/+page.svelte
+  api/
+    webhooks/stripe/+server.ts  -- Stripe webhook endpoint
+    tracks/[id]/play/+server.ts -- Play count increment
 ```
 
-**Pattern C: FLIP animation on keyed each block (track listing)**
-
-```svelte
-<!-- In +page.svelte -->
-<script>
-  import { flip } from 'svelte/animate';
-</script>
-
-{#each data.tracks as track, i (track.id)}
-  <div animate:flip={{ duration: 250 }}>
-    <TrackCard {track} allTracks={queueTracks} index={i} />
-  </div>
-{/each}
-```
-
-The `{#each}` block already uses `(track.id)` as a key, which is the prerequisite for `animate:flip`. When tracks are reordered by filter changes, existing items animate smoothly to their new positions.
-
-**Pattern D: CSS animation for always-rendered elements (track detail page)**
-
-Elements that are always present in the DOM cannot use Svelte's `transition:` directive. Use Tailwind's `animate-*` classes instead:
-
-```svelte
-<!-- In track/[slug]/+page.svelte -->
-<div class="max-w-3xl mx-auto px-4 py-8 motion-safe:animate-fade-in">
-```
-
-**Confidence: HIGH** -- `animate:flip` in keyed `{#each}` is a core Svelte feature, unchanged in Svelte 5. Transition directives work identically with runes.
-
-### Motion Accessibility
-
-Always respect `prefers-reduced-motion`. Two approaches:
-
-1. **Tailwind utility (CSS animations):** Use `motion-safe:animate-fade-in` -- animation only plays when the user has not enabled reduced motion.
-
-2. **Svelte transitions (JS-driven):** Check the media query and set duration to 0:
-
-```typescript
-const prefersReducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-const transitionDuration = prefersReducedMotion ? 0 : 300;
-```
-
----
-
-## CSS Organization Strategy
-
-### Decision: Single-File Token Architecture in app.css
-
-All design tokens, custom animations, and base styles live in `src/app.css`. Do NOT create separate CSS files for tokens, animations, or component styles.
-
-**Rationale:**
-1. The app has 5 components and 3 public pages -- not complex enough to justify splitting
-2. Tailwind v4 tree-shakes unused tokens, so file size is not a concern
-3. Single source of truth eliminates import chains and maintenance overhead
-4. `@theme` blocks must be at the top level of a CSS file processed by Tailwind
-
-### app.css Structure (Post-Integration)
-
-```css
-/* 1. Tailwind import */
-@import "tailwindcss";
-
-/* 2. Design tokens via @theme */
-@theme {
-  /* Semantic colors */
-  /* Custom easings */
-  /* Custom animations + @keyframes */
-}
-
-/* 3. Base layer overrides */
-@layer base {
-  html { /* ... */ }
-}
-
-/* 4. Scrollbar styling (outside layers) */
-::-webkit-scrollbar { /* ... */ }
-```
-
-### Why NOT Component `<style>` Blocks
-
-The Tailwind CSS v4 official documentation explicitly recommends against using `<style>` blocks in Svelte components:
-
-> "We recommend avoiding `<style>` blocks in your components and just styling things with utility classes directly in your markup."
-
-Using `<style>` blocks with Tailwind v4 in Svelte requires adding `@reference "../app.css"` to every component, which:
-- Adds boilerplate to every component
-- Slows builds (Tailwind runs separately for each file)
-- Creates a secondary styling pattern alongside utility classes
-
-The project already follows the utility-class-only pattern. Maintain it.
-
-**Confidence: HIGH** -- Official Tailwind v4 compatibility documentation at tailwindcss.com/docs/compatibility.
-
-### Why NOT a Separate tokens.css File
-
-A separate file like `src/lib/styles/tokens.css` might seem cleaner but creates problems:
-
-1. `@theme` is processed by the Tailwind Vite plugin at the CSS entry point. A separate file would need `@import` ordering
-2. Tailwind v4 supports `@import` and will inline the file, but it adds an indirection that complicates debugging
-3. With fewer than 50 lines of tokens, the overhead of a separate file is not justified
-4. When/if the app grows to 20+ components, splitting becomes warranted. Not at 5 components.
+**Slug collision prevention:** When an artist registers a slug, check it against a reserved words list (browse, dashboard, collection, auth, api, admin, etc.). This prevents `/dashboard` from being claimed as an artist slug.
 
 ---
 
 ## Patterns to Follow
 
-### Pattern 1: Gradual Token Adoption
-
-Replace hardcoded colors with semantic tokens component-by-component. Do not refactor all components at once. Each component can be updated independently because tokens are additive (they don't remove existing Tailwind classes).
-
-```svelte
-<!-- BEFORE -->
-<div class="bg-zinc-900/50 hover:bg-zinc-800/70">
-
-<!-- AFTER (either old or new classes work -- migration is safe) -->
-<div class="bg-surface-raised/50 hover:bg-surface-overlay/70">
-```
-
-Both old and new classes work simultaneously. No breaking changes during migration.
-
-### Pattern 2: CSS Variables for JS-Consumed Values
-
-For values that cross the CSS-to-JS boundary (WaveSurfer colors), read from computed styles:
+### Pattern 1: Stripe Connect Standard with Destination Charges
 
 ```typescript
-const styles = getComputedStyle(document.documentElement);
-const color = styles.getPropertyValue('--color-waveform-progress').trim();
+// Creating a checkout session for a purchase
+const session = await stripe.checkout.sessions.create({
+  mode: 'payment',
+  line_items: [{
+    price_data: {
+      currency: 'usd',
+      product_data: { name: release.title },
+      unit_amount: amountCents,
+    },
+    quantity: 1,
+  }],
+  payment_intent_data: {
+    application_fee_amount: Math.round(amountCents * 0.10), // 10% platform fee
+    transfer_data: {
+      destination: artist.stripeAccountId,
+    },
+  },
+  success_url: `${origin}/${artistSlug}/${releaseSlug}?purchased=true`,
+  cancel_url: `${origin}/${artistSlug}/${releaseSlug}`,
+});
 ```
 
-### Pattern 3: Svelte Transitions on Conditional Elements Only
+**Why destination charges:** The platform collects payment, takes its fee, and forwards the rest to the artist's connected account. This is the standard Stripe Connect pattern for marketplaces. The alternative (separate charges and transfers) is more complex and requires manual reconciliation.
 
-Svelte transitions only trigger on elements that enter/leave the DOM via `{#if}`, `{#each}`, or `{#await}`. Do not add `transition:` to always-rendered elements -- use CSS animation utility classes instead.
+### Pattern 2: Signed R2 URLs for Download Delivery
 
-```svelte
-<!-- Conditional rendering: use Svelte transition -->
-{#if visible}
-  <div transition:fade>Content</div>
-{/if}
+```typescript
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-<!-- Always present: use CSS animation class -->
-<div class="motion-safe:animate-fade-in">Always here</div>
+// Generate a 24-hour download link
+const command = new GetObjectCommand({
+  Bucket: R2_BUCKET,
+  Key: `audio/${artistId}/${releaseId}/${trackId}.flac`,
+});
+const downloadUrl = await getSignedUrl(r2Client, command, { expiresIn: 86400 });
 ```
 
-### Pattern 4: Motion-Safe by Default
+**Why signed URLs:** The original high-quality files (FLAC, WAV) are private in R2. Only purchasers get time-limited download links. The streaming preview MP3s are public (no signed URL needed).
 
-Always gate animations behind `motion-safe:` or check `prefers-reduced-motion`:
+### Pattern 3: Auth Guards via SvelteKit Hooks
 
-```html
-<div class="motion-safe:animate-fade-in">
+```typescript
+// hooks.server.ts
+export const handle: Handle = async ({ event, resolve }) => {
+  const session = await getSession(event);
+  event.locals.user = session?.user ?? null;
+
+  // Protect dashboard routes
+  if (event.url.pathname.startsWith('/dashboard') && !event.locals.user?.role === 'artist') {
+    redirect(303, '/auth/login');
+  }
+
+  return resolve(event);
+};
 ```
-
-This is a Tailwind v4 variant that wraps the animation in `@media (prefers-reduced-motion: no-preference)`.
 
 ---
 
 ## Anti-Patterns to Avoid
 
-### Anti-Pattern 1: Token Overload
+### Anti-Pattern 1: Database-Per-Tenant
 
-**What:** Defining semantic tokens for every possible color combination (e.g., `--color-card-border-hover-active`).
-**Why bad:** Creates a second abstraction layer that is harder to maintain than the Tailwind classes themselves.
-**Instead:** Define tokens only for values that are: (a) shared across 3+ components, (b) need to change together as a group, or (c) cross the CSS-to-JS boundary.
+**What:** Creating a separate PostgreSQL database or schema for each artist.
+**Why bad:** Eliminates cross-tenant queries (browse, search, trending). Makes migrations a nightmare (run on every tenant DB). Adds connection pool complexity. Only justified at enterprise scale with strict data isolation requirements.
+**Instead:** Shared database with `artist_id` foreign keys on all content tables. Simple, queryable, standard.
 
-### Anti-Pattern 2: Wholesale Class Replacement
+### Anti-Pattern 2: Client-Side Audio DRM
 
-**What:** Converting every `zinc-800` to `surface-overlay` across all components in one pass.
-**Why bad:** The existing `zinc-*` classes work perfectly. A bulk find-and-replace risks visual regressions with zero user-visible improvement.
-**Instead:** Use semantic tokens for new additions and adopt them gradually in existing components when touching that component for other reasons.
+**What:** Attempting to prevent audio file copying through encryption, obfuscation, or stream protection.
+**Why bad:** The Web Audio API exposes all audio data. Any DRM can be bypassed by recording the output. Bandcamp does not do this. It adds complexity, degrades the listening experience, and frustrates legitimate customers without stopping piracy.
+**Instead:** Make purchasing convenient and affordable. The value proposition is "support the artist + get high-quality downloads," not "access to locked content."
 
-### Anti-Pattern 3: Component `<style>` Blocks for Animations
+### Anti-Pattern 3: Building a Cart Before Validating Single Purchases
 
-**What:** Adding `<style>` blocks with `@keyframes` to individual Svelte components.
-**Why bad:** Duplicates animation definitions. Requires `@reference` boilerplate. Breaks the utility-class-only pattern. Slows builds.
-**Instead:** Define all `@keyframes` in `app.css` within `@theme`. Use `animate-*` utility classes or Svelte `transition:` directives.
+**What:** Implementing a full shopping cart with add-to-cart, cart management, and multi-release checkout from day one.
+**Why bad:** Carts add significant state management complexity (persistence, expiration, price changes, inventory). Most fans buy one release at a time. Bandcamp's most common checkout is single-release.
+**Instead:** Start with single-release "Buy Now" -> Stripe Checkout. Add cart later if usage data shows fans regularly want to buy multiple releases in one session.
 
-### Anti-Pattern 4: Global Page Transitions
+### Anti-Pattern 4: Premature Microservices
 
-**What:** Adding page-level cross-fade transitions to all SvelteKit route navigations.
-**Why bad:** SvelteKit does not have built-in page transition support. Implementing it requires complex `onNavigate` lifecycle hooks and shared layout state management. High complexity, low payoff for a 3-page app.
-**Instead:** Use `in:fade` on specific content blocks or `animate-fade-in` on page wrappers for subtle entrance effects without the full page-transition infrastructure.
-
-### Anti-Pattern 5: Using @apply Extensively
-
-**What:** Extracting common utility patterns into `@apply`-based component classes in `app.css`.
-**Why bad:** Creates an abstraction that hides what styles are applied, making it harder to understand component styling at a glance. Defeats the purpose of utility-first CSS.
-**Instead:** Keep utilities inline. The repetition across components is acceptable at this scale and makes each component self-documenting.
+**What:** Splitting the app into separate services (auth service, payment service, upload service) from the start.
+**Why bad:** Operational overhead of multiple deployments, service discovery, and inter-service communication is enormous for a solo dev. The monolith handles the entire feature set easily at <1000 artists.
+**Instead:** One SvelteKit monolith with well-organized modules. Extract services only when specific scaling bottlenecks emerge (likely never for this scale).
 
 ---
 
-## Integration Points Summary
+## Scalability Considerations
 
-### New vs. Modified Files
+| Concern | At 10 Artists | At 100 Artists | At 1000 Artists |
+|---------|--------------|----------------|-----------------|
+| Database | Single PostgreSQL, no tuning needed | Add indexes on artist_id, release_id, created_at | Connection pooling (pgBouncer), read replicas if needed |
+| Storage | ~5 GB R2 ($0.08/month) | ~50 GB R2 ($0.75/month) | ~500 GB R2 ($7.50/month) |
+| Bandwidth | Minimal, free tier | R2 free egress handles this | R2 free egress still handles this |
+| Uploads | Synchronous processing OK | Background queue recommended | Background queue essential, consider separate worker |
+| Search | PostgreSQL LIKE is fine | PostgreSQL full-text with GIN index | Consider Meilisearch if query complexity grows |
+| Email | <100/day (Resend free tier) | <1000/day (Resend $20/month) | Resend growth plan or switch to SES |
+| Payments | No special handling | No special handling | Stripe handles scaling automatically |
+| CDN | R2's built-in CDN | R2's built-in CDN | R2's built-in CDN (global edge) |
 
-| File | Status | What Changes |
-|------|--------|--------------|
-| `src/app.css` | **MODIFIED** | Add `@theme` block with semantic tokens, easings, animations, `@keyframes`. Update `@layer base` to use token vars. |
-| `src/lib/components/PersistentPlayer.svelte` | **MODIFIED** | Read `--color-waveform-*` via `getComputedStyle` for WaveSurfer config. Add `transition:fly` on root element. |
-| `src/lib/components/WaveformPlayer.svelte` | **MODIFIED** | Read `--color-waveform-*` via `getComputedStyle` for WaveSurfer config. Add `out:fade`/`in:fade` on loading/error states. |
-| `src/lib/components/TrackCard.svelte` | **MODIFIED** | Add CSS hover micro-interactions (scale, shadow) via utility classes. |
-| `src/lib/components/CoverArt.svelte` | **MODIFIED** | Add hover scale/glow effect via utility classes. Lazy-load visual enhancement. |
-| `src/lib/components/FilterBar.svelte` | **MODIFIED** | Add `transition:slide` on clear-all section. |
-| `src/routes/+layout.svelte` | **MODIFIED** | Wrap PersistentPlayer `{#if}` block with transition div or move transition into component. |
-| `src/routes/+page.svelte` | **MODIFIED** | Add `animate:flip` to track list `{#each}` wrapper. Import `flip` from `svelte/animate`. |
-| `src/routes/track/[slug]/+page.svelte` | **MODIFIED** | Add `motion-safe:animate-fade-in` to content wrapper. |
+**The key insight:** R2's zero-egress pricing and Stripe's automatic scaling mean infrastructure costs grow slowly. The primary scaling concern is upload processing (CPU-bound audio transcoding), which can be addressed with a background job queue long before it becomes a bottleneck.
 
-**Zero new files. Zero new dependencies. Zero new directories.**
+---
 
-### Build Order (Dependency-Aware)
+## Docker Compose Architecture
 
-The phases below are ordered by dependency. Phases 2-5 are largely independent of each other and can be built in any order after Phase 1 completes.
+```yaml
+services:
+  app:
+    build: .
+    container_name: music-platform
+    restart: unless-stopped
+    ports:
+      - "8801:8801"
+    environment:
+      - PORT=8801
+      - DATABASE_URL=postgres://platform:${DB_PASSWORD}@db:5432/music_platform
+      - R2_ACCOUNT_ID=${R2_ACCOUNT_ID}
+      - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
+      - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}
+      - R2_BUCKET=${R2_BUCKET}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - ORIGIN=https://yourdomain.com
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - internal
+      - webproxy
+
+  db:
+    image: postgres:16-alpine
+    container_name: music-platform-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=platform
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=music_platform
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+volumes:
+  pgdata:
+
+networks:
+  internal:
+  webproxy:
+    external: true
+```
+
+Port 8801 avoids conflict with wallybrain-music on 8800.
+
+---
+
+## R2 Bucket Structure
 
 ```
-Phase 1: Token Foundation (MUST be first)
-  Modify app.css: add @theme block with all tokens, easings, @keyframes
-  Modify app.css @layer base: reference semantic token vars
-  WHY FIRST: Every subsequent phase references these tokens.
+audio/
+  [artist_id]/
+    [release_id]/
+      [track_id].flac          -- Original high-quality (private, signed URLs for download)
+      [track_id].mp3           -- Transcoded preview (public, streaming)
 
-Phase 2: WaveSurfer Token Integration (depends on Phase 1)
-  Modify WaveformPlayer.svelte: getComputedStyle for waveform colors
-  Modify PersistentPlayer.svelte: getComputedStyle for waveform colors
-  WHY: Removes last hardcoded hex values. Must wait for token CSS vars to exist.
+art/
+  [artist_id]/
+    [release_id]/
+      cover.webp               -- Full-size cover art (public)
+      cover-thumb.webp          -- Thumbnail (public)
+    avatar.webp                -- Artist avatar (public)
 
-Phase 3: Component Transitions (depends on Phase 1, independent of Phase 2)
-  Modify +layout.svelte: PersistentPlayer fly transition wrapper
-  Modify WaveformPlayer.svelte: loading/error fade transitions
-  Modify FilterBar.svelte: active filters slide transition
-  Modify PersistentPlayer.svelte: fly transition on root element
-  WHY: These touch {#if} blocks that already exist. No new conditional logic.
-
-Phase 4: Hover & Micro-interactions (depends on Phase 1, independent of 2-3)
-  Modify TrackCard.svelte: hover scale, shadow, play button reveal
-  Modify CoverArt.svelte: hover scale/glow effects
-  WHY: Pure CSS additions via utility classes. No structural changes.
-
-Phase 5: List & Page Animations (depends on Phase 1, independent of 2-4)
-  Modify +page.svelte: animate:flip on track list {#each}
-  Modify track/[slug]/+page.svelte: animate-fade-in on content wrapper
-  WHY: Independent page-level enhancements.
+peaks/
+  [artist_id]/
+    [release_id]/
+      [track_id].json          -- Waveform peaks data (public)
 ```
+
+**Access control:** Use R2 bucket policies or per-object ACLs. Preview MP3s, art, and peaks are public. Original FLAC/WAV files are private (served via signed URLs after purchase).
 
 ---
 
 ## Sources
 
-- [Tailwind CSS v4 Theme Variables](https://tailwindcss.com/docs/theme) -- HIGH confidence (official docs)
-- [Tailwind CSS v4 Functions and Directives](https://tailwindcss.com/docs/functions-and-directives) -- HIGH confidence (official docs)
-- [Tailwind CSS v4 Adding Custom Styles](https://tailwindcss.com/docs/adding-custom-styles) -- HIGH confidence (official docs)
-- [Tailwind CSS v4 Animation Utilities](https://tailwindcss.com/docs/animation) -- HIGH confidence (official docs)
-- [Tailwind CSS v4 Compatibility (Svelte)](https://tailwindcss.com/docs/compatibility) -- HIGH confidence (official docs)
-- [Tailwind CSS v4 Theming Best Practices Discussion](https://github.com/tailwindlabs/tailwindcss/discussions/18471) -- MEDIUM confidence (community discussion with maintainer participation)
-- [Svelte 5 Transition Directive](https://svelte.dev/docs/svelte/transition) -- HIGH confidence (official docs)
-- [Svelte 5 Animate Directive](https://svelte.dev/docs/svelte/animate) -- HIGH confidence (official docs)
-- [Tailwind CSS v4 and Svelte 5 Discussion](https://github.com/sveltejs/svelte/discussions/14668) -- MEDIUM confidence (community discussion)
-- [Tailwind CSS v4 Dark Mode](https://tailwindcss.com/docs/dark-mode) -- HIGH confidence (official docs)
+- [Stripe Connect destination charges](https://docs.stripe.com/connect/destination-charges) -- recommended pattern for marketplace payments
+- [Stripe Connect Standard accounts](https://docs.stripe.com/connect/standard-accounts) -- artist onboarding flow
+- [AWS SDK v3 S3 presigned URLs](https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html) -- compatible with R2
+- [SvelteKit hooks](https://svelte.dev/docs/kit/hooks) -- auth guard pattern
+- [SvelteKit routing](https://svelte.dev/docs/kit/routing) -- dynamic slug routing
+- [PostgreSQL full-text search](https://www.postgresql.org/docs/current/textsearch.html) -- built-in search capability
+- [SvelteKit multi-tenant discussion](https://github.com/sveltejs/kit/discussions/8699) -- patterns for multi-tenancy
