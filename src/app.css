@@ -88,25 +88,31 @@
 
 @layer base {
   html {
-    background:
-      repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 2px,
-        oklch(0.185 0.007 286) 2px,
-        oklch(0.185 0.007 286) 4px
-      ),
-      repeating-linear-gradient(
-        -45deg,
-        transparent,
-        transparent 2px,
-        oklch(0.175 0.007 286) 2px,
-        oklch(0.175 0.007 286) 4px
-      ),
-      var(--color-surface-base);
+    background: var(--color-surface-base);
     color: var(--color-text-secondary);
     font-family: var(--font-body);
     scroll-behavior: smooth;
+  }
+
+  @media (min-width: 768px) {
+    html {
+      background:
+        repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 2px,
+          oklch(0.185 0.007 286) 2px,
+          oklch(0.185 0.007 286) 4px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 2px,
+          oklch(0.175 0.007 286) 2px,
+          oklch(0.175 0.007 286) 4px
+        ),
+        var(--color-surface-base);
+    }
   }
 
   body::before {
