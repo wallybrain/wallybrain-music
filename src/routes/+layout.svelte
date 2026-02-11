@@ -1,5 +1,5 @@
 <script>
-  let { children } = $props();
+  let { children, data } = $props();
   import { base } from '$app/paths';
   import { page } from '$app/state';
   import { onNavigate } from '$app/navigation';
@@ -38,6 +38,7 @@
         </a>
         <a
           href="{base}/admin"
+          data-sveltekit-reload
           class="px-2 py-0.5 rounded text-xs font-medium transition-colors
             {isAdmin && !isUpload
               ? 'bg-surface-hover text-text-primary'
@@ -47,6 +48,7 @@
         </a>
         <a
           href="{base}/admin/upload"
+          data-sveltekit-reload
           class="px-2 py-0.5 rounded text-xs font-medium transition-colors
             {isUpload
               ? 'bg-surface-hover text-text-primary'
@@ -55,12 +57,31 @@
           Upload
         </a>
       </div>
-      <a
-        href="https://wallyblanchard.com"
-        class="px-2 py-0.5 rounded text-[10px] font-mono tracking-widest text-accent-muted hover:text-accent-muted-hover hover:bg-surface-overlay/50 transition-colors"
-      >
-        FNORD
-      </a>
+      <div class="flex items-center gap-1">
+        <a
+          href="https://wallyblanchard.com"
+          class="px-2 py-0.5 rounded text-[10px] font-mono tracking-widest text-accent-muted hover:text-accent-muted-hover hover:bg-surface-overlay/50 transition-colors"
+        >
+          FNORD
+        </a>
+        {#if data.isAuthenticated}
+          <a
+            href="https://auth.wallybrain.icu/logout?rd=https://wallybrain.icu/"
+            data-sveltekit-reload
+            class="px-2 py-0.5 rounded text-[10px] font-mono tracking-widest text-text-muted hover:text-text-secondary hover:bg-surface-overlay/50 transition-colors"
+          >
+            Sign Out
+          </a>
+        {:else}
+          <a
+            href="https://auth.wallybrain.icu/?rd=https://wallybrain.icu/admin"
+            data-sveltekit-reload
+            class="px-2 py-0.5 rounded text-[10px] font-mono tracking-widest text-text-muted hover:text-text-secondary hover:bg-surface-overlay/50 transition-colors"
+          >
+            Sign In
+          </a>
+        {/if}
+      </div>
     </div>
   </nav>
 
