@@ -7,6 +7,7 @@ import { generatePeaks } from '$lib/server/processors/peaks';
 import { extractMetadata } from '$lib/server/processors/metadata';
 import { extractAndResizeArt, extractDominantColor } from '$lib/server/processors/artwork';
 import { mkdirSync, existsSync } from 'node:fs';
+import { validateDataPath } from '$lib/server/security';
 
 export async function processTrack(trackId: string): Promise<void> {
 	try {
@@ -19,6 +20,8 @@ export async function processTrack(trackId: string): Promise<void> {
 		if (!track) {
 			throw new Error(`Track ${trackId} not found in database`);
 		}
+
+		validateDataPath(track.audioPath);
 
 		const probeResult = await validateWithFFprobe(track.audioPath);
 		if (!probeResult.valid) {

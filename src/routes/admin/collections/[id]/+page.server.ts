@@ -5,6 +5,7 @@ import { fail, error, redirect } from '@sveltejs/kit';
 import { extractAndResizeArt, extractDominantColor } from '$lib/server/processors/artwork';
 import { mkdirSync } from 'node:fs';
 import type { Actions, PageServerLoad } from './$types';
+import { validateImageBuffer, MAX_IMAGE_SIZE } from '$lib/server/security';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const collection = db
@@ -86,7 +87,16 @@ export const actions = {
 			.run();
 
 		if (coverArt && coverArt.size > 0) {
+			if (coverArt.size > MAX_IMAGE_SIZE) {
+				return fail(413, { error: 'Image too large (10MB max)' });
+			}
+
 			const artBuffer = Buffer.from(await coverArt.arrayBuffer());
+
+			const imageCheck = await validateImageBuffer(artBuffer);
+			if (!imageCheck.valid) {
+				return fail(400, { error: imageCheck.error });
+			}
 			const artDir = '/data/art/collections';
 			mkdirSync(artDir, { recursive: true });
 			const artPath = `${artDir}/${params.id}.jpg`;

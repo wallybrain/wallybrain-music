@@ -4,6 +4,7 @@ import { error, json } from '@sveltejs/kit';
 import { db } from '$lib/server/db/client';
 import { tracks } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
+import { validateDataPath } from '$lib/server/security';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const track = db.select({ peaksPath: tracks.peaksPath })
@@ -15,9 +16,16 @@ export const GET: RequestHandler = async ({ params }) => {
 		throw error(404, 'Peaks not found');
 	}
 
+	let safePath: string;
+	try {
+		safePath = validateDataPath(track.peaksPath);
+	} catch {
+		throw error(403, 'Access denied');
+	}
+
 	let raw: { data: number[] };
 	try {
-		raw = JSON.parse(readFileSync(track.peaksPath, 'utf-8'));
+		raw = JSON.parse(readFileSync(safePath, 'utf-8'));
 	} catch {
 		throw error(404, 'Peaks not found');
 	}

@@ -5,6 +5,7 @@ import { error } from '@sveltejs/kit';
 import { db } from '$lib/server/db/client';
 import { tracks } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
+import { validateDataPath } from '$lib/server/security';
 
 export const GET: RequestHandler = async ({ params, request }) => {
 	const track = db.select({ audioPath: tracks.audioPath, status: tracks.status })
@@ -16,7 +17,12 @@ export const GET: RequestHandler = async ({ params, request }) => {
 		throw error(404, 'Track not found');
 	}
 
-	const filePath = track.audioPath;
+	let filePath: string;
+	try {
+		filePath = validateDataPath(track.audioPath);
+	} catch {
+		throw error(403, 'Access denied');
+	}
 	let fileSize: number;
 	try {
 		fileSize = statSync(filePath).size;

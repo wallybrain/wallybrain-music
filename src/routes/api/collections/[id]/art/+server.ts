@@ -6,6 +6,7 @@ import { db } from '$lib/server/db/client';
 import { collections } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { extractAndResizeArt, extractDominantColor } from '$lib/server/processors/artwork';
+import { validateDataPath, validateImageBuffer, MAX_IMAGE_SIZE } from '$lib/server/security';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const collection = db.select({ artPath: collections.artPath })
@@ -17,14 +18,21 @@ export const GET: RequestHandler = async ({ params }) => {
 		throw error(404, 'Cover art not found');
 	}
 
+	let safePath: string;
+	try {
+		safePath = validateDataPath(collection.artPath);
+	} catch {
+		throw error(403, 'Access denied');
+	}
+
 	let fileSize: number;
 	try {
-		fileSize = statSync(collection.artPath).size;
+		fileSize = statSync(safePath).size;
 	} catch {
 		throw error(404, 'Cover art not found');
 	}
 
-	const stream = createReadStream(collection.artPath);
+	const stream = createReadStream(safePath);
 	return new Response(Readable.toWeb(stream) as ReadableStream, {
 		headers: {
 			'Content-Type': 'image/jpeg',
@@ -51,11 +59,21 @@ export const POST: RequestHandler = async ({ request, params }) => {
 		return json({ error: 'Cover art file required' }, { status: 400 });
 	}
 
+	if (file.size > MAX_IMAGE_SIZE) {
+		return json({ error: 'Image too large (10MB max)' }, { status: 413 });
+	}
+
+	const buffer = Buffer.from(await file.arrayBuffer());
+
+	const imageCheck = await validateImageBuffer(buffer);
+	if (!imageCheck.valid) {
+		return json({ error: imageCheck.error }, { status: 400 });
+	}
+
 	const artDir = '/data/art/collections';
 	mkdirSync(artDir, { recursive: true });
 	const artPath = `${artDir}/${params.id}.jpg`;
 
-	const buffer = Buffer.from(await file.arrayBuffer());
 	await extractAndResizeArt(buffer, artPath);
 	const dominantColor = await extractDominantColor(artPath);
 

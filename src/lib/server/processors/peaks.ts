@@ -23,7 +23,8 @@ export function generatePeaks(audioPath: string, outputPath: string): Promise<vo
 			if (code === 0) {
 				resolve();
 			} else {
-				reject(new Error(`audiowaveform failed (exit ${code}): ${stderr}`));
+				console.error(`audiowaveform failed (exit ${code}): ${stderr}`);
+				reject(new Error('Waveform generation failed'));
 			}
 		});
 	});

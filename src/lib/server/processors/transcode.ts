@@ -29,7 +29,8 @@ export function transcodeAudio(inputPath: string, outputPath: string): Promise<v
 			if (code === 0) {
 				resolve();
 			} else {
-				reject(new Error(`ffmpeg transcode failed (exit ${code}): ${stderr}`));
+				console.error(`ffmpeg transcode failed (exit ${code}): ${stderr}`);
+				reject(new Error('Audio transcoding failed'));
 			}
 		});
 	});

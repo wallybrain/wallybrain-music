@@ -5,6 +5,7 @@ import { error } from '@sveltejs/kit';
 import { db } from '$lib/server/db/client';
 import { tracks } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
+import { validateDataPath } from '$lib/server/security';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const track = db.select({ artPath: tracks.artPath })
@@ -16,14 +17,21 @@ export const GET: RequestHandler = async ({ params }) => {
 		throw error(404, 'Cover art not found');
 	}
 
+	let safePath: string;
+	try {
+		safePath = validateDataPath(track.artPath);
+	} catch {
+		throw error(403, 'Access denied');
+	}
+
 	let fileSize: number;
 	try {
-		fileSize = statSync(track.artPath).size;
+		fileSize = statSync(safePath).size;
 	} catch {
 		throw error(404, 'Cover art not found');
 	}
 
-	const stream = createReadStream(track.artPath);
+	const stream = createReadStream(safePath);
 	return new Response(Readable.toWeb(stream) as ReadableStream, {
 		headers: {
 			'Content-Type': 'image/jpeg',

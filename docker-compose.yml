@@ -12,6 +12,11 @@ services:
       - ORIGIN=https://wallybrain.icu
       - BODY_SIZE_LIMIT=512M
       - DATABASE_URL=/data/db/music.db
+    user: "1001:1001"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:8800/health').then(r=>{if(!r.ok)throw r;process.exit(0)}).catch(()=>process.exit(1))"]
       interval: 30s

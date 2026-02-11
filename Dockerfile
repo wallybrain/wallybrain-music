@@ -44,6 +44,8 @@ COPY --from=builder /app/node_modules node_modules/
 COPY --from=builder /app/package.json .
 COPY --from=builder /app/drizzle drizzle/
 
+RUN chmod -R a+rX /app /data
+
 EXPOSE 8800
 
 ENV NODE_ENV=production
@@ -54,5 +56,7 @@ ENV DATABASE_URL=/data/db/music.db
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
   CMD node -e "fetch('http://localhost:8800/music/health').then(r=>{if(!r.ok)throw r;process.exit(0)}).catch(()=>process.exit(1))"
+
+USER node
 
 CMD ["node", "build"]

@@ -7,6 +7,7 @@ import { enqueueProcessing } from '$lib/server/queue';
 import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
+import { MAX_AUDIO_SIZE } from '$lib/server/security';
 
 function slugify(filename: string): string {
 	const name = filename.replace(/\.[^.]+$/, '');
@@ -33,6 +34,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	if (!file || !file.name || file.size === 0) {
 		return json({ error: 'Audio file required' }, { status: 400 });
+	}
+
+	if (file.size > MAX_AUDIO_SIZE) {
+		return json({ error: 'File too large (200MB max)' }, { status: 413 });
 	}
 
 	const buffer = Buffer.from(await file.arrayBuffer());
