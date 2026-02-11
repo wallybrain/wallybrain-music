@@ -1,6 +1,6 @@
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { db } from '$lib/server/db/client';
-import { tracks } from '$lib/server/db/schema';
+import { tracks, collections, collectionTracks } from '$lib/server/db/schema';
 import { validateWithFFprobe } from '$lib/server/validators/ffprobe';
 import { transcodeAudio } from '$lib/server/processors/transcode';
 import { generatePeaks } from '$lib/server/processors/peaks';
@@ -66,6 +66,32 @@ export async function processTrack(trackId: string): Promise<void> {
 			})
 			.where(eq(tracks.id, trackId))
 			.run();
+
+		// Update collection aggregates if track belongs to any collections
+		const memberOf = db.select({ collectionId: collectionTracks.collectionId })
+			.from(collectionTracks)
+			.where(eq(collectionTracks.trackId, trackId))
+			.all();
+
+		for (const { collectionId: cid } of memberOf) {
+			const agg = db.select({
+				count: sql<number>`count(*)`,
+				totalDur: sql<number>`coalesce(sum(${tracks.duration}), 0)`,
+			})
+				.from(collectionTracks)
+				.innerJoin(tracks, eq(collectionTracks.trackId, tracks.id))
+				.where(eq(collectionTracks.collectionId, cid))
+				.get();
+
+			db.update(collections)
+				.set({
+					trackCount: agg?.count ?? 0,
+					totalDuration: agg?.totalDur ?? 0,
+					updatedAt: new Date().toISOString(),
+				})
+				.where(eq(collections.id, cid))
+				.run();
+		}
 
 		console.log(`Track ${trackId} processed successfully`);
 	} catch (err) {

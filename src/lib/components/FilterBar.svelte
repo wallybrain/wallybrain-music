@@ -17,6 +17,8 @@
     { value: 'set', label: 'Sets' },
     { value: 'experiment', label: 'Experiments' },
     { value: 'export', label: 'Exports' },
+    { value: 'album', label: 'Albums' },
+    { value: 'playlist', label: 'Playlists' },
   ];
 
   let hasActiveFilters = $derived(activeCategory !== null || activeTags.length > 0);

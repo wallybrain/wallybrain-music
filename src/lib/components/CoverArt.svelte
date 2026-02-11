@@ -1,12 +1,13 @@
 <script lang="ts">
   import { base } from '$app/paths';
 
-  let { trackId, artPath, title, size = 'md', dominantColor = null }: {
+  let { trackId, artPath, title, size = 'md', dominantColor = null, entityType = 'tracks' }: {
     trackId: string;
     artPath: string | null;
     title: string;
     size?: 'sm' | 'md' | 'lg';
     dominantColor?: string | null;
+    entityType?: 'tracks' | 'collections';
   } = $props();
 
   let glowStyle = $derived(
@@ -32,18 +33,18 @@
 
 {#if artPath}
   <div
-    class="{sizeClasses[size]} rounded-lg overflow-hidden shrink-0 {size === 'lg' ? '' : 'shadow-lg shadow-black/40'}"
+    class="{sizeClasses[size]} rounded-lg overflow-hidden shrink-0 bevel-image {size === 'lg' ? '' : ''}"
     style={glowStyle}
   >
     <img
-      src="{base}/api/tracks/{trackId}/art"
+      src="{base}/api/{entityType}/{trackId}/art"
       alt="Cover art for {title}"
       class="w-full h-full object-cover {enableZoom ? 'transition-transform duration-300 group-hover:scale-110' : ''}"
       loading="lazy"
     />
   </div>
 {:else}
-  <div class="{sizeClasses[size]} rounded-lg bg-surface-overlay shadow-lg shadow-black/40 shrink-0 flex items-center justify-center">
+  <div class="{sizeClasses[size]} rounded-lg bg-surface-overlay bevel-image shrink-0 flex items-center justify-center">
     <span class="text-text-muted {placeholderTextSize[size]}">&#9835;</span>
   </div>
 {/if}
