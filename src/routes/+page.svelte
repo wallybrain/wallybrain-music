@@ -25,9 +25,7 @@
   <meta name="description" content="Electronic music by wallybrain" />
 </svelte:head>
 
-<div class="max-w-3xl mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold text-text-primary mb-2">Tracks</h1>
-  <p class="text-text-muted text-sm mb-6">electronic music</p>
+<div class="max-w-3xl mx-auto px-4">
 
   <FilterBar
     availableTags={data.availableTags}

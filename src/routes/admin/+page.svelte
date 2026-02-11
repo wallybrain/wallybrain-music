@@ -16,15 +16,7 @@
   <title>Track Management - wallybrain admin</title>
 </svelte:head>
 
-<div class="flex justify-between items-center mb-2">
-  <h1 class="text-2xl font-bold text-text-primary">Track Management</h1>
-  <a
-    href="{base}/admin/upload"
-    class="bg-accent hover:bg-accent-hover text-text-primary px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-  >
-    Upload
-  </a>
-</div>
+<h1 class="text-2xl font-bold text-text-primary mb-2">Tracks</h1>
 
 <p class="text-text-muted text-sm mb-4">{data.tracks.length} tracks</p>
 

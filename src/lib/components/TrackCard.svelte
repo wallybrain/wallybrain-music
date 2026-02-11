@@ -10,6 +10,8 @@
     set: 'Set',
     experiment: 'Experiment',
     export: 'Export',
+    album: 'Album',
+    playlist: 'Playlist',
   };
 
   let { track, allTracks, index }: {
@@ -53,7 +55,7 @@
 
 <a
   href="{base}/track/{track.slug}"
-  class="flex items-center gap-4 p-3 rounded-lg bg-surface-raised hover:bg-surface-hover transition-all duration-200 hover:scale-[1.01] hover:shadow-md hover:shadow-accent/10 group"
+  class="flex items-center gap-4 p-3 rounded-lg metal-panel transition-all duration-200 hover:scale-[1.01] group"
 >
   <CoverArt trackId={track.id} artPath={track.artPath} title={track.title} size="sm" />
   <div class="flex-1 min-w-0">

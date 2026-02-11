@@ -9,6 +9,8 @@
     set: 'Set',
     experiment: 'Experiment',
     export: 'Export',
+    album: 'Album',
+    playlist: 'Playlist',
   };
 
   let { track, allTracks, index }: {
@@ -52,9 +54,9 @@
 
 <a
   href="{base}/track/{track.slug}"
-  class="flex flex-col rounded-lg bg-surface-raised hover:bg-surface-hover transition-all overflow-hidden group {isCurrentTrack ? 'ring-1 ring-accent/30' : ''}"
+  class="flex flex-col rounded-lg metal-panel transition-all overflow-hidden group {isCurrentTrack ? 'ring-1 ring-accent/30' : ''}"
 >
-  <div class="relative aspect-square overflow-hidden">
+  <div class="relative aspect-square overflow-hidden bevel-image rounded-t-lg">
     {#if track.artPath}
       <img
         src="{base}/api/tracks/{track.id}/art"
