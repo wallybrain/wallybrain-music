@@ -73,7 +73,7 @@ export const actions = {
 			.set({
 				title: title.trim(),
 				description: description?.trim() || null,
-				category: (category as 'track' | 'set' | 'experiment' | 'export') || 'track',
+				category: (category as 'track' | 'set' | 'experiment' | 'export' | 'album' | 'playlist') || 'track',
 				slug: validatedSlug,
 				updatedAt: new Date().toISOString(),
 			})
@@ -126,6 +126,6 @@ export const actions = {
 				.run();
 		}
 
-		redirect(303, '/music/admin');
+		redirect(303, '/admin');
 	},
 } satisfies Actions;

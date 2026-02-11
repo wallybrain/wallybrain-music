@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { base } from '$app/paths';
 	import { formatTime } from '$lib/utils/formatTime';
 	import type WaveSurfer from 'wavesurfer.js';
 
@@ -17,7 +18,7 @@
 	function onPlay() {
 		if (!hasCountedPlay) {
 			hasCountedPlay = true;
-			fetch(`/music/api/tracks/${trackId}/play`, { method: 'POST' });
+			fetch(`${base}/api/tracks/${trackId}/play`, { method: 'POST' });
 		}
 	}
 
@@ -29,7 +30,7 @@
 
 			let peaksData: number[];
 			try {
-				const res = await fetch(`/music/api/tracks/${trackId}/peaks`);
+				const res = await fetch(`${base}/api/tracks/${trackId}/peaks`);
 				if (!res.ok) throw new Error(`Peaks fetch failed: ${res.status}`);
 				peaksData = await res.json();
 			} catch (err) {
@@ -58,7 +59,7 @@
 				normalize: false,
 				interact: true,
 				dragToSeek: true,
-				url: `/music/api/tracks/${trackId}/audio`,
+				url: `${base}/api/tracks/${trackId}/audio`,
 				peaks: [peaksData],
 				duration: duration,
 			});

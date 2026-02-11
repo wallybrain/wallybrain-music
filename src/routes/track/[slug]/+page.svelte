@@ -36,14 +36,14 @@
 <svelte:head>
 	<title>{track.title} - wallybrain</title>
 	<meta name="description" content={track.description || `Listen to ${track.title} by wallybrain`} />
-	<link rel="canonical" href={`https://wallyblanchard.com/music/track/${track.slug}`} />
+	<link rel="canonical" href={`https://wallybrain.icu/track/${track.slug}`} />
 
 	<!-- Open Graph -->
 	<meta property="og:title" content={track.title} />
 	<meta property="og:description" content={track.description || `Listen to ${track.title} by wallybrain`} />
 	<meta property="og:type" content="music.song" />
-	<meta property="og:url" content={`https://wallyblanchard.com/music/track/${track.slug}`} />
-	<meta property="og:image" content={`https://wallyblanchard.com/music/api/tracks/${track.id}/art`} />
+	<meta property="og:url" content={`https://wallybrain.icu/track/${track.slug}`} />
+	<meta property="og:image" content={`https://wallybrain.icu/api/tracks/${track.id}/art`} />
 	<meta property="og:site_name" content="wallybrain" />
 	{#if track.duration}
 		<meta property="music:duration" content={String(track.duration)} />
@@ -53,7 +53,7 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={track.title} />
 	<meta name="twitter:description" content={track.description || `Listen to ${track.title} by wallybrain`} />
-	<meta name="twitter:image" content={`https://wallyblanchard.com/music/api/tracks/${track.id}/art`} />
+	<meta name="twitter:image" content={`https://wallybrain.icu/api/tracks/${track.id}/art`} />
 </svelte:head>
 
 <div class="relative max-w-3xl mx-auto px-4 py-8" style={ambientStyle}>

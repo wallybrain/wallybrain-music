@@ -7,7 +7,7 @@ export default {
       precompress: true
     }),
     paths: {
-      base: '/music'
+      base: ''
     }
   }
 };
