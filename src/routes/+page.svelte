@@ -21,4 +21,6 @@
       <p class="text-text-muted">No releases yet.</p>
     </div>
   {/if}
+
+  <div class="mt-6 h-8 rounded-lg border border-border-subtle/50 backdrop-blur-md bg-surface-base/80"></div>
 </div>
