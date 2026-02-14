@@ -2,7 +2,6 @@
   import { enhance } from '$app/forms';
   import { base } from '$app/paths';
   import { onMount } from 'svelte';
-  import Sortable from 'sortablejs';
   import CoverArt from '$lib/components/CoverArt.svelte';
   import { formatTime } from '$lib/utils/formatTime';
 
@@ -23,7 +22,7 @@
 
   let trackList: TrackItem[] = $state([]);
   let trackListEl: HTMLDivElement | undefined = $state();
-  let sortableInstance: Sortable | undefined;
+  let sortableInstance: any;
 
   let confirmingRemove = $state<string | null>(null);
   let editingTitle = $state<string | null>(null);
@@ -42,7 +41,8 @@
 
   const categories = ['track', 'set', 'experiment', 'export', 'album', 'playlist'] as const;
 
-  onMount(() => {
+  onMount(async () => {
+    const { default: Sortable } = await import('sortablejs');
     if (trackListEl) {
       sortableInstance = Sortable.create(trackListEl, {
         handle: '.drag-handle',
