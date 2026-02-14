@@ -2,6 +2,7 @@ import type { Handle } from '@sveltejs/kit';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { db } from '$lib/server/db/client';
 import { startQueueProcessor } from '$lib/server/queue';
+import { verifyAutheliaSession } from '$lib/server/security';
 
 migrate(db, { migrationsFolder: './drizzle' });
 startQueueProcessor();
@@ -28,33 +29,16 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	}
 
-	// Auth guard: admin pages verified via Authelia, API writes just need a valid session cookie
-	if (pathname.startsWith('/admin')) {
+	// Auth guard: both admin pages and API writes verified via Authelia
+	if (pathname.startsWith('/admin') || (pathname.startsWith('/api/') && method !== 'GET' && method !== 'HEAD')) {
 		const session = event.cookies.get('authelia_session');
 		if (!session) {
 			return new Response('Unauthorized', { status: 401 });
 		}
 
-		try {
-			const cookieHeader = event.request.headers.get('cookie') || '';
-			const res = await fetch('http://authelia:9091/api/verify', {
-				method: 'GET',
-				headers: {
-					Cookie: cookieHeader,
-					'X-Original-URL': `https://wallybrain.icu${pathname}`,
-				},
-			});
-
-			if (res.status !== 200) {
-				return new Response('Unauthorized', { status: 401 });
-			}
-		} catch {
-			return new Response('Auth service unavailable', { status: 503 });
-		}
-	} else if (pathname.startsWith('/api/') && method !== 'GET') {
-		// API writes: require session cookie (CSRF origin check above provides additional protection)
-		const session = event.cookies.get('authelia_session');
-		if (!session) {
+		const cookieHeader = event.request.headers.get('cookie') || '';
+		const valid = await verifyAutheliaSession(cookieHeader, `https://wallybrain.icu${pathname}`);
+		if (!valid) {
 			return new Response('Unauthorized', { status: 401 });
 		}
 	}

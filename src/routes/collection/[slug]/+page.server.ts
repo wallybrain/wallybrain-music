@@ -4,7 +4,7 @@ import { eq, and, asc } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params, cookies }) => {
+export const load: PageServerLoad = async ({ params, parent }) => {
 	const collection = db
 		.select()
 		.from(collections)
@@ -51,7 +51,8 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		tagsByTrack.get(tt.trackId)!.push(tt.name);
 	}
 
-	const canEdit = !!cookies.get('authelia_session');
+	const { isAuthenticated } = await parent();
+	const canEdit = isAuthenticated;
 
 	return {
 		collection,

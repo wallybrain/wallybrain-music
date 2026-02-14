@@ -37,3 +37,23 @@ export async function validateImageBuffer(
 
 export const MAX_AUDIO_SIZE = 200 * 1024 * 1024; // 200MB
 export const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+
+/**
+ * Verify an Authelia session cookie is valid by calling Authelia's verify API.
+ * Returns true if the session is authenticated, false otherwise.
+ */
+export async function verifyAutheliaSession(cookieHeader: string, originalUrl: string): Promise<boolean> {
+	if (!cookieHeader) return false;
+	try {
+		const res = await fetch('http://authelia:9091/api/verify', {
+			method: 'GET',
+			headers: {
+				Cookie: cookieHeader,
+				'X-Original-URL': originalUrl,
+			},
+		});
+		return res.status === 200;
+	} catch {
+		return false;
+	}
+}
