@@ -22,7 +22,7 @@
     </div>
   {/if}
 
-  <div class="mt-6 logo-panel rounded-lg px-4 py-3 flex items-center justify-center">
+  <div class="mt-6 logo-panel rounded-lg px-4 flex items-center justify-center" style="height: calc(clamp(3.5rem, 12vw, 7rem) + 1.5rem);">
     <span class="text-[10px] font-mono uppercase tracking-widest text-text-muted/40">{data.collections.length} release{data.collections.length === 1 ? '' : 's'}</span>
   </div>
 </div>
