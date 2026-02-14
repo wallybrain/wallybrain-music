@@ -3,7 +3,7 @@ import { collections, collectionTracks, tracks } from '$lib/server/db/schema';
 import { eq, and, ne, asc } from 'drizzle-orm';
 import { fail, error, redirect } from '@sveltejs/kit';
 import { extractAndResizeArt, extractDominantColor } from '$lib/server/processors/artwork';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, unlinkSync, existsSync } from 'node:fs';
 import type { Actions, PageServerLoad } from './$types';
 import { validateImageBuffer, MAX_IMAGE_SIZE } from '$lib/server/security';
 
@@ -109,6 +109,22 @@ export const actions = {
 				.where(eq(collections.id, params.id))
 				.run();
 		}
+
+		redirect(303, '/admin/collections');
+	},
+
+	delete: async ({ params }) => {
+		const collection = db.select().from(collections).where(eq(collections.id, params.id)).get();
+		if (!collection) throw error(404, 'Collection not found');
+
+		// Delete collection (cascades collection_tracks — tracks are preserved)
+		db.delete(collections).where(eq(collections.id, params.id)).run();
+
+		// Clean up cover art
+		const artPath = `/data/art/collections/${params.id}.jpg`;
+		try {
+			if (existsSync(artPath)) unlinkSync(artPath);
+		} catch { /* file already gone */ }
 
 		redirect(303, '/admin/collections');
 	},

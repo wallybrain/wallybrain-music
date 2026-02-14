@@ -86,8 +86,8 @@
   </nav>
 
   {#if isHome}
-    <div class="w-full flex items-end justify-center" style="min-height: 20vh;">
-      <div class="pb-4">
+    <div class="w-full flex items-end justify-center" style="min-height: 5vh;">
+      <div class="pb-2">
         <WallybrainLogo size="lg" />
       </div>
     </div>

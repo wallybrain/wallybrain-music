@@ -11,12 +11,6 @@ const ALLOWED_ORIGINS = new Set([
 	'https://wallyblanchard.com',
 ]);
 
-function isProtectedRoute(pathname: string, method: string): boolean {
-	if (pathname.startsWith('/admin')) return true;
-	if (pathname.startsWith('/api/') && method !== 'GET') return true;
-	return false;
-}
-
 export const handle: Handle = async ({ event, resolve }) => {
 	const { pathname } = event.url;
 	const method = event.request.method;
@@ -34,18 +28,19 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	}
 
-	// Auth guard for protected routes
-	if (isProtectedRoute(pathname, method)) {
+	// Auth guard: admin pages verified via Authelia, API writes just need a valid session cookie
+	if (pathname.startsWith('/admin')) {
 		const session = event.cookies.get('authelia_session');
 		if (!session) {
 			return new Response('Unauthorized', { status: 401 });
 		}
 
 		try {
+			const cookieHeader = event.request.headers.get('cookie') || '';
 			const res = await fetch('http://authelia:9091/api/verify', {
 				method: 'GET',
 				headers: {
-					Cookie: `authelia_session=${session}`,
+					Cookie: cookieHeader,
 					'X-Original-URL': `https://wallybrain.icu${pathname}`,
 				},
 			});
@@ -55,6 +50,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 			}
 		} catch {
 			return new Response('Auth service unavailable', { status: 503 });
+		}
+	} else if (pathname.startsWith('/api/') && method !== 'GET') {
+		// API writes: require session cookie (CSRF origin check above provides additional protection)
+		const session = event.cookies.get('authelia_session');
+		if (!session) {
+			return new Response('Unauthorized', { status: 401 });
 		}
 	}
 

@@ -102,13 +102,25 @@
     <div class="space-y-2">
       <label for="coverArt" class="text-sm text-text-tertiary">Cover Art</label>
       <CoverArt trackId={track.id} artPath={track.artPath} title={track.title} size="md" />
-      <input
-        type="file"
-        id="coverArt"
-        name="coverArt"
-        accept="image/*"
-        class="text-sm text-text-tertiary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-surface-overlay file:text-text-secondary hover:file:bg-surface-hover"
-      />
+      <div class="flex items-center gap-3">
+        <input
+          type="file"
+          id="coverArt"
+          name="coverArt"
+          accept="image/*"
+          class="text-sm text-text-tertiary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-surface-overlay file:text-text-secondary hover:file:bg-surface-hover"
+        />
+        {#if track.artPath}
+          <form method="POST" action="?/deleteArt" use:enhance={({ cancel }) => { if (!confirm('Remove cover art from this track?')) { cancel(); return; } }} class="inline">
+            <button
+              type="submit"
+              class="text-xs text-red-400 hover:text-red-300 transition-colors"
+            >
+              Remove Art
+            </button>
+          </form>
+        {/if}
+      </div>
     </div>
 
     <div class="mt-6 flex justify-end">
@@ -129,3 +141,51 @@
     </a>
   </div>
 {/if}
+
+<!-- Danger Zone -->
+<div class="mt-12 border border-red-500/30 rounded-lg p-5">
+  <h2 class="text-sm font-semibold text-red-400 mb-4">Danger Zone</h2>
+
+  <div class="space-y-4">
+    <!-- Replace Audio -->
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <p class="text-sm text-text-secondary">Replace Audio</p>
+        <p class="text-xs text-text-muted">Upload a new audio file. Metadata and art are preserved.</p>
+      </div>
+      <form method="POST" action="?/reupload" use:enhance={({ cancel }) => { if (!confirm('Replace the audio file? The track will be re-processed.')) { cancel(); return; } }} enctype="multipart/form-data" class="flex items-center gap-2 shrink-0">
+        <input
+          type="file"
+          name="audioFile"
+          accept="audio/*"
+          required
+          class="text-xs text-text-tertiary w-48 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:bg-amber-500/20 file:text-amber-400 hover:file:bg-amber-500/30"
+        />
+        <button
+          type="submit"
+          class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 px-4 py-1.5 rounded text-sm font-medium transition-colors"
+        >
+          Reupload
+        </button>
+      </form>
+    </div>
+
+    <hr class="border-red-500/10" />
+
+    <!-- Delete Track -->
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <p class="text-sm text-text-secondary">Delete Track</p>
+        <p class="text-xs text-text-muted">Permanently remove this track and all associated files.</p>
+      </div>
+      <form method="POST" action="?/delete" use:enhance={({ cancel }) => { if (!confirm('Permanently delete this track? This cannot be undone.')) { cancel(); return; } }} class="shrink-0">
+        <button
+          type="submit"
+          class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-4 py-1.5 rounded text-sm font-medium transition-colors"
+        >
+          Delete Track
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

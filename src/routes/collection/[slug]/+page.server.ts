@@ -55,6 +55,8 @@ export const load: PageServerLoad = async ({ params }) => {
 		collection,
 		tracks: orderedTracks.map(t => ({
 			...t,
+			artPath: t.artPath ?? collection.artPath,
+			dominantColor: t.dominantColor ?? collection.dominantColor,
 			tags: tagsByTrack.get(t.id) ?? [],
 		})),
 	};

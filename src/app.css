@@ -92,6 +92,7 @@
     color: var(--color-text-secondary);
     font-family: var(--font-body);
     scroll-behavior: smooth;
+    zoom: 1.4;
   }
 
   @media (min-width: 768px) {

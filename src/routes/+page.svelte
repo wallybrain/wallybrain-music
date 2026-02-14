@@ -1,6 +1,7 @@
 <script lang="ts">
   import TrackCard from '$lib/components/TrackCard.svelte';
   import TrackCardGrid from '$lib/components/TrackCardGrid.svelte';
+  import CollectionCard from '$lib/components/CollectionCard.svelte';
   import FilterBar from '$lib/components/FilterBar.svelte';
   import { base } from '$app/paths';
   import { fly } from 'svelte/transition';
@@ -25,13 +26,7 @@
   <meta name="description" content="Electronic music by wallybrain" />
 </svelte:head>
 
-<div class="max-w-3xl mx-auto px-4">
-
-  <FilterBar
-    availableTags={data.availableTags}
-    activeCategory={data.activeCategory}
-    activeTags={data.activeTags}
-  />
+<div class="max-w-3xl mx-auto px-4 pt-2">
 
   <div class="flex justify-end mb-3">
     <div class="bg-surface-overlay rounded-lg p-0.5 flex items-center gap-1">
@@ -63,6 +58,22 @@
     </div>
   </div>
 
+  {#if data.collections.length > 0}
+    {#if layoutPreference.mode === 'grid'}
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
+        {#each data.collections as collection (collection.id)}
+          <CollectionCard {collection} mode="grid" />
+        {/each}
+      </div>
+    {:else}
+      <div class="space-y-3 mb-6">
+        {#each data.collections as collection (collection.id)}
+          <CollectionCard {collection} mode="list" />
+        {/each}
+      </div>
+    {/if}
+  {/if}
+
   {#if data.tracks.length === 0}
     {#if hasActiveFilters}
       <p class="text-text-muted">No tracks match your filters. <a href="?" class="text-accent-muted hover:text-accent-muted-hover underline underline-offset-2">Clear all filters</a></p>
@@ -84,4 +95,12 @@
       {/each}
     </div>
   {/if}
+
+  <div class="mt-8">
+    <FilterBar
+      availableTags={data.availableTags}
+      activeCategory={data.activeCategory}
+      activeTags={data.activeTags}
+    />
+  </div>
 </div>

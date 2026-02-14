@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db/client';
-import { tracks, tags, trackTags } from '$lib/server/db/schema';
+import { tracks, tags, trackTags, collections, collectionTracks } from '$lib/server/db/schema';
 import { eq, and, exists, desc, sql, type SQL } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
@@ -65,11 +65,40 @@ export const load: PageServerLoad = async ({ url }) => {
     .all()
     .map(t => t.name);
 
+  // Build collection art fallback for tracks without their own art
+  const collectionArtRows = db.select({
+      trackId: collectionTracks.trackId,
+      artPath: collections.artPath,
+      dominantColor: collections.dominantColor,
+    })
+    .from(collectionTracks)
+    .innerJoin(collections, eq(collectionTracks.collectionId, collections.id))
+    .all();
+
+  const collectionArtMap = new Map<string, { artPath: string; dominantColor: string | null }>();
+  for (const row of collectionArtRows) {
+    if (row.artPath && !collectionArtMap.has(row.trackId)) {
+      collectionArtMap.set(row.trackId, { artPath: row.artPath, dominantColor: row.dominantColor });
+    }
+  }
+
+  const allCollections = db
+    .select()
+    .from(collections)
+    .orderBy(desc(collections.createdAt))
+    .all();
+
   return {
-    tracks: readyTracks.map(t => ({
-      ...t,
-      tags: tagsByTrack.get(t.id) ?? [],
-    })),
+    tracks: readyTracks.map(t => {
+      const fallback = !t.artPath ? collectionArtMap.get(t.id) : null;
+      return {
+        ...t,
+        artPath: t.artPath ?? fallback?.artPath ?? null,
+        dominantColor: t.dominantColor ?? fallback?.dominantColor ?? null,
+        tags: tagsByTrack.get(t.id) ?? [],
+      };
+    }),
+    collections: allCollections,
     availableTags,
     activeCategory: category,
     activeTags: selectedTags,

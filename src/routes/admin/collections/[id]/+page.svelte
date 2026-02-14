@@ -122,3 +122,23 @@
     </a>
   </div>
 {/if}
+
+<!-- Danger Zone -->
+<div class="mt-12 border border-red-500/30 rounded-lg p-5">
+  <h2 class="text-sm font-semibold text-red-400 mb-4">Danger Zone</h2>
+
+  <div class="flex items-center justify-between gap-4">
+    <div>
+      <p class="text-sm text-text-secondary">Delete Collection</p>
+      <p class="text-xs text-text-muted">Remove this collection. Tracks will be preserved (just unlinked).</p>
+    </div>
+    <form method="POST" action="?/delete" use:enhance={({ cancel }) => { if (!confirm('Delete this collection? Tracks will NOT be deleted, just unlinked.')) { cancel(); return; } }} class="shrink-0">
+      <button
+        type="submit"
+        class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-4 py-1.5 rounded text-sm font-medium transition-colors"
+      >
+        Delete Collection
+      </button>
+    </form>
+  </div>
+</div>
