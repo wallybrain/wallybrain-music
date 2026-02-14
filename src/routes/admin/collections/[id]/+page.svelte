@@ -1,13 +1,130 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import { base } from '$app/paths';
+  import { onMount } from 'svelte';
+  import Sortable from 'sortablejs';
   import CoverArt from '$lib/components/CoverArt.svelte';
   import { formatTime } from '$lib/utils/formatTime';
 
   let { data, form } = $props();
 
   let collection = $derived(data.collection);
-  let orderedTracks = $derived(data.tracks);
+
+  type TrackItem = {
+    id: string;
+    title: string;
+    slug: string;
+    duration: number | null;
+    artPath: string | null;
+    status: string;
+    category: string;
+    position: number;
+  };
+
+  let trackList: TrackItem[] = $state([]);
+  let trackListEl: HTMLDivElement | undefined = $state();
+  let sortableInstance: Sortable | undefined;
+
+  let confirmingRemove = $state<string | null>(null);
+  let editingTitle = $state<string | null>(null);
+  let editingTitleValue = $state('');
+  let savingTrack = $state<string | null>(null);
+  let flashTrack = $state<string | null>(null);
+
+  $effect(() => {
+    trackList = data.tracks.map((t: TrackItem) => ({ ...t }));
+  });
+
+  const categories = ['track', 'set', 'experiment', 'export', 'album', 'playlist'] as const;
+
+  onMount(() => {
+    if (trackListEl) {
+      sortableInstance = Sortable.create(trackListEl, {
+        handle: '.drag-handle',
+        animation: 150,
+        ghostClass: 'opacity-30',
+        onEnd: async (evt) => {
+          const item = trackList.splice(evt.oldIndex!, 1)[0];
+          trackList.splice(evt.newIndex!, 0, item);
+          const positions = trackList.map((t, i) => ({ trackId: t.id, position: i }));
+          const res = await fetch(`${base}/api/collections/${collection.id}/tracks/reorder`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ positions }),
+          });
+          if (!res.ok) location.reload();
+        },
+      });
+    }
+    return () => sortableInstance?.destroy();
+  });
+
+  async function removeTrack(trackId: string) {
+    const res = await fetch(`${base}/api/collections/${collection.id}/tracks/${trackId}`, {
+      method: 'DELETE',
+    });
+    if (res.ok) {
+      trackList = trackList.filter(t => t.id !== trackId);
+    }
+    confirmingRemove = null;
+  }
+
+  function startEditTitle(track: TrackItem) {
+    editingTitle = track.id;
+    editingTitleValue = track.title;
+  }
+
+  async function saveTitle(track: TrackItem) {
+    const newTitle = editingTitleValue.trim();
+    if (!newTitle || newTitle === track.title) {
+      editingTitle = null;
+      return;
+    }
+    savingTrack = track.id;
+    const res = await fetch(`${base}/api/tracks/${track.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: newTitle }),
+    });
+    savingTrack = null;
+    if (res.ok) {
+      const idx = trackList.findIndex(t => t.id === track.id);
+      if (idx !== -1) trackList[idx].title = newTitle;
+      flashSuccess(track.id);
+    }
+    editingTitle = null;
+  }
+
+  async function saveCategory(track: TrackItem, newCategory: string) {
+    if (newCategory === track.category) return;
+    savingTrack = track.id;
+    const res = await fetch(`${base}/api/tracks/${track.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category: newCategory }),
+    });
+    savingTrack = null;
+    if (res.ok) {
+      const idx = trackList.findIndex(t => t.id === track.id);
+      if (idx !== -1) trackList[idx].category = newCategory;
+      flashSuccess(track.id);
+    }
+  }
+
+  function flashSuccess(trackId: string) {
+    flashTrack = trackId;
+    setTimeout(() => { flashTrack = null; }, 600);
+  }
+
+  function handleTitleKeydown(e: KeyboardEvent, track: TrackItem) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      (e.target as HTMLInputElement).blur();
+    }
+    if (e.key === 'Escape') {
+      editingTitle = null;
+    }
+  }
 
   const inputClasses = 'w-full bg-surface-overlay border border-border-default rounded-lg px-3 py-2 text-text-secondary focus:border-accent focus:outline-none';
 
@@ -89,27 +206,92 @@
 </form>
 
 <!-- Track list -->
-{#if orderedTracks.length > 0}
+{#if trackList.length > 0}
   <div class="mt-8">
-    <h2 class="text-lg font-semibold text-text-secondary mb-3">Tracks ({orderedTracks.length})</h2>
-    <div class="space-y-2">
-      {#each orderedTracks as track (track.id)}
-        <a
-          href="{base}/admin/tracks/{track.id}"
-          class="flex items-center gap-3 p-3 rounded-lg bg-surface-raised hover:bg-surface-hover transition-colors"
+    <h2 class="text-lg font-semibold text-text-secondary mb-3">Tracks ({trackList.length})</h2>
+    <div class="space-y-2" bind:this={trackListEl}>
+      {#each trackList as track, i (track.id)}
+        <div
+          data-id={track.id}
+          class="flex items-center gap-3 p-3 rounded-lg bg-surface-raised transition-colors {flashTrack === track.id ? 'flash-success' : ''} {savingTrack === track.id ? 'opacity-60' : ''}"
         >
-          <span class="text-xs text-text-muted font-mono w-6 text-right shrink-0">{track.position + 1}</span>
+          <!-- Drag handle -->
+          <span class="drag-handle cursor-grab text-text-muted hover:text-text-secondary text-lg select-none shrink-0" title="Drag to reorder">&#x2837;</span>
+
+          <!-- Position number -->
+          <span class="text-xs text-text-muted font-mono w-6 text-right shrink-0">{i + 1}</span>
+
+          <!-- Cover art -->
           <CoverArt trackId={track.id} artPath={track.artPath} title={track.title} size="sm" />
+
+          <!-- Title + duration -->
           <div class="flex-1 min-w-0">
-            <p class="text-text-secondary font-medium truncate">{track.title}</p>
+            {#if editingTitle === track.id}
+              <input
+                type="text"
+                bind:value={editingTitleValue}
+                onblur={() => saveTitle(track)}
+                onkeydown={(e) => handleTitleKeydown(e, track)}
+                class="bg-surface-overlay border border-accent rounded px-2 py-0.5 text-text-secondary font-medium text-sm w-full focus:outline-none"
+                autofocus
+              />
+            {:else}
+              <button
+                type="button"
+                class="text-text-secondary font-medium truncate cursor-text hover:text-accent-muted transition-colors text-left w-full bg-transparent border-none p-0 text-sm"
+                onclick={() => startEditTitle(track)}
+                title="Click to edit title"
+              >{track.title}</button>
+            {/if}
             {#if track.duration}
               <p class="text-xs text-text-muted font-mono tabular-nums">{formatTime(track.duration)}</p>
             {/if}
           </div>
-          <span class="px-2 py-0.5 rounded text-xs font-medium {statusColors[track.status] || 'text-text-tertiary'}">
+
+          <!-- Category dropdown -->
+          <select
+            class="bg-surface-overlay border border-border-subtle rounded px-1.5 py-0.5 text-xs text-text-muted focus:border-accent focus:outline-none cursor-pointer shrink-0"
+            value={track.category || 'track'}
+            onchange={(e) => saveCategory(track, (e.target as HTMLSelectElement).value)}
+          >
+            {#each categories as cat}
+              <option value={cat} selected={cat === (track.category || 'track')}>{cat}</option>
+            {/each}
+          </select>
+
+          <!-- Status badge -->
+          <span class="px-2 py-0.5 rounded text-xs font-medium shrink-0 {statusColors[track.status] || 'text-text-tertiary'}">
             {track.status}
           </span>
-        </a>
+
+          <!-- Remove / confirm -->
+          {#if confirmingRemove === track.id}
+            <span class="flex items-center gap-1 shrink-0 text-xs">
+              <span class="text-text-muted">Remove?</span>
+              <button
+                onclick={() => removeTrack(track.id)}
+                class="text-red-400 hover:text-red-300 font-medium px-1"
+              >Yes</button>
+              <button
+                onclick={() => confirmingRemove = null}
+                class="text-text-muted hover:text-text-secondary font-medium px-1"
+              >No</button>
+            </span>
+          {:else}
+            <button
+              onclick={() => confirmingRemove = track.id}
+              class="text-text-muted hover:text-red-400 transition-colors shrink-0 text-sm"
+              title="Remove from collection"
+            >&times;</button>
+          {/if}
+
+          <!-- Edit link -->
+          <a
+            href="{base}/admin/tracks/{track.id}"
+            class="text-text-muted hover:text-accent-muted transition-colors shrink-0 text-sm"
+            title="Edit track details"
+          >&#x270E;</a>
+        </div>
       {/each}
     </div>
   </div>
@@ -142,3 +324,13 @@
     </form>
   </div>
 </div>
+
+<style>
+  .flash-success {
+    animation: flash-green 0.6s ease-out;
+  }
+  @keyframes flash-green {
+    0% { background-color: rgba(16, 185, 129, 0.25); }
+    100% { background-color: transparent; }
+  }
+</style>

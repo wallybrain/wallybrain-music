@@ -26,6 +26,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			duration: tracks.duration,
 			artPath: tracks.artPath,
 			status: tracks.status,
+			category: tracks.category,
 			position: collectionTracks.position,
 		})
 		.from(collectionTracks)
