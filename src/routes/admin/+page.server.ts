@@ -13,6 +13,7 @@ export const load: PageServerLoad = async () => {
 			category: tracks.category,
 			duration: tracks.duration,
 			artPath: tracks.artPath,
+			dominantColor: tracks.dominantColor,
 			errorMessage: tracks.errorMessage,
 			createdAt: tracks.createdAt,
 			updatedAt: tracks.updatedAt,
