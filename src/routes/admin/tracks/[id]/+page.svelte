@@ -129,8 +129,6 @@
         <option value="set" selected={track.category === 'set'}>set</option>
         <option value="experiment" selected={track.category === 'experiment'}>experiment</option>
         <option value="export" selected={track.category === 'export'}>export</option>
-        <option value="album" selected={track.category === 'album'}>album</option>
-        <option value="playlist" selected={track.category === 'playlist'}>playlist</option>
       </select>
     </div>
 

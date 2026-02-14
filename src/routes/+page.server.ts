@@ -1,15 +1,45 @@
 import { db } from '$lib/server/db/client';
 import { tracks, tags, trackTags, collections, collectionTracks } from '$lib/server/db/schema';
-import { eq, and, exists, desc, sql, type SQL } from 'drizzle-orm';
+import { eq, and, exists, desc, sql, notExists, type SQL } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
   const category = url.searchParams.has('category') ? url.searchParams.get('category') || null : 'album';
   const selectedTags = url.searchParams.getAll('tag');
 
+  // "album" and "playlist" filters show collections, not individual tracks
+  const isCollectionFilter = category === 'album' || category === 'playlist';
+
+  // Fetch collections (filtered by type when applicable)
+  let filteredCollections: typeof allCollections = [];
+  const allCollections = db
+    .select()
+    .from(collections)
+    .orderBy(desc(collections.createdAt))
+    .all();
+
+  if (isCollectionFilter) {
+    filteredCollections = allCollections.filter(c => c.type === category);
+  } else if (!category) {
+    // "All" — show all collections
+    filteredCollections = allCollections;
+  }
+  // Other category filters (track/set/experiment/export) — no collections shown
+
+  // Fetch standalone tracks (not in any collection), filtered by category
   const filters: SQL[] = [eq(tracks.status, 'ready')];
 
-  if (category) {
+  // Exclude tracks that belong to a collection
+  const inCollectionSq = db
+    .select({ x: sql`1` })
+    .from(collectionTracks)
+    .where(eq(collectionTracks.trackId, tracks.id));
+  filters.push(notExists(inCollectionSq));
+
+  // For collection filters, don't show individual tracks
+  if (isCollectionFilter) {
+    // No standalone tracks shown when filtering by album/playlist
+  } else if (category) {
     filters.push(eq(tracks.category, category));
   }
 
@@ -24,7 +54,8 @@ export const load: PageServerLoad = async ({ url }) => {
     }
   }
 
-  const readyTracks = db
+  // Only query tracks if not a pure collection filter
+  const readyTracks = isCollectionFilter ? [] : db
     .select({
       id: tracks.id,
       title: tracks.title,
@@ -82,12 +113,6 @@ export const load: PageServerLoad = async ({ url }) => {
     }
   }
 
-  const allCollections = db
-    .select()
-    .from(collections)
-    .orderBy(desc(collections.createdAt))
-    .all();
-
   return {
     tracks: readyTracks.map(t => {
       const fallback = !t.artPath ? collectionArtMap.get(t.id) : null;
@@ -98,7 +123,7 @@ export const load: PageServerLoad = async ({ url }) => {
         tags: tagsByTrack.get(t.id) ?? [],
       };
     }),
-    collections: allCollections,
+    collections: filteredCollections,
     availableTags,
     activeCategory: category,
     activeTags: selectedTags,

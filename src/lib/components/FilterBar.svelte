@@ -12,12 +12,12 @@
   } = $props();
 
   const categories = [
+    { value: 'album', label: 'Albums' },
     { value: null, label: 'All' },
-    { value: 'track', label: 'Finished' },
+    { value: 'track', label: 'Tracks' },
     { value: 'set', label: 'Sets' },
     { value: 'experiment', label: 'Experiments' },
     { value: 'export', label: 'Exports' },
-    { value: 'album', label: 'Albums' },
     { value: 'playlist', label: 'Playlists' },
   ];
 

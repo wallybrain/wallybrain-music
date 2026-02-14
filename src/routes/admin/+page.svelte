@@ -75,22 +75,6 @@
     editingTitle = null;
   }
 
-  async function saveCategory(track: TrackRow, newCategory: string) {
-    if (newCategory === track.category) return;
-    savingTrack = track.id;
-    const res = await fetch(`${base}/api/tracks/${track.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ category: newCategory }),
-    });
-    savingTrack = null;
-    if (res.ok) {
-      const idx = trackRows.findIndex(t => t.id === track.id);
-      if (idx !== -1) trackRows[idx].category = newCategory;
-      flashSuccess(track.id);
-    }
-  }
-
   function flashSuccess(id: string) {
     flashTrack = id;
     setTimeout(() => { flashTrack = null; }, 600);
@@ -180,17 +164,6 @@
           {/if}
         </div>
 
-        <!-- Category dropdown -->
-        <select
-          class="bg-surface-overlay border border-border-subtle rounded px-1.5 py-0.5 text-xs text-text-muted focus:border-accent focus:outline-none cursor-pointer shrink-0"
-          value={track.category || 'track'}
-          onchange={(e) => saveCategory(track, (e.target as HTMLSelectElement).value)}
-        >
-          {#each ['track', 'set', 'experiment', 'export', 'album', 'playlist'] as cat}
-            <option value={cat} selected={cat === (track.category || 'track')}>{cat}</option>
-          {/each}
-        </select>
-
         <!-- Status -->
         <span class="px-2 py-0.5 rounded text-xs font-medium {statusColors[track.status] || 'text-text-tertiary'} shrink-0">
           {track.status}
@@ -216,7 +189,7 @@
         onchange={(e) => { executeBatch('setCategory', (e.target as HTMLSelectElement).value); }}
       >
         <option value="" disabled selected>Pick category...</option>
-        {#each ['track', 'set', 'experiment', 'export', 'album', 'playlist'] as cat}
+        {#each ['track', 'set', 'experiment', 'export'] as cat}
           <option value={cat}>{cat}</option>
         {/each}
       </select>
