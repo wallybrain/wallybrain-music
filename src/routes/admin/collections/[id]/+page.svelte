@@ -31,6 +31,11 @@
   let savingTrack = $state<string | null>(null);
   let flashTrack = $state<string | null>(null);
 
+  let showAddTrack = $state(false);
+  let searchQuery = $state('');
+  let searchResults = $state<Array<{id: string, title: string, duration: number | null, artPath: string | null}>>([]);
+  let searchTimeout: ReturnType<typeof setTimeout> | undefined;
+
   $effect(() => {
     trackList = data.tracks.map((t: TrackItem) => ({ ...t }));
   });
@@ -123,6 +128,34 @@
     }
     if (e.key === 'Escape') {
       editingTitle = null;
+    }
+  }
+
+  async function searchTracks(query: string) {
+    if (query.length < 1) { searchResults = []; return; }
+    const res = await fetch(`${base}/api/tracks/search?q=${encodeURIComponent(query)}&exclude=${collection.id}`);
+    if (res.ok) searchResults = await res.json();
+  }
+
+  function handleSearchInput(e: Event) {
+    const value = (e.target as HTMLInputElement).value;
+    searchQuery = value;
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => searchTracks(value), 300);
+  }
+
+  async function addTrackToCollection(result: {id: string, title: string, duration: number | null, artPath: string | null}) {
+    const res = await fetch(`${base}/api/collections/${collection.id}/tracks`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ trackId: result.id }),
+    });
+    if (res.ok) {
+      const { position } = await res.json();
+      trackList = [...trackList, { ...result, slug: '', status: 'ready', category: 'track', position }];
+      searchQuery = '';
+      searchResults = [];
+      showAddTrack = false;
     }
   }
 
@@ -296,6 +329,60 @@
     </div>
   </div>
 {/if}
+
+<!-- Add Track search -->
+<div class="mt-4 relative">
+  {#if !showAddTrack}
+    <button
+      onclick={() => { showAddTrack = true; searchQuery = ''; searchResults = []; }}
+      class="text-sm text-accent-muted hover:text-accent-muted-hover transition-colors font-mono uppercase tracking-wider"
+    >+ Add Track</button>
+  {:else}
+    <div class="space-y-1">
+      <div class="flex items-center gap-2">
+        <input
+          type="text"
+          placeholder="Search tracks..."
+          value={searchQuery}
+          oninput={handleSearchInput}
+          class="flex-1 bg-surface-overlay border border-border-default rounded-lg px-3 py-2 text-sm text-text-secondary focus:border-accent focus:outline-none"
+          autofocus
+          onkeydown={(e) => { if (e.key === 'Escape') { showAddTrack = false; } }}
+        />
+        <button
+          onclick={() => { showAddTrack = false; }}
+          class="text-text-muted hover:text-text-secondary text-sm"
+        >&times;</button>
+      </div>
+      {#if searchResults.length > 0}
+        <div class="absolute left-0 right-0 bg-surface-raised border border-border-default rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+          {#each searchResults as result (result.id)}
+            <button
+              onclick={() => addTrackToCollection(result)}
+              class="w-full flex items-center gap-3 p-2.5 hover:bg-surface-hover transition-colors text-left"
+            >
+              <div class="w-8 h-8 bg-surface-overlay rounded flex items-center justify-center text-text-muted text-xs shrink-0">
+                {#if result.artPath}
+                  <img src="{base}/api/tracks/{result.id}/art" alt="" class="w-8 h-8 rounded object-cover" />
+                {:else}
+                  ♪
+                {/if}
+              </div>
+              <span class="text-sm text-text-secondary flex-1 truncate">{result.title}</span>
+              {#if result.duration}
+                <span class="text-xs text-text-muted font-mono tabular-nums shrink-0">{formatTime(result.duration)}</span>
+              {/if}
+            </button>
+          {/each}
+        </div>
+      {:else if searchQuery.length > 0}
+        <div class="absolute left-0 right-0 bg-surface-raised border border-border-default rounded-lg p-3 text-sm text-text-muted text-center z-10">
+          No tracks found
+        </div>
+      {/if}
+    </div>
+  {/if}
+</div>
 
 {#if collection.slug}
   <div class="mt-6">
