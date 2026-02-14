@@ -4,7 +4,7 @@ import { eq, and, exists, desc, sql, type SQL } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url }) => {
-  const category = url.searchParams.get('category');
+  const category = url.searchParams.has('category') ? url.searchParams.get('category') || null : 'album';
   const selectedTags = url.searchParams.getAll('tag');
 
   const filters: SQL[] = [eq(tracks.status, 'ready')];

@@ -55,9 +55,9 @@
         name="category"
         value={cat.value ?? ''}
         onclick={(e) => { e.preventDefault(); selectCategory(cat.value); }}
-        class="px-3 py-1.5 text-sm rounded-full transition-colors {activeCategory === cat.value
+        class="px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest rounded-full transition-colors {activeCategory === cat.value
           ? 'bg-accent text-text-primary'
-          : 'bg-surface-overlay text-text-tertiary hover:bg-surface-hover hover:text-text-secondary'}"
+          : 'text-accent-muted hover:text-accent-muted-hover hover:bg-surface-overlay/50'}"
       >
         {cat.label}
       </button>
@@ -72,9 +72,9 @@
           name="tag"
           value={tag}
           onclick={(e) => { e.preventDefault(); toggleTag(tag); }}
-          class="px-2.5 py-1 text-xs rounded-full transition-colors {activeTags.includes(tag)
+          class="px-2.5 py-1 text-[10px] font-mono uppercase tracking-widest rounded-full transition-colors {activeTags.includes(tag)
             ? 'bg-accent text-text-primary'
-            : 'bg-surface-overlay/70 text-text-muted hover:bg-surface-hover hover:text-text-tertiary'}"
+            : 'text-accent-muted hover:text-accent-muted-hover hover:bg-surface-overlay/50'}"
         >
           {tag}
         </button>

@@ -29,32 +29,32 @@
       <div class="flex items-center gap-0.5 sm:gap-1">
         <a
           href="{base}/"
-          class="px-1.5 sm:px-2 py-0.5 rounded text-[11px] sm:text-xs font-medium transition-colors whitespace-nowrap
+          class="px-1.5 sm:px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-mono tracking-wider sm:tracking-widest transition-colors whitespace-nowrap
             {isHome
               ? 'bg-surface-hover text-text-primary'
-              : 'text-text-muted hover:text-text-secondary hover:bg-surface-overlay/50'}"
+              : 'text-accent-muted hover:text-accent-muted-hover hover:bg-surface-overlay/50'}"
         >
-          Home
+          HOME
         </a>
         <a
           href="{base}/admin"
           data-sveltekit-reload
-          class="px-1.5 sm:px-2 py-0.5 rounded text-[11px] sm:text-xs font-medium transition-colors whitespace-nowrap
+          class="px-1.5 sm:px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-mono tracking-wider sm:tracking-widest transition-colors whitespace-nowrap
             {isAdmin && !isUpload
               ? 'bg-surface-hover text-text-primary'
-              : 'text-text-muted hover:text-text-secondary hover:bg-surface-overlay/50'}"
+              : 'text-accent-muted hover:text-accent-muted-hover hover:bg-surface-overlay/50'}"
         >
-          Admin
+          ADMIN
         </a>
         <a
           href="{base}/admin/upload"
           data-sveltekit-reload
-          class="px-1.5 sm:px-2 py-0.5 rounded text-[11px] sm:text-xs font-medium transition-colors whitespace-nowrap
+          class="px-1.5 sm:px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-mono tracking-wider sm:tracking-widest transition-colors whitespace-nowrap
             {isUpload
               ? 'bg-surface-hover text-text-primary'
-              : 'text-text-muted hover:text-text-secondary hover:bg-surface-overlay/50'}"
+              : 'text-accent-muted hover:text-accent-muted-hover hover:bg-surface-overlay/50'}"
         >
-          Upload
+          UPLOAD
         </a>
       </div>
       <div class="flex items-center gap-0.5 sm:gap-1">
