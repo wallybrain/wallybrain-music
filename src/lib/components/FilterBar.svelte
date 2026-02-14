@@ -47,7 +47,7 @@
   }
 </script>
 
-<form method="GET" action="" class="mb-6 space-y-3">
+<form method="GET" action="" class="space-y-3">
   <div class="flex flex-wrap items-center gap-2">
     {#each categories as cat}
       <button
@@ -79,18 +79,6 @@
           {tag}
         </button>
       {/each}
-    </div>
-  {/if}
-
-  {#if hasActiveFilters}
-    <div class="flex items-center">
-      <button
-        type="button"
-        onclick={() => clearAll()}
-        class="text-xs text-text-muted hover:text-text-secondary transition-colors underline underline-offset-2"
-      >
-        Clear all filters
-      </button>
     </div>
   {/if}
 

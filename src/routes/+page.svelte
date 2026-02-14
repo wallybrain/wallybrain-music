@@ -28,8 +28,9 @@
 
 <div class="max-w-3xl mx-auto px-4 pt-2">
 
-  <div class="flex justify-end mb-3">
-    <div class="bg-surface-overlay rounded-lg p-0.5 flex items-center gap-1">
+  <!-- Layout toggle bar -->
+  <div class="metal-panel rounded-lg px-4 py-2 flex items-center justify-end mb-4">
+    <div class="flex items-center gap-1">
       <button
         onclick={() => layoutPreference.setMode('list')}
         class="p-1.5 rounded-md transition-colors {layoutPreference.mode === 'list' ? 'bg-surface-hover text-text-primary' : 'text-text-muted hover:text-text-secondary'}"
@@ -75,11 +76,7 @@
   {/if}
 
   {#if data.tracks.length === 0}
-    {#if hasActiveFilters}
-      <p class="text-text-muted">No tracks match your filters. <a href="?" class="text-accent-muted hover:text-accent-muted-hover underline underline-offset-2">Clear all filters</a></p>
-    {:else}
-      <p class="text-text-muted">No tracks yet.</p>
-    {/if}
+    <div></div>
   {:else if layoutPreference.mode === 'grid'}
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
       {#each data.tracks as track, i (track.id)}
@@ -96,7 +93,8 @@
     </div>
   {/if}
 
-  <div class="mt-8">
+  <!-- Filter bar -->
+  <div class="metal-panel rounded-lg px-4 py-3 mt-6">
     <FilterBar
       availableTags={data.availableTags}
       activeCategory={data.activeCategory}
