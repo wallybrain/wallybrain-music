@@ -1,14 +1,16 @@
 import { db } from '$lib/server/db/client';
 import { collections } from '$lib/server/db/schema';
-import { desc } from 'drizzle-orm';
+import { asc, desc } from 'drizzle-orm';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ parent }) => {
   const allCollections = db
     .select()
     .from(collections)
-    .orderBy(desc(collections.createdAt))
+    .orderBy(asc(collections.sortOrder), desc(collections.createdAt))
     .all();
 
-  return { collections: allCollections };
+  const { isAuthenticated } = await parent();
+
+  return { collections: allCollections, canEdit: isAuthenticated };
 };

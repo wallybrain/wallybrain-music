@@ -17,8 +17,16 @@
     artPath: t.artPath,
   })));
 
-  function playAll() {
-    if (queueTracks.length > 0) {
+  let isThisPlaying = $derived(
+    playerState.isPlaying &&
+    playerState.queue.length === queueTracks.length &&
+    playerState.queue[0]?.id === queueTracks[0]?.id
+  );
+
+  function togglePlayAll() {
+    if (isThisPlaying) {
+      playerState.togglePlayPause();
+    } else if (queueTracks.length > 0) {
       playerState.play(queueTracks[0], queueTracks, 0);
     }
   }
@@ -287,9 +295,13 @@
         </div>
         <div class="flex items-center gap-3 mt-3">
           {#if queueTracks.length > 0}
-            <button onclick={playAll}
+            <button onclick={togglePlayAll}
               class="bg-accent hover:bg-accent-hover text-text-primary px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center gap-2">
-              <span>&#9654;</span> Play All
+              {#if isThisPlaying}
+                <span>&#9646;&#9646;</span> Pause
+              {:else}
+                <span>&#9654;</span> Play All
+              {/if}
             </button>
           {/if}
         </div>

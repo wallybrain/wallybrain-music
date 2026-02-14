@@ -37,7 +37,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 
 		const cookieHeader = event.request.headers.get('cookie') || '';
-		const valid = await verifyAutheliaSession(cookieHeader, `https://wallybrain.icu${pathname}`);
+		const valid = await verifyAutheliaSession(cookieHeader, 'https://wallybrain.icu/admin');
 		if (!valid) {
 			return new Response('Unauthorized', { status: 401 });
 		}

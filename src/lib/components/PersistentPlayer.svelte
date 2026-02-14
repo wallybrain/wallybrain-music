@@ -70,6 +70,11 @@
 			.then((peaks) => {
 				if (playerState.currentTrack?.id !== trackId) return;
 				wavesurfer!.load(`${base}/api/tracks/${trackId}/audio`, [peaks], track.duration);
+				wavesurfer!.once('ready', () => {
+					if (playerState.isPlaying) {
+						wavesurfer!.play();
+					}
+				});
 			});
 
 		fetch(`${base}/api/tracks/${trackId}/play`, { method: 'POST' });

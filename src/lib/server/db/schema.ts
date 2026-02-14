@@ -10,6 +10,7 @@ export const collections = sqliteTable('collections', {
   artist: text('artist'),
   artPath: text('art_path'),
   dominantColor: text('dominant_color'),
+  sortOrder: integer('sort_order').default(0).notNull(),
   trackCount: integer('track_count').default(0).notNull(),
   totalDuration: integer('total_duration').default(0).notNull(),
   createdAt: text('created_at').notNull().default(sql`(current_timestamp)`),
