@@ -61,3 +61,10 @@ export const collectionTracks = sqliteTable('collection_tracks', {
 }, (table) => ({
   pk: primaryKey({ columns: [table.collectionId, table.trackId] }),
 }));
+
+export const socialLinks = sqliteTable('social_links', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  platform: text('platform').notNull(),
+  url: text('url').notNull(),
+  displayOrder: integer('display_order').default(0).notNull(),
+});

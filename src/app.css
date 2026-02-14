@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "@fontsource-variable/space-grotesk";
 @import "@fontsource/space-mono";
+@import "@fontsource/silkscreen";
 
 @theme {
   /* === Typography === */
