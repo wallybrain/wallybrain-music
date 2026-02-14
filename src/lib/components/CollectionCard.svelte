@@ -6,6 +6,7 @@
   const typeBadge: Record<string, string> = {
     album: 'bg-purple-500/20 text-purple-400',
     playlist: 'bg-blue-500/20 text-blue-400',
+    single: 'bg-teal-500/20 text-teal-400',
   };
 
   let { collection, mode = 'grid' }: {

@@ -20,8 +20,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		return json({ error: 'Title is required' }, { status: 400 });
 	}
 
-	if (type !== 'album' && type !== 'playlist') {
-		return json({ error: 'Type must be album or playlist' }, { status: 400 });
+	if (type !== 'album' && type !== 'playlist' && type !== 'single') {
+		return json({ error: 'Type must be album, playlist, or single' }, { status: 400 });
 	}
 
 	const collectionId = randomUUID();

@@ -6,7 +6,7 @@ export const collections = sqliteTable('collections', {
   slug: text('slug').unique().notNull(),
   title: text('title').notNull(),
   description: text('description'),
-  type: text('type', { enum: ['album', 'playlist'] }).notNull(),
+  type: text('type', { enum: ['album', 'playlist', 'single'] }).notNull(),
   artist: text('artist'),
   artPath: text('art_path'),
   dominantColor: text('dominant_color'),

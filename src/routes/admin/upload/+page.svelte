@@ -1,7 +1,7 @@
 <script lang="ts">
   import { base } from '$app/paths';
 
-  type UploadMode = 'individual' | 'album' | 'playlist';
+  type UploadMode = 'single' | 'album' | 'playlist';
 
   type UploadEntry = {
     file: File;
@@ -10,7 +10,7 @@
     error: string | null;
   };
 
-  let mode: UploadMode = $state('individual');
+  let mode: UploadMode = $state('single');
   let isDragging = $state(false);
   let uploads: UploadEntry[] = $state([]);
   let fileInput: HTMLInputElement;
@@ -26,7 +26,7 @@
   let collectionError: string | null = $state(null);
 
   let isCollectionMode = $derived(mode === 'album' || mode === 'playlist');
-  let canDrop = $derived(!isCollectionMode || collectionTitle.trim().length > 0);
+  let canDrop = $derived(mode === 'single' || !isCollectionMode || collectionTitle.trim().length > 0);
 
   const statusColors: Record<string, string> = {
     uploading: 'bg-accent/20 text-accent-muted',
@@ -203,7 +203,7 @@
 
 <!-- Mode selector -->
 <div class="flex gap-1 p-1 bg-surface-overlay rounded-lg mb-6 w-fit">
-  {#each [['individual', 'Individual'], ['album', 'Album'], ['playlist', 'Playlist']] as [value, label]}
+  {#each [['single', 'Single'], ['album', 'Album'], ['playlist', 'Playlist']] as [value, label]}
     <button
       onclick={() => { mode = value as UploadMode; collectionId = null; collectionSlug = null; collectionError = null; }}
       class="px-4 py-1.5 rounded-md text-sm font-medium transition-colors {mode === value
