@@ -13,6 +13,18 @@ class PlayerState {
 	isPlaying: boolean = $state(false);
 	currentTime: number = $state(0);
 	volume: number = $state(1);
+	private _pauseCallback: (() => void) | null = null;
+
+	/** PersistentPlayer registers its pause function here */
+	registerPause(fn: () => void) {
+		this._pauseCallback = fn;
+	}
+
+	/** Called by WaveformPlayer to directly pause the persistent player */
+	pausePersistent() {
+		this.isPlaying = false;
+		this._pauseCallback?.();
+	}
 
 	get hasNext(): boolean {
 		return this.queueIndex < this.queue.length - 1;

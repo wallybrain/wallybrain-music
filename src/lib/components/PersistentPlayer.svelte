@@ -48,6 +48,10 @@
 			});
 
 			wavesurfer = ws;
+
+			playerState.registerPause(() => {
+				ws.pause();
+			});
 		};
 
 		init();

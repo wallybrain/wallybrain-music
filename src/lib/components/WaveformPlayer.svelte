@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
 	import { formatTime } from '$lib/utils/formatTime';
+	import { playerState } from '$lib/stores/playerState.svelte';
 	import type WaveSurfer from 'wavesurfer.js';
 
 	let { trackId, duration }: { trackId: string; duration: number } = $props();
@@ -66,6 +67,7 @@
 
 				ws.on('play', () => {
 				isPlaying = true;
+				playerState.pausePersistent();
 				onPlay();
 			});
 			ws.on('pause', () => (isPlaying = false));
@@ -85,6 +87,13 @@
 		return () => {
 			ws?.destroy();
 		};
+	});
+
+	// Pause this player when the persistent player starts playing
+	$effect(() => {
+		if (playerState.isPlaying && wavesurfer?.isPlaying()) {
+			wavesurfer.pause();
+		}
 	});
 </script>
 
