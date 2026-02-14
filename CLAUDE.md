@@ -110,6 +110,7 @@ Queue-based, sequential, in-process (no Redis).
 
 | Feature | Effort | Notes |
 |---------|--------|-------|
+| **Album admin improvements** | Medium | **NEXT** — drag-to-reorder tracks, edit album metadata (title, artist, description, art), add/remove tracks from existing albums |
 | Upload more music (content) | Low | Platform needs tracks more than features |
 | About/bio page | Small | Who is wallybrain? Visitors have no context |
 | Featured/hero track on homepage | Small | Curated feel vs flat list |
