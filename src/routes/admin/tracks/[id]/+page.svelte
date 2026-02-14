@@ -1,10 +1,10 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import { beforeNavigate } from '$app/navigation';
   import { base } from '$app/paths';
   import CoverArt from '$lib/components/CoverArt.svelte';
 
   let { data, form } = $props();
-  // form is only populated on validation errors (success redirects to admin list)
 
   let track = $derived(data.track);
   let tagString = $derived(data.tags.join(', '));
@@ -17,11 +17,44 @@
   };
 
   const inputClasses = 'w-full bg-surface-overlay border border-border-default rounded-lg px-3 py-2 text-text-secondary focus:border-accent focus:outline-none';
+
+  let toast = $state<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  function showToast(message: string, type: 'success' | 'error' = 'success') {
+    toast = { message, type };
+    if (type === 'success') {
+      setTimeout(() => { toast = null; }, 2000);
+    }
+  }
+
+  let dirty = $state(false);
+
+  function markDirty() {
+    dirty = true;
+  }
+
+  beforeNavigate(({ cancel }) => {
+    if (dirty && !confirm('You have unsaved changes. Leave anyway?')) {
+      cancel();
+    }
+  });
 </script>
+
+<svelte:window onbeforeunload={(e) => { if (dirty) { e.preventDefault(); } }} />
 
 <svelte:head>
   <title>Edit: {track.title} - wallybrain admin</title>
 </svelte:head>
+
+{#if toast}
+  <div class="fixed top-4 right-4 z-[10001] px-4 py-2 rounded-lg text-sm font-mono uppercase tracking-wider
+    {toast.type === 'success' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}">
+    {toast.message}
+    {#if toast.type === 'error'}
+      <button onclick={() => toast = null} class="ml-2 text-red-300 hover:text-red-200">&times;</button>
+    {/if}
+  </div>
+{/if}
 
 <a href="{base}/admin" class="text-text-muted hover:text-text-secondary text-sm mb-6 inline-block transition-colors">
   &larr; Back to tracks
@@ -34,12 +67,26 @@
   </span>
 </div>
 
-<form method="POST" action="?/update" use:enhance enctype="multipart/form-data">
+<form method="POST" action="?/update" oninput={markDirty} use:enhance={() => {
+  return async ({ result, update }) => {
+    if (result.type === 'redirect') {
+      showToast('Saved');
+      dirty = false;
+      return;
+    } else if (result.type === 'failure') {
+      showToast(result.data?.error || 'Save failed', 'error');
+    }
+    await update();
+  };
+}} enctype="multipart/form-data">
   {#if form?.error}
     <p class="text-red-400 text-sm mb-4">{form.error}</p>
   {/if}
 
   <div class="space-y-5">
+    <!-- Metadata -->
+    <h3 class="text-xs font-mono uppercase tracking-widest text-accent-muted mb-3">Metadata</h3>
+
     <div class="space-y-1">
       <label for="title" class="text-sm text-text-tertiary">Title</label>
       <input
@@ -87,6 +134,11 @@
       </select>
     </div>
 
+    <hr class="border-border-subtle my-6" />
+
+    <!-- Tags -->
+    <h3 class="text-xs font-mono uppercase tracking-widest text-accent-muted mb-3">Tags</h3>
+
     <div class="space-y-1">
       <label for="tags" class="text-sm text-text-tertiary">Tags</label>
       <input
@@ -99,8 +151,12 @@
       <p class="text-xs text-text-muted">Comma-separated, e.g.: ambient, techno, modular</p>
     </div>
 
+    <hr class="border-border-subtle my-6" />
+
+    <!-- Cover Art -->
+    <h3 class="text-xs font-mono uppercase tracking-widest text-accent-muted mb-3">Cover Art</h3>
+
     <div class="space-y-2">
-      <label for="coverArt" class="text-sm text-text-tertiary">Cover Art</label>
       <CoverArt trackId={track.id} artPath={track.artPath} title={track.title} size="md" />
       <div class="flex items-center gap-3">
         <input
