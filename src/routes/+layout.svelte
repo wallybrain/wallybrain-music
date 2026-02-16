@@ -26,7 +26,7 @@
 
 <div class="min-h-screen flex flex-col">
   <nav class="sticky top-0 z-[10000] border-b border-border-subtle/50 backdrop-blur-md bg-surface-base/80">
-    <div class="max-w-4xl mx-auto w-full px-2 sm:px-4 h-8 flex items-center justify-between">
+    <div class="w-full px-2 sm:px-4 h-8 flex items-center justify-between">
       <div class="flex items-center gap-0.5 sm:gap-1">
         <a
           href="https://wallyblanchard.com/fnord.html"
