@@ -64,12 +64,11 @@ Queue-based, sequential, in-process (no Redis).
 - **collection_tracks**: junction with position ordering
 - **tags** + **track_tags**: freeform tag system
 
-## Current Content (2026-02-12)
+## Current Content (2026-02-16)
 
-- 3 tracks (render, Ice Cream Cake, sound), all status=ready
-- 0 collections (feature built but unused)
-- 2 tags (trip hop, experimental)
-- Track "sound" missing: cover art, duration metadata
+- 95 tracks, all status=ready
+- 9 albums: Oort (13), Pantagruelian Otalgia (12), Garbage Toys (11), MEM (10), Forever Wandering (14), Zero (7), Rejoice in the Wolf (11), 555 (8), ylem (9)
+- Every track belongs to an album
 
 ## Design System
 
@@ -87,12 +86,14 @@ Queue-based, sequential, in-process (no Redis).
 | v1.1 Visual Polish | 2026-02-10 | OKLCH tokens, typography, waveform gradient, animations, View Transitions |
 | v1.2 Space-age | 2026-02-10 | Metal/carbon fiber aesthetic, WallybrainLogo, crosshatch bg |
 | v1.3 Collections | 2026-02-11 | Albums/playlists: collections table, upload modes, admin pages, public pages |
-| Post-v1.3 | 2026-02-11 | Global nav bar, Sign In/Out, domain migration, security hardening, mobile fixes |
+| v1.4 Homepage | 2026-02-14 | Homepage redesign with album grid, global nav, Sign In/Out |
+| v1.5 Admin & Releases | 2026-02-14 | Bandcamp-style admin panel, batch operations, collection management |
+| v1.6 Auth & CSP | 2026-02-14 | Authelia session verification, CSP nonces, Mozilla Observatory A+ |
+| v1.8 Player & Reorder | 2026-02-14 | Homepage album reorder (SortableJS), Play All fix, dual playback fix |
 
 ## Known Tech Debt
 
-1. **Stale DB files** — `data/db.sqlite3`, `data/wallybrain-music.db`, `data/music.db`, `data/db/wallybrain.db` are all empty/unused; only `data/db/music.db` is real
-2. **Track "sound"** — Missing cover art and duration metadata
+1. **Player behavior** — Known issues with playback state, needs follow-up investigation
 
 ## Gotchas
 
@@ -107,11 +108,8 @@ Queue-based, sequential, in-process (no Redis).
 
 | Feature | Effort | Notes |
 |---------|--------|-------|
-| **Album admin improvements** | Medium | **NEXT** — drag-to-reorder tracks, edit album metadata (title, artist, description, art), add/remove tracks from existing albums |
-| Upload more music (content) | Low | Platform needs tracks more than features |
-| About/bio page | Small | Who is wallybrain? Visitors have no context |
-| Featured/hero track on homepage | Small | Curated feel vs flat list |
+| **v1.7 Store** | Large | Stripe Checkout store — sell tracks/albums as downloads. Research in `.planning/research/STORE-FEATURE-NOTES.md` |
+| Fix player issues | Medium | Playback state bugs flagged but not yet investigated |
 | Per-track OG meta tags | Small | Better sharing on social/Discord |
-| Search | Medium | Filter alone won't scale past ~20 tracks |
+| Search | Medium | Won't scale past ~100 tracks without it |
 | RSS/podcast feed | Medium | Distribution channel |
-| Waveform comments (SoundCloud-style) | Large | Community engagement |
