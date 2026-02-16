@@ -24,7 +24,7 @@ Browser → Caddy (SSL, headers) → Authelia (admin routes) → SvelteKit :8800
 ## Routes
 
 **Public:**
-- `/` — Homepage: logo hero, FilterBar, list/grid toggle, TrackCard listing
+- `/` — Homepage: logo hero, album collections grid, TrackCard listing
 - `/track/[slug]` — Track detail: WaveformPlayer, metadata, ambient color tint
 - `/collection/[slug]` — Collection: Play All button, ordered track list
 
@@ -46,9 +46,8 @@ Browser → Caddy (SSL, headers) → Authelia (admin routes) → SvelteKit :8800
 |-----------|---------|
 | `PersistentPlayer` | Bottom bar player, survives navigation (view-transition-name isolated) |
 | `WaveformPlayer` | wavesurfer.js wrapper with gradient, seek, peak loading |
-| `TrackCard` / `TrackCardGrid` | List/grid track cards with play overlay and EqIndicator |
+| `TrackCard` | Track card with play overlay and EqIndicator |
 | `CoverArt` | Reusable art display with `entityType` prop ('tracks' or 'collections') |
-| `FilterBar` | Category + tag filter UI |
 | `WallybrainLogo` | SVG logo, `size` prop: 'lg' (homepage) / 'sm' (inner pages) |
 | `EqIndicator` | Pure CSS animated equalizer bars on playing tracks |
 
@@ -92,10 +91,8 @@ Queue-based, sequential, in-process (no Redis).
 
 ## Known Tech Debt
 
-1. **Drizzle type error** — `+page.server.ts` category type mismatch (pre-existing, not blocking)
-2. **TrackCardGrid DRY** — Reimplements image rendering instead of reusing CoverArt component
-3. **Stale DB files** — `data/db.sqlite3`, `data/wallybrain-music.db`, `data/music.db`, `data/db/wallybrain.db` are all empty/unused; only `data/db/music.db` is real
-4. **Track "sound"** — Missing cover art and duration metadata
+1. **Stale DB files** — `data/db.sqlite3`, `data/wallybrain-music.db`, `data/music.db`, `data/db/wallybrain.db` are all empty/unused; only `data/db/music.db` is real
+2. **Track "sound"** — Missing cover art and duration metadata
 
 ## Gotchas
 
