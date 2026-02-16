@@ -9,7 +9,7 @@
   import { playerState } from '$lib/stores/playerState.svelte';
 
   let isHome = $derived(page.url.pathname === '/' || page.url.pathname === base + '/');
-  let isAbout = $derived(page.url.pathname === base + '/about' || page.url.pathname === '/about');
+
   let isAdmin = $derived(page.url.pathname.startsWith(base + '/admin'));
   let isUpload = $derived(page.url.pathname.startsWith(base + '/admin/upload'));
 
@@ -29,22 +29,11 @@
     <div class="max-w-4xl mx-auto w-full px-2 sm:px-4 h-8 flex items-center justify-between">
       <div class="flex items-center gap-0.5 sm:gap-1">
         <a
-          href="{base}/"
+          href="https://wallyblanchard.com/fnord.html"
           class="px-1.5 sm:px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-mono tracking-wider sm:tracking-widest transition-colors whitespace-nowrap
-            {isHome
-              ? 'bg-surface-hover text-text-primary'
-              : 'text-accent-muted hover:text-accent-muted-hover hover:bg-surface-overlay/50'}"
+            text-accent-muted hover:text-accent-muted-hover hover:bg-surface-overlay/50"
         >
-          HOME
-        </a>
-        <a
-          href="{base}/about"
-          class="px-1.5 sm:px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-mono tracking-wider sm:tracking-widest transition-colors whitespace-nowrap
-            {isAbout
-              ? 'bg-surface-hover text-text-primary'
-              : 'text-accent-muted hover:text-accent-muted-hover hover:bg-surface-overlay/50'}"
-        >
-          ABOUT
+          FNORD
         </a>
         {#if data.isAuthenticated}
           <a
@@ -70,12 +59,6 @@
         {/if}
       </div>
       <div class="flex items-center gap-0.5 sm:gap-1">
-        <a
-          href="https://wallyblanchard.com"
-          class="px-1.5 sm:px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-mono tracking-wider sm:tracking-widest text-accent-muted hover:text-accent-muted-hover hover:bg-surface-overlay/50 transition-colors whitespace-nowrap"
-        >
-          FNORD
-        </a>
         {#if data.isAuthenticated}
           <a
             href="https://auth.wallybrain.icu/logout?rd=https://wallybrain.icu/"
