@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const track = db
-		.select({ status: tracks.status, errorMessage: tracks.errorMessage })
+		.select({ status: tracks.status })
 		.from(tracks)
 		.where(eq(tracks.id, params.id))
 		.get();
@@ -15,5 +15,5 @@ export const GET: RequestHandler = async ({ params }) => {
 		throw error(404, 'Track not found');
 	}
 
-	return json({ status: track.status, errorMessage: track.errorMessage });
+	return json({ status: track.status });
 };

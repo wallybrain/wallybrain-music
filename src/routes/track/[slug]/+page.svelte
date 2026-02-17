@@ -27,7 +27,7 @@
 			slug: track.slug,
 			title: track.title,
 			duration: track.duration ?? 0,
-			artPath: track.artPath,
+			artPath: track.hasArt ? 'yes' : null,
 		};
 		playerState.play(queueTrack);
 	}
@@ -54,6 +54,18 @@
 	<meta name="twitter:title" content={track.title} />
 	<meta name="twitter:description" content={track.description || `Listen to ${track.title} by wallybrain`} />
 	<meta name="twitter:image" content={`https://wallybrain.net/api/tracks/${track.id}/art`} />
+
+	<!-- Structured Data -->
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "MusicRecording",
+		"name": track.title,
+		"url": `https://wallybrain.net/track/${track.slug}`,
+		"byArtist": { "@type": "MusicGroup", "name": "wallybrain" },
+		...(track.duration ? { "duration": `PT${Math.floor(track.duration / 60)}M${Math.floor(track.duration % 60)}S` } : {}),
+		...(track.description ? { "description": track.description } : {}),
+		...(data.album ? { "inAlbum": { "@type": "MusicAlbum", "name": data.album.title, "url": `https://wallybrain.net/collection/${data.album.slug}` } } : {})
+	})}</script>`}
 </svelte:head>
 
 <div class="relative max-w-3xl mx-auto px-4 py-8" style={ambientStyle}>
@@ -67,7 +79,7 @@
 	</a>
 
 	<div class="flex flex-col md:flex-row gap-6 mb-8">
-		<CoverArt trackId={track.id} artPath={track.artPath} title={track.title} size="lg" dominantColor={track.dominantColor} />
+		<CoverArt trackId={track.id} artPath={track.hasArt ? 'yes' : null} title={track.title} size="lg" dominantColor={track.dominantColor} />
 		<div class="flex-1">
 			<div class="flex items-start justify-between gap-3 mb-2">
 				<h1 class="text-2xl md:text-3xl font-bold text-text-primary">{track.title}</h1>

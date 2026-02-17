@@ -6,7 +6,19 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
 	const track = db
-		.select()
+		.select({
+			id: tracks.id,
+			slug: tracks.slug,
+			title: tracks.title,
+			description: tracks.description,
+			duration: tracks.duration,
+			category: tracks.category,
+			status: tracks.status,
+			playCount: tracks.playCount,
+			artPath: tracks.artPath,
+			dominantColor: tracks.dominantColor,
+			createdAt: tracks.createdAt,
+		})
 		.from(tracks)
 		.where(eq(tracks.slug, params.slug))
 		.get();
@@ -16,7 +28,8 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	}
 
 	// Fall back to collection art if track has none
-	if (!track.artPath) {
+	let hasArt = !!track.artPath;
+	if (!hasArt) {
 		const collectionArt = db.select({
 				artPath: collections.artPath,
 				dominantColor: collections.dominantColor,
@@ -26,7 +39,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 			.where(eq(collectionTracks.trackId, track.id))
 			.get();
 		if (collectionArt?.artPath) {
-			track.artPath = collectionArt.artPath;
+			hasArt = true;
 			track.dominantColor = track.dominantColor ?? collectionArt.dominantColor;
 		}
 	}
@@ -38,7 +51,23 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 		.where(eq(trackTags.trackId, track.id))
 		.all();
 
+	// Fetch album info for structured data
+	const album = db.select({
+			title: collections.title,
+			slug: collections.slug,
+		})
+		.from(collectionTracks)
+		.innerJoin(collections, eq(collectionTracks.collectionId, collections.id))
+		.where(eq(collectionTracks.trackId, track.id))
+		.get();
+
 	const isAdmin = !!cookies.get('authelia_session');
 
-	return { track, tags: trackTagRows.map((t) => t.name), isAdmin };
+	const { artPath: _artPath, status: _status, ...publicTrack } = track;
+	return {
+		track: { ...publicTrack, hasArt },
+		tags: trackTagRows.map((t) => t.name),
+		isAdmin,
+		album: album ?? null,
+	};
 };

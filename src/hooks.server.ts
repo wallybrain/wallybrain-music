@@ -31,7 +31,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	// Auth guard: both admin pages and API writes verified via Authelia
-	if (pathname.startsWith('/admin') || (pathname.startsWith('/api/') && method !== 'GET' && method !== 'HEAD')) {
+	// Exempt play count endpoint — must work for unauthenticated visitors
+	const isPlayEndpoint = /^\/api\/tracks\/[^/]+\/play$/.test(pathname);
+	if (pathname.startsWith('/admin') || (pathname.startsWith('/api/') && method !== 'GET' && method !== 'HEAD' && !isPlayEndpoint)) {
 		const session = event.cookies.get('authelia_session');
 		if (!session) {
 			return new Response('Unauthorized', { status: 401 });
