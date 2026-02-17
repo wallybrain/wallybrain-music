@@ -4,7 +4,7 @@
 
 | Key | Value |
 |-----|-------|
-| Live at | `wallybrain.icu` |
+| Live at | `wallybrain.net` (primary), `wallybrain.icu` (301 redirects to .net) |
 | Container | `wallybrain-music` — port 8800, `webproxy` network |
 | Database | `/data/db/music.db` (SQLite via Drizzle ORM) |
 | Auth | Authelia TOTP 2FA at `auth.wallybrain.icu`, protects `/admin/*` |
@@ -90,6 +90,7 @@ Queue-based, sequential, in-process (no Redis).
 | v1.5 Admin & Releases | 2026-02-14 | Bandcamp-style admin panel, batch operations, collection management |
 | v1.6 Auth & CSP | 2026-02-14 | Authelia session verification, CSP nonces, Mozilla Observatory A+ |
 | v1.8 Player & Reorder | 2026-02-14 | Homepage album reorder (SortableJS), Play All fix, dual playback fix |
+| v1.9 Domain Migration | 2026-02-17 | Primary domain → wallybrain.net (.icu 301 redirects), Google Search Console, sitemap, canonical URLs, OG/Twitter meta tags |
 
 ## Known Tech Debt
 
@@ -97,6 +98,7 @@ Queue-based, sequential, in-process (no Redis).
 
 ## Gotchas
 
+- **Auth cookies are on `.icu` domain** — admin access must go through `wallybrain.icu/admin` (not `.net/admin`) because Authelia session cookies are domain-scoped. The Caddyfile excludes `/admin` from the `.icu` → `.net` redirect.
 - **backdrop-blur on mobile** causes audio stutter — limit to single element (player bar)
 - **CSS transforms on waveform ancestors** break drag-to-seek in wavesurfer.js
 - **`body::before` overlay** at z-9999 — sticky/fixed elements need `z-[10000]+`
@@ -110,6 +112,6 @@ Queue-based, sequential, in-process (no Redis).
 |---------|--------|-------|
 | **v1.7 Store** | Large | Stripe Checkout store — sell tracks/albums as downloads. Research in `.planning/research/STORE-FEATURE-NOTES.md` |
 | Fix player issues | Medium | Playback state bugs flagged but not yet investigated |
-| Per-track OG meta tags | Small | Better sharing on social/Discord |
+| ~~Per-track OG meta tags~~ | ~~Small~~ | Done — canonical URLs, OG tags, Twitter cards all on .net |
 | Search | Medium | Won't scale past ~100 tracks without it |
 | RSS/podcast feed | Medium | Distribution channel |
