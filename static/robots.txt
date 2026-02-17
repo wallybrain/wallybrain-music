@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api
 
-Sitemap: https://wallybrain.icu/sitemap.xml
+Sitemap: https://wallybrain.net/sitemap.xml

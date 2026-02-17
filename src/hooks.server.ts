@@ -8,6 +8,7 @@ migrate(db, { migrationsFolder: './drizzle' });
 startQueueProcessor();
 
 const ALLOWED_ORIGINS = new Set([
+	'https://wallybrain.net',
 	'https://wallybrain.icu',
 	'https://wallyblanchard.com',
 ]);

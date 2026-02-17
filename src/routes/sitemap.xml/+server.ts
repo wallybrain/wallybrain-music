@@ -2,7 +2,7 @@ import { db } from '$lib/server/db/client';
 import { tracks, collections } from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 
-const SITE = 'https://wallybrain.icu';
+const SITE = 'https://wallybrain.net';
 
 export async function GET() {
 	const allTracks = db
