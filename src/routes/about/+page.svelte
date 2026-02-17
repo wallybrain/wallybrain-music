@@ -19,7 +19,8 @@
 
 <svelte:head>
   <title>About - wallybrain</title>
-  <meta name="description" content="wallybrain — Experimental, IDM, Noise, Techno from Columbus, GA" />
+  <meta name="description" content="wallybrain is the electronic music project of Lewis W. Blanchard III — experimental, IDM, noise, and techno from Columbus, GA." />
+  <link rel="canonical" href="https://wallybrain.net/about" />
 </svelte:head>
 
 <div class="max-w-3xl mx-auto px-4 py-8">

@@ -59,7 +59,16 @@
 
 <svelte:head>
   <title>wallybrain</title>
-  <meta name="description" content="Electronic music by wallybrain" />
+  <meta name="description" content="Experimental electronic music by wallybrain — IDM, noise, and techno albums with interactive waveform player. Stream free at wallybrain.net." />
+  <link rel="canonical" href="https://wallybrain.net" />
+  {@html `<script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "MusicGroup",
+    "name": "wallybrain",
+    "url": "https://wallybrain.net",
+    "genre": ["Experimental", "IDM", "Noise", "Techno"],
+    "description": "Electronic music project of Lewis W. Blanchard III, based in Columbus, GA"
+  })}</script>`}
 </svelte:head>
 
 {#if toast}

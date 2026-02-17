@@ -224,7 +224,43 @@
 
 <svelte:head>
   <title>{data.collection.title} - wallybrain</title>
-  <meta name="description" content={data.collection.description || `${data.collection.type === 'album' ? 'Album' : 'Playlist'}: ${data.collection.title}`} />
+  <meta name="description" content={data.collection.description || `Listen to ${data.collection.title} — a ${data.collection.trackCount}-track ${data.collection.type} by wallybrain. Stream free with interactive waveform player.`} />
+  <link rel="canonical" href={`https://wallybrain.net/collection/${data.collection.slug}`} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={data.collection.title} />
+  <meta property="og:description" content={data.collection.description || `${data.collection.trackCount}-track ${data.collection.type} by wallybrain`} />
+  <meta property="og:type" content="music.album" />
+  <meta property="og:url" content={`https://wallybrain.net/collection/${data.collection.slug}`} />
+  {#if data.collection.artPath}
+    <meta property="og:image" content={`https://wallybrain.net/api/collections/${data.collection.id}/art`} />
+  {/if}
+  <meta property="og:site_name" content="wallybrain" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={data.collection.title} />
+  <meta name="twitter:description" content={data.collection.description || `${data.collection.trackCount}-track ${data.collection.type} by wallybrain`} />
+  {#if data.collection.artPath}
+    <meta name="twitter:image" content={`https://wallybrain.net/collection/${data.collection.id}/art`} />
+  {/if}
+
+  <!-- Structured Data -->
+  {@html `<script type="application/ld+json">${JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "MusicAlbum",
+    "name": data.collection.title,
+    "url": `https://wallybrain.net/collection/${data.collection.slug}`,
+    "numTracks": data.collection.trackCount,
+    "byArtist": { "@type": "MusicGroup", "name": "wallybrain" },
+    ...(data.collection.description ? { "description": data.collection.description } : {}),
+    "track": data.tracks.map(t => ({
+      "@type": "MusicRecording",
+      "name": t.title,
+      "url": `https://wallybrain.net/track/${t.slug}`,
+      ...(t.duration ? { "duration": `PT${Math.floor(t.duration / 60)}M${Math.floor(t.duration % 60)}S` } : {})
+    }))
+  })}</script>`}
 </svelte:head>
 
 {#if toast}
