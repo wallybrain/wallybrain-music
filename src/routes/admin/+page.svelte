@@ -178,7 +178,7 @@
 
 <!-- Floating batch action bar -->
 {#if selectedIds.size > 0}
-  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[10001] metal-panel rounded-lg px-5 py-3 flex items-center gap-4">
+  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[400] metal-panel rounded-lg px-5 py-3 flex items-center gap-4">
     <span class="text-sm text-text-secondary font-mono">{selectedIds.size} selected</span>
 
     <div class="h-4 w-px bg-border-default"></div>

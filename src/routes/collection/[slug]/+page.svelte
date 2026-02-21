@@ -264,7 +264,7 @@
 </svelte:head>
 
 {#if toast}
-  <div class="fixed top-4 right-4 z-[10001] px-4 py-2 rounded-lg text-sm font-mono uppercase tracking-wider
+  <div class="fixed top-4 right-4 z-[400] px-4 py-2 rounded-lg text-sm font-mono uppercase tracking-wider
     {toast.type === 'success' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}">
     {toast.message}
     {#if toast.type === 'error'}

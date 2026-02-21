@@ -76,7 +76,8 @@ Queue-based, sequential, in-process (no Redis).
 - **Colors**: OKLCH semantic tokens in `app.css` @theme block — surfaces, text, accents, borders, waveform gradients
 - **Typography**: Space Grotesk (headings), Space Mono (monospace accents)
 - **Per-track theming**: Dominant color extraction → ambient tint overlays, cover art glow
-- **Player bar**: Glassmorphism (backdrop-blur-md), `z-[10000]` above `body::before` overlay (z-9999)
+- **Player bar**: Glassmorphism (backdrop-blur-md), `z-[200]` above `body::before` overlay (z-100)
+- **Z-index scale**: overlay=100, player=200, nav=300, toasts=400
 
 ## Version History
 
@@ -101,7 +102,7 @@ Queue-based, sequential, in-process (no Redis).
 - **Auth cookies are on `.icu` domain** — admin access must go through `wallybrain.icu/admin` (not `.net/admin`) because Authelia session cookies are domain-scoped. The Caddyfile excludes `/admin` from the `.icu` → `.net` redirect.
 - **backdrop-blur on mobile** causes audio stutter — limit to single element (player bar)
 - **CSS transforms on waveform ancestors** break drag-to-seek in wavesurfer.js
-- **`body::before` overlay** at z-9999 — sticky/fixed elements need `z-[10000]+`
+- **`body::before` overlay** at z-100 — player at z-200, nav at z-300, toasts at z-400
 - **Docker bind mounts track inodes** — `Edit` tool creates new inode, need `docker restart` not just HMR reload
 - **Drizzle migration generator** can include stale ALTER TABLE for columns that already exist — always review before deploying
 - **Crosshatch bg removed on mobile** (commit `4af943c`) for performance

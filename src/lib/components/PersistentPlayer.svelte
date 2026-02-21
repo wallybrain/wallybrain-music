@@ -99,7 +99,7 @@
 	});
 </script>
 
-<div class="fixed bottom-0 left-0 right-0 bg-surface-raised/90 backdrop-blur-lg border-t border-accent/15 shadow-[0_-4px_16px_rgba(0,0,0,0.4)] z-50" style="view-transition-name: player-bar;">
+<div class="fixed bottom-0 left-0 right-0 bg-surface-raised/90 backdrop-blur-lg border-t border-accent/15 shadow-[0_-4px_16px_rgba(0,0,0,0.4)] z-[200]" style="view-transition-name: player-bar;">
 	<div class="max-w-3xl mx-auto px-4 py-2 flex items-center gap-3">
 		{#if playerState.currentTrack}
 			<a href="{base}/track/{playerState.currentTrack.slug}" class="shrink-0">

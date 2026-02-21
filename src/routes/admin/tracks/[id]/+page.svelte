@@ -8,6 +8,7 @@
 
   let track = $derived(data.track);
   let tagString = $derived(data.tags.join(', '));
+  let fromCollection = $derived(data.fromCollection);
 
   const statusColors: Record<string, string> = {
     ready: 'bg-emerald-500/20 text-emerald-400',
@@ -47,7 +48,7 @@
 </svelte:head>
 
 {#if toast}
-  <div class="fixed top-4 right-4 z-[10001] px-4 py-2 rounded-lg text-sm font-mono uppercase tracking-wider
+  <div class="fixed top-4 right-4 z-[400] px-4 py-2 rounded-lg text-sm font-mono uppercase tracking-wider
     {toast.type === 'success' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}">
     {toast.message}
     {#if toast.type === 'error'}
@@ -56,9 +57,15 @@
   </div>
 {/if}
 
-<a href="{base}/admin" class="text-text-muted hover:text-text-secondary text-sm mb-6 inline-block transition-colors">
-  &larr; Back to tracks
-</a>
+{#if fromCollection}
+  <a href="{base}/admin/collections/{fromCollection.id}" class="text-text-muted hover:text-text-secondary text-sm mb-6 inline-block transition-colors">
+    &larr; Back to {fromCollection.title}
+  </a>
+{:else}
+  <a href="{base}/admin" class="text-text-muted hover:text-text-secondary text-sm mb-6 inline-block transition-colors">
+    &larr; Back to tracks
+  </a>
+{/if}
 
 <div class="flex items-center gap-3 mb-6">
   <h1 class="text-xl font-bold text-text-primary">{track.title}</h1>
@@ -67,7 +74,7 @@
   </span>
 </div>
 
-<form method="POST" action="?/update" oninput={markDirty} use:enhance={() => {
+<form method="POST" action="?/update{fromCollection ? `&from=collection:${fromCollection.id}` : ''}" oninput={markDirty} use:enhance={() => {
   return async ({ result, update }) => {
     if (result.type === 'redirect') {
       showToast('Saved');
@@ -232,7 +239,7 @@
         <p class="text-sm text-text-secondary">Delete Track</p>
         <p class="text-xs text-text-muted">Permanently remove this track and all associated files.</p>
       </div>
-      <form method="POST" action="?/delete" use:enhance={({ cancel }) => { if (!confirm('Permanently delete this track? This cannot be undone.')) { cancel(); return; } }} class="shrink-0">
+      <form method="POST" action="?/delete{fromCollection ? `&from=collection:${fromCollection.id}` : ''}" use:enhance={({ cancel }) => { if (!confirm('Permanently delete this track? This cannot be undone.')) { cancel(); return; } }} class="shrink-0">
         <button
           type="submit"
           class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-4 py-1.5 rounded text-sm font-medium transition-colors"
