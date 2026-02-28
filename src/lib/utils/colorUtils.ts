@@ -26,10 +26,3 @@ export function rgbHexToOklch(hex: string): { l: number; c: number; h: number } 
 	return { l: L, c: C, h: isNaN(H) ? 0 : H };
 }
 
-export function formatOklch(oklch: { l: number; c: number; h: number }, alpha?: number): string {
-	const { l, c, h } = oklch;
-	if (alpha !== undefined && alpha < 1) {
-		return `oklch(${l.toFixed(3)} ${c.toFixed(3)} ${h.toFixed(1)} / ${alpha})`;
-	}
-	return `oklch(${l.toFixed(3)} ${c.toFixed(3)} ${h.toFixed(1)})`;
-}

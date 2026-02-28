@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db/client';
 import { tracks, tags, trackTags, collectionTracks, collections } from '$lib/server/db/schema';
-import { eq, and, ne, sql } from 'drizzle-orm';
+import { eq, and, ne } from 'drizzle-orm';
+import { recalcCollectionAggregates } from '$lib/server/db/helpers';
 import { fail, error, redirect } from '@sveltejs/kit';
 import { extractAndResizeArt } from '$lib/server/processors/artwork';
 import { unlinkSync, existsSync, writeFileSync, readdirSync, mkdirSync } from 'node:fs';
@@ -10,7 +11,7 @@ import { validateImageBuffer, MAX_IMAGE_SIZE, MAX_AUDIO_SIZE } from '$lib/server
 import { validateAudioFile } from '$lib/server/validators/magicBytes';
 import { enqueueProcessing } from '$lib/server/queue';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, url }) => {
 	const track = db
 		.select()
 		.from(tracks)
@@ -28,9 +29,23 @@ export const load: PageServerLoad = async ({ params }) => {
 		.where(eq(trackTags.trackId, params.id))
 		.all();
 
+	// Resolve ?from=collection:<id> for contextual back-link
+	let fromCollection: { id: string; title: string } | null = null;
+	const fromParam = url.searchParams.get('from');
+	if (fromParam?.startsWith('collection:')) {
+		const collectionId = fromParam.slice('collection:'.length);
+		const col = db
+			.select({ id: collections.id, title: collections.title })
+			.from(collections)
+			.where(eq(collections.id, collectionId))
+			.get();
+		if (col) fromCollection = col;
+	}
+
 	return {
 		track,
 		tags: trackTagRows.map((t) => t.name),
+		fromCollection,
 	};
 };
 
@@ -48,28 +63,9 @@ function findOriginals(trackId: string): string[] {
 		.map((f) => `${dir}/${f}`);
 }
 
-function recalcCollectionAggregates(collectionId: string) {
-	const agg = db.select({
-		count: sql<number>`count(*)`,
-		totalDur: sql<number>`coalesce(sum(${tracks.duration}), 0)`,
-	})
-		.from(collectionTracks)
-		.innerJoin(tracks, eq(collectionTracks.trackId, tracks.id))
-		.where(eq(collectionTracks.collectionId, collectionId))
-		.get();
-
-	db.update(collections)
-		.set({
-			trackCount: agg?.count ?? 0,
-			totalDuration: agg?.totalDur ?? 0,
-			updatedAt: new Date().toISOString(),
-		})
-		.where(eq(collections.id, collectionId))
-		.run();
-}
 
 export const actions = {
-	update: async ({ request, params }) => {
+	update: async ({ request, params, url }) => {
 		const formData = await request.formData();
 		const title = formData.get('title') as string;
 		const description = formData.get('description') as string;
@@ -111,7 +107,7 @@ export const actions = {
 			.set({
 				title: title.trim(),
 				description: description?.trim() || null,
-				category: (category as 'track' | 'set' | 'experiment' | 'export' | 'album' | 'playlist') || 'track',
+				category: (category as 'track' | 'set' | 'experiment' | 'export') || 'track',
 				slug: validatedSlug,
 				updatedAt: new Date().toISOString(),
 			})
@@ -173,10 +169,15 @@ export const actions = {
 				.run();
 		}
 
+		const fromParam = url.searchParams.get('from');
+		if (fromParam?.startsWith('collection:')) {
+			const collectionId = fromParam.slice('collection:'.length);
+			redirect(303, `/admin/collections/${collectionId}`);
+		}
 		redirect(303, '/admin');
 	},
 
-	delete: async ({ params }) => {
+	delete: async ({ params, url }) => {
 		const track = db.select().from(tracks).where(eq(tracks.id, params.id)).get();
 		if (!track) throw error(404, 'Track not found');
 
@@ -201,6 +202,11 @@ export const actions = {
 			recalcCollectionAggregates(collectionId);
 		}
 
+		const fromParam = url.searchParams.get('from');
+		if (fromParam?.startsWith('collection:')) {
+			const collectionId = fromParam.slice('collection:'.length);
+			redirect(303, `/admin/collections/${collectionId}`);
+		}
 		redirect(303, '/admin');
 	},
 

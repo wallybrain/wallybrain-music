@@ -1,29 +1,10 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db/client';
-import { tracks, tags, trackTags, collectionTracks, collections } from '$lib/server/db/schema';
-import { eq, inArray, sql } from 'drizzle-orm';
+import { tracks, tags, trackTags, collectionTracks } from '$lib/server/db/schema';
+import { eq, inArray } from 'drizzle-orm';
 import { unlinkSync, existsSync, readdirSync } from 'node:fs';
-
-function recalcCollectionAggregates(collectionId: string) {
-	const agg = db.select({
-		count: sql<number>`count(*)`,
-		totalDur: sql<number>`coalesce(sum(${tracks.duration}), 0)`,
-	})
-		.from(collectionTracks)
-		.innerJoin(tracks, eq(collectionTracks.trackId, tracks.id))
-		.where(eq(collectionTracks.collectionId, collectionId))
-		.get();
-
-	db.update(collections)
-		.set({
-			trackCount: agg?.count ?? 0,
-			totalDuration: agg?.totalDur ?? 0,
-			updatedAt: new Date().toISOString(),
-		})
-		.where(eq(collections.id, collectionId))
-		.run();
-}
+import { recalcCollectionAggregates } from '$lib/server/db/helpers';
 
 function safeUnlink(path: string) {
 	try { if (existsSync(path)) unlinkSync(path); } catch {}
@@ -40,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	switch (action) {
 		case 'setCategory': {
-			const validCategories = ['track', 'set', 'experiment', 'export', 'album', 'playlist'];
+			const validCategories = ['track', 'set', 'experiment', 'export'];
 			if (!validCategories.includes(payload)) {
 				return json({ error: 'Invalid category' }, { status: 400 });
 			}

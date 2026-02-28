@@ -33,7 +33,7 @@ export const tracks = sqliteTable('tracks', {
   artThumb: text('art_thumb'),
   errorMessage: text('error_message'),
   category: text('category', {
-    enum: ['track', 'set', 'experiment', 'export', 'album', 'playlist']
+    enum: ['track', 'set', 'experiment', 'export']
   }).default('track').notNull(),
   status: text('status', {
     enum: ['pending', 'processing', 'ready', 'failed']

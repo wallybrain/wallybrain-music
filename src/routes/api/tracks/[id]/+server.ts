@@ -22,7 +22,7 @@ export const PATCH: RequestHandler = async ({ request, params }) => {
 	}
 
 	if (body.category !== undefined) {
-		const validCategories = ['track', 'set', 'experiment', 'export', 'album', 'playlist'];
+		const validCategories = ['track', 'set', 'experiment', 'export'];
 		if (!validCategories.includes(body.category)) {
 			return json({ error: 'Invalid category' }, { status: 400 });
 		}

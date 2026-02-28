@@ -1,8 +1,9 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db/client';
-import { collections, collectionTracks, tracks } from '$lib/server/db/schema';
-import { eq, and, sql } from 'drizzle-orm';
+import { collections, collectionTracks } from '$lib/server/db/schema';
+import { eq, and } from 'drizzle-orm';
+import { recalcCollectionAggregates } from '$lib/server/db/helpers';
 
 export const DELETE: RequestHandler = async ({ params }) => {
 	const collection = db.select({ id: collections.id })
@@ -19,24 +20,7 @@ export const DELETE: RequestHandler = async ({ params }) => {
 		))
 		.run();
 
-	// Recalculate aggregates
-	const agg = db.select({
-		count: sql<number>`count(*)`,
-		totalDur: sql<number>`coalesce(sum(${tracks.duration}), 0)`,
-	})
-		.from(collectionTracks)
-		.innerJoin(tracks, eq(collectionTracks.trackId, tracks.id))
-		.where(eq(collectionTracks.collectionId, params.id))
-		.get();
-
-	db.update(collections)
-		.set({
-			trackCount: agg?.count ?? 0,
-			totalDuration: agg?.totalDur ?? 0,
-			updatedAt: new Date().toISOString(),
-		})
-		.where(eq(collections.id, params.id))
-		.run();
+	recalcCollectionAggregates(params.id);
 
 	return json({ ok: true });
 };

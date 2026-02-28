@@ -104,7 +104,7 @@
       {#each collectionList as collection (collection.id)}
         <div data-id={collection.id} class="cursor-grab active:cursor-grabbing reorder-card">
           <div class="pointer-events-none">
-            <CollectionCard {collection} mode="grid" />
+            <CollectionCard {collection} />
           </div>
         </div>
       {/each}
@@ -112,7 +112,7 @@
   {:else if data.collections.length > 0}
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
       {#each data.collections as collection (collection.id)}
-        <CollectionCard {collection} mode="grid" />
+        <CollectionCard {collection} />
       {/each}
     </div>
   {:else}
