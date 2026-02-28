@@ -198,6 +198,10 @@
   <title>Upload - wallybrain admin</title>
 </svelte:head>
 
+<a href="{base}/admin" class="text-text-muted hover:text-text-secondary text-sm mb-6 inline-block transition-colors">
+  &larr; Back to admin
+</a>
+
 <h1 class="text-2xl font-bold text-text-primary mb-1">Upload Tracks</h1>
 <p class="text-text-muted text-sm mb-6">Supports MP3, WAV, FLAC, OGG, and AIFF files</p>
 

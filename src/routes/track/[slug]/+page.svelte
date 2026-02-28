@@ -1,15 +1,21 @@
 <script lang="ts">
 	import WaveformPlayer from '$lib/components/WaveformPlayer.svelte';
+	import TrackCard from '$lib/components/TrackCard.svelte';
 	import CoverArt from '$lib/components/CoverArt.svelte';
 	import { formatTime } from '$lib/utils/formatTime';
 	import { rgbHexToOklch } from '$lib/utils/colorUtils';
 	import { base } from '$app/paths';
+	import { page } from '$app/state';
 	import { playerState, type QueueTrack } from '$lib/stores/playerState.svelte';
 
 	let { data } = $props();
 	let track = $derived(data.track);
 	let trackTags = $derived(data.tags);
 	let isAdmin = $derived(data.isAdmin);
+
+	let startTime = $derived(Number(page.url.searchParams.get('t')) || 0);
+	let waveformCurrentTime = $state(0);
+	let shareToast = $state(false);
 
 	let ambientStyle = $derived.by(() => {
 		if (!track.dominantColor) return '';
@@ -21,6 +27,38 @@
 
 	let isPlayingThisTrack = $derived(playerState.currentTrack?.id === track.id);
 
+	// Build album queue from siblings + current track, preserving album order
+	let albumQueue = $derived.by<QueueTrack[]>(() => {
+		if (data.siblings.length === 0) return [];
+		const currentQueueTrack: QueueTrack = {
+			id: track.id,
+			slug: track.slug,
+			title: track.title,
+			duration: track.duration ?? 0,
+			artPath: track.hasArt ? 'yes' : null,
+		};
+		const siblingQueueTracks: QueueTrack[] = data.siblings.map(s => ({
+			id: s.id,
+			slug: s.slug,
+			title: s.title,
+			duration: s.duration ?? 0,
+			artPath: s.artPath,
+		}));
+		// Insert current track at its album position
+		const all = [...siblingQueueTracks];
+		all.splice(data.currentTrackPosition, 0, currentQueueTrack);
+		return all;
+	});
+
+	let currentAlbumIndex = $derived(data.currentTrackPosition);
+
+	// Sibling tracks with tags (empty) for TrackCard compatibility
+	let siblingTrackCards = $derived(data.siblings.map(s => ({
+		...s,
+		playCount: s.playCount ?? 0,
+		tags: [] as string[],
+	})));
+
 	function playInPersistentPlayer() {
 		const queueTrack: QueueTrack = {
 			id: track.id,
@@ -29,7 +67,21 @@
 			duration: track.duration ?? 0,
 			artPath: track.hasArt ? 'yes' : null,
 		};
-		playerState.play(queueTrack);
+		if (albumQueue.length > 0) {
+			playerState.play(queueTrack, albumQueue, currentAlbumIndex);
+		} else {
+			playerState.play(queueTrack);
+		}
+	}
+
+	function copyShareLink() {
+		const time = Math.floor(waveformCurrentTime);
+		const url = time > 0
+			? `https://wallybrain.net/track/${track.slug}?t=${time}`
+			: `https://wallybrain.net/track/${track.slug}`;
+		navigator.clipboard.writeText(url);
+		shareToast = true;
+		setTimeout(() => { shareToast = false; }, 2000);
 	}
 </script>
 
@@ -74,9 +126,15 @@
 			style="mask-image: radial-gradient(ellipse at top, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse at top, black 0%, transparent 70%);">
 		</div>
 	{/if}
-	<a href="{base}/" class="text-text-muted hover:text-text-secondary text-sm mb-6 inline-block">
-		&larr; Back to tracks
-	</a>
+	{#if data.album}
+		<a href="{base}/collection/{data.album.slug}" class="text-text-muted hover:text-text-secondary text-sm mb-6 inline-block">
+			&larr; Back to {data.album.title}
+		</a>
+	{:else}
+		<a href="{base}/" class="text-text-muted hover:text-text-secondary text-sm mb-6 inline-block">
+			&larr; Back to tracks
+		</a>
+	{/if}
 
 	<div class="flex flex-col md:flex-row gap-6 mb-8">
 		<CoverArt trackId={track.id} artPath={track.hasArt ? 'yes' : null} title={track.title} size="lg" dominantColor={track.dominantColor} />
@@ -114,11 +172,17 @@
 				<span class="text-sm text-accent-muted">Now playing in bottom player</span>
 			</div>
 		{:else}
-			<WaveformPlayer trackId={track.id} duration={track.duration ?? 0} />
-			<button onclick={playInPersistentPlayer}
-				class="mt-2 text-xs text-text-muted hover:text-text-secondary transition-colors">
-				Play with continuous queue
-			</button>
+			<WaveformPlayer trackId={track.id} duration={track.duration ?? 0} {startTime} bind:currentTime={waveformCurrentTime} />
+			<div class="flex items-center gap-3 mt-2">
+				<button onclick={playInPersistentPlayer}
+					class="text-xs text-text-muted hover:text-text-secondary transition-colors">
+					{albumQueue.length > 0 ? 'Play album in queue' : 'Play with continuous queue'}
+				</button>
+				<button onclick={copyShareLink}
+					class="text-xs text-text-muted hover:text-text-secondary transition-colors">
+					{shareToast ? 'Copied!' : 'Copy link at current time'}
+				</button>
+			</div>
 		{/if}
 	</div>
 
@@ -126,6 +190,21 @@
 		<div class="mt-8">
 			<h2 class="text-lg font-semibold text-text-secondary mb-3">About this track</h2>
 			<p class="text-text-tertiary whitespace-pre-wrap leading-relaxed">{track.description}</p>
+		</div>
+	{/if}
+
+	{#if data.siblings.length > 0 && data.album}
+		<div class="mt-8">
+			<div class="flex items-center justify-between mb-3">
+				<h2 class="text-lg font-semibold text-text-secondary">
+					More from <a href="{base}/collection/{data.album.slug}" class="text-accent hover:text-accent-hover transition-colors">{data.album.title}</a>
+				</h2>
+			</div>
+			<div class="space-y-3">
+				{#each siblingTrackCards as sibling, i (sibling.id)}
+					<TrackCard track={sibling} allTracks={albumQueue} index={albumQueue.findIndex(t => t.id === sibling.id)} />
+				{/each}
+			</div>
 		</div>
 	{/if}
 

@@ -320,7 +320,7 @@
 
           <!-- Edit link -->
           <a
-            href="{base}/admin/tracks/{track.id}"
+            href="{base}/admin/tracks/{track.id}?from=collection:{collection.id}"
             class="text-text-muted hover:text-accent-muted transition-colors shrink-0 text-sm"
             title="Edit track details"
           >&#x270E;</a>

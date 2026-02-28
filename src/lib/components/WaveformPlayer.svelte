@@ -5,13 +5,12 @@
 	import { playerState } from '$lib/stores/playerState.svelte';
 	import type WaveSurfer from 'wavesurfer.js';
 
-	let { trackId, duration }: { trackId: string; duration: number } = $props();
+	let { trackId, duration, startTime = 0, currentTime = $bindable(0) }: { trackId: string; duration: number; startTime?: number; currentTime?: number } = $props();
 
 	let container: HTMLDivElement = $state(null!);
 	let wavesurfer: WaveSurfer | null = $state(null);
 	let isPlaying: boolean = $state(false);
 	let isLoading: boolean = $state(true);
-	let currentTime: number = $state(0);
 	let volume: number = $state(1);
 	let loadError: boolean = $state(false);
 	let hasCountedPlay: boolean = $state(false);
@@ -73,7 +72,13 @@
 			ws.on('pause', () => (isPlaying = false));
 			ws.on('finish', () => (isPlaying = false));
 			ws.on('timeupdate', (time: number) => (currentTime = time));
-			ws.on('ready', () => (isLoading = false));
+			ws.on('ready', () => {
+				isLoading = false;
+				if (startTime > 0) {
+					ws.setTime(startTime);
+					ws.play();
+				}
+			});
 			ws.on('error', (err: Error) => {
 				console.error('WaveSurfer error:', err);
 				isLoading = false;
